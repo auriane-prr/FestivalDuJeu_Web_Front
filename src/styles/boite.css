@@ -1,0 +1,45 @@
+.Fond {
+    width: 24rem;
+    height: 24rem;
+    position: relative;
+    background-color: rgba(218, 218, 221);
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .EnTete {
+    width: 100%;
+    height: 1.75rem;
+    position: relative;
+  }
+  
+  .Couleur1,
+  .Couleur2,
+  .Couleur3 {
+    position: absolute;
+    width: 9rem; /* Largeur de 28 pixels (selon le fonctionnement Tailwind où 1 rem = 4 pixels) */
+    height: 1.75rem; /* Hauteur de 7 pixels */
+  }
+  
+  .Couleur1 {
+    width : 9rem;
+    background-color: #83b849;
+    border-top-left-radius: 0.75rem; /* Rayon de bordure arrondie supérieur gauche de 3 pixels */
+  }
+  
+  .Couleur2 {
+    background-color: #5e8d38;
+    left: 8rem;
+    border-top-left-radius: 0.75rem;
+    border-bottom-left-radius: 0.75rem; 
+  }
+  
+  .Couleur3 {
+    background-color: #485f3f;
+    left: 15rem; /* Position horizontale de 158 pixels par rapport à l'élément parent */
+    border-top-left-radius: 0.75rem; /* Rayon de bordure arrondie supérieur gauche de 3 pixels */
+    border-top-right-radius: 0.75rem; /* Rayon de bordure arrondie supérieur droit de 3 pixels */
+    border-bottom-left-radius: 0.75rem; /* Rayon de bordure arrondie inférieur gauche de 3 pixels */
+  }
+  
