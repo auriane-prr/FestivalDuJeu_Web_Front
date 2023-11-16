@@ -16,15 +16,15 @@
   
   .Logo {
     height: 100%; /* Hauteur en pourcentage par rapport au contenant parent */
-    left: 1%; /* Position horizontale à 1% de la gauche */
+    left: 35%; /* Position horizontale à 1% de la gauche */
     top: 50%; /* Position verticale centrée */
     transform: translateY(-50%); /* Centrage vertical */
     position: absolute;
   }
   
   .NomAsso {
-    height: 100%; /* Hauteur en pourcentage par rapport au contenant parent */
-    left: 80px; /* Position horizontale à 1% de la droite */
+    height: 60%; /* Hauteur en pourcentage par rapport au contenant parent */
+    left: 42%; /* Position horizontale à 1% de la droite */
     top: 50%; /* Position verticale centrée */
     transform: translateY(-50%); /* Centrage vertical */
     position: absolute;

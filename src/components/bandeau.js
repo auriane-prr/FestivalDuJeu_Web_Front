@@ -1,7 +1,7 @@
 import React from 'react';
 import "../styles/bandeau.css"
 import LogoImage from '../Logo/logo.png';
-import NomAssoImage from '../Logo/NomAssoGris.png';
+import NomAssoImage from '../Logo/NomAssoLigne.png';
 
 function Bandeau() {
   return (

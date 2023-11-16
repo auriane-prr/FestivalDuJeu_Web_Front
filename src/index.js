@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/index.css';
+import BandeauLogo from './components/bandeauLogo';
 import Bandeau from './components/bandeau';
 import Boite from './components/boite';
 import Bouton from './components/bouton';

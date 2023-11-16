@@ -1,0 +1,59 @@
+.Bandeau {
+    width: 100%; /* Prend la largeur totale de la page */
+    height: 10%; /* Hauteur en pourcentage par rapport au contenant parent */
+    position: fixed;
+    background: #1d244b;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center; /* Alignement vertical des éléments */
+    justify-content: center; /* Alignement à l'extrémité droite */
+    padding: 0 10px;
+  }
+  
+  
+.Logo {
+    height: 100%; /* Hauteur en pourcentage par rapport au contenant parent */
+    left: 10px; /* Position horizontale à 1% de la gauche */
+    top: 50%; /* Position verticale centrée */
+    transform: translateY(-50%); /* Centrage vertical */
+    position: absolute;
+}
+  
+.NomAsso {
+    height: 100%; /* Hauteur en pourcentage par rapport au contenant parent */
+    left: 80px; /* Position horizontale à 1% de la droite */
+    top: 50%; /* Position verticale centrée */
+    transform: translateY(-50%); /* Centrage vertical */
+    position: absolute;
+}
+
+.Profile{
+    height: 60%; /* Hauteur en pourcentage par rapport au contenant parent */
+    right: 2%; /* Position horizontale à 1% de la gauche */
+    top: 50%; /* Position verticale centrée */
+    transform: translateY(-50%); /* Centrage vertical */
+    position: absolute;
+  
+}
+
+.Calandrier{
+    height: 60%; /* Hauteur en pourcentage par rapport au contenant parent */
+    right: 9%; /* Position horizontale à 1% de la gauche */
+    top: 50%; /* Position verticale centrée */
+    transform: translateY(-50%); /* Centrage vertical */
+    position: absolute; 
+}
+
+.Alerte{
+    height: 70%; /* Hauteur en pourcentage par rapport au contenant parent */
+    right: 15%; /* Position horizontale à 1% de la gauche */
+    top: 50%; /* Position verticale centrée */
+    transform: translateY(-50%); /* Centrage vertical */
+    position: absolute;   
+}
+  
+
+
