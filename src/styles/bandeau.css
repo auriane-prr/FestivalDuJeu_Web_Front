@@ -3,29 +3,36 @@
     height: 10%; /* Hauteur en pourcentage par rapport au contenant parent */
     position: absolute;
     background: #1d244b;
-}
-
-.Fond {
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center; /* Alignement vertical des éléments */
+    justify-content: flex-end; /* Alignement à l'extrémité droite */
+    padding: 0 10px;
+  }
+  
+  .Fond {
     width: 100%; /* Prend la largeur totale de la page */
     height: 100%; /* Hauteur en pourcentage par rapport au contenant parent */
     position: absolute;
-    background-color: rgba(92, 87, 192, 0.8); 
+    background-color: #1d244b; 
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
-}
-
-.Logo {
+  }
+  
+  .Logo {
     height: 100%; /* Hauteur en pourcentage par rapport au contenant parent */
-    left: 1%; /* Position horizontale à 1% de la droite */
-    top: 50%; /* Position verticale centrée */
-    transform: translateY(-50%); /* Centrage vertical */
-    position: absolute;
-}
-
-.NomAsso {
-    width: 10%; /* Largeur en pourcentage par rapport au contenant parent */
-    height: 100%; /* Hauteur en pourcentage par rapport au contenant parent */
-    left: 10%; /* Position horizontale à 1% de la droite */
+    left: 1%; /* Position horizontale à 1% de la gauche */
     top: 50%; /* Position verticale centrée */
     transform: translateY(-50%); /* Centrage vertical */
     position: absolute;
   }
+  
+  .NomAsso {
+    height: 100%; /* Hauteur en pourcentage par rapport au contenant parent */
+    left: 80px; /* Position horizontale à 1% de la droite */
+    top: 50%; /* Position verticale centrée */
+    transform: translateY(-50%); /* Centrage vertical */
+    position: absolute;
+  }
+  
