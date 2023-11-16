@@ -12,8 +12,8 @@ root.render(
     <Bandeau />
     {/* <div id="boite-container"> {/* Ajout de l'ID pour le conteneur Boite }
       <Boite />
-    </div> */}
-    {/* <div id="bouton-container">
+    </div>
+    <div id="bouton-container">
       <Bouton>Je me connecte</Bouton>
     </div> */}
   </React.StrictMode>
