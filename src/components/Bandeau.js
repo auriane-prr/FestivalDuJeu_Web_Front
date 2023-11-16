@@ -10,6 +10,7 @@ function Bandeau() {
           <img className="Logo" src={LogoImage} alt="Logo"></img>
         <img className="NomAsso" src={NomAssoImage} alt="NomAsso"></img>
     </div>
+    
 
   );
 }
