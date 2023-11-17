@@ -11,12 +11,12 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BandeauLogo />
-    <div className='Container'>
+    {/* <div className='Container'>
       <Boite />
       <div className='Bouton-Container'>
         <Bouton>Je me connecte</Bouton>
       </div>
-    </div>
+    </div> */}
   </React.StrictMode>
 );
 
