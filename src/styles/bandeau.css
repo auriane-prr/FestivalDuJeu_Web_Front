@@ -18,6 +18,7 @@
     width: auto; /* Vous pouvez spécifier une largeur en pourcentage ou une valeur fixe */
     height: 100%; /* La hauteur s'ajustera automatiquement pour maintenir le ratio d'aspect */
     object-fit: cover; /* Ajuste automatiquement l'image tout en conservant son ratio d'aspect */
+    cursor: pointer;
   }
   
 

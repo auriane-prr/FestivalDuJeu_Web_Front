@@ -5,11 +5,14 @@
     border-radius: 0.5rem;
     cursor: pointer;
     width: auto;
+    position: absolute;
+    bottom: 8%;
+    align-items: center;
   }
   
 .CustomButton span.ButtonText {
     color: white;
-    font-size: 1em;
+    font-size: 130%;
     font-family: 'Itim', cursive;
     word-wrap: break-word;
   }
