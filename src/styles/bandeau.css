@@ -15,19 +15,9 @@
   
   
   .Logo {
-    height: 100%; /* Hauteur en pourcentage par rapport au contenant parent */
-    left: 35%; /* Position horizontale à 1% de la gauche */
-    top: 50%; /* Position verticale centrée */
-    transform: translateY(-50%); /* Centrage vertical */
-    position: absolute;
-  }
-  
-  .NomAsso {
-    height: 60%; /* Hauteur en pourcentage par rapport au contenant parent */
-    left: 42%; /* Position horizontale à 1% de la droite */
-    top: 50%; /* Position verticale centrée */
-    transform: translateY(-50%); /* Centrage vertical */
-    position: absolute;
+    width: auto; /* Vous pouvez spécifier une largeur en pourcentage ou une valeur fixe */
+    height: 100%; /* La hauteur s'ajustera automatiquement pour maintenir le ratio d'aspect */
+    object-fit: cover; /* Ajuste automatiquement l'image tout en conservant son ratio d'aspect */
   }
   
 

@@ -10,7 +10,7 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Bandeau />
+    <BandeauLogo />
     <div className='Container'>
       <Boite />
       <div className='Bouton-Container'>

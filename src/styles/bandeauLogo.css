@@ -15,45 +15,39 @@
   
   
 .Logo {
-    height: 100%; /* Hauteur en pourcentage par rapport au contenant parent */
-    left: 10px; /* Position horizontale à 1% de la gauche */
-    top: 50%; /* Position verticale centrée */
-    transform: translateY(-50%); /* Centrage vertical */
-    position: absolute;
-}
-  
-.NomAsso {
-    height: 100%; /* Hauteur en pourcentage par rapport au contenant parent */
-    left: 80px; /* Position horizontale à 1% de la droite */
-    top: 50%; /* Position verticale centrée */
-    transform: translateY(-50%); /* Centrage vertical */
+    width: auto; /* Vous pouvez spécifier une largeur en pourcentage ou une valeur fixe */
+    height: 100%; /* La hauteur s'ajustera automatiquement pour maintenir le ratio d'aspect */
+    object-fit: contain; /* Ajuste automatiquement l'image tout en conservant son ratio d'aspect */
+    left: 10px; 
+    top: 50%;
+    transform: translateY(-50%); 
     position: absolute;
 }
 
 .Profile{
-    height: 60%; /* Hauteur en pourcentage par rapport au contenant parent */
-    right: 2%; /* Position horizontale à 1% de la gauche */
-    top: 50%; /* Position verticale centrée */
-    transform: translateY(-50%); /* Centrage vertical */
+    height: 60%; 
+    right: 5%;
+    top: 50%; 
+    transform: translateY(-50%); 
     position: absolute;
   
 }
 
-.Calandrier{
-    height: 60%; /* Hauteur en pourcentage par rapport au contenant parent */
-    right: 9%; /* Position horizontale à 1% de la gauche */
-    top: 50%; /* Position verticale centrée */
-    transform: translateY(-50%); /* Centrage vertical */
+.Calendrier{
+    height: 60%;
+    right: 12%;
+    top: 50%; 
+    transform: translateY(-50%);
     position: absolute; 
 }
 
 .Alerte{
-    height: 70%; /* Hauteur en pourcentage par rapport au contenant parent */
-    right: 15%; /* Position horizontale à 1% de la gauche */
-    top: 50%; /* Position verticale centrée */
-    transform: translateY(-50%); /* Centrage vertical */
+    height: 60%; 
+    right: 20%;
+    top: 50%; 
+    transform: translateY(-50%); 
     position: absolute;   
-}
-  
+} 
+
 
 
