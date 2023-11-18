@@ -1,0 +1,27 @@
+.field {
+  padding-bottom: 10px;
+}
+
+.input {
+  border-radius: 5px;
+  background-color: #e9e9f7;
+  padding: 5px;
+  width: 100%;
+  color: #7a7ab3;
+  border: 1px solid #dadaf7
+}
+
+.input:focus-visible {
+  outline: 1px solid #aeaed6;
+}
+
+.input::placeholder {
+  color: #bcbcdf;
+}
+
+label {
+  color: #B2BAC8;
+  font-size: 14px;
+  display: block;
+  padding-bottom: 4px;
+}
