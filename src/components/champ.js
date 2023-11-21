@@ -1,15 +1,15 @@
 import React from 'react';
-import "../styles/bouton.css"
+import "../styles/champ.css";
 
-const Champ = () => {
-    return (
-      <div className="ComponentPseudo">
-        <div className="Property1Default">
-          <div className="Pseudo">Pseudo :</div>
-          <div className="SaisiePseudo" />
-        </div>
+const Champ = (props) => {
+  return (
+    <div className="field">
+      <label htmlFor={props.label}>{props.label}</label>
+      <div className="input">
+        {props.children}
       </div>
-    );
-  };
+    </div>
+  );
+};
 
 export default Champ;
