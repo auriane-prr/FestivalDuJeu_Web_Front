@@ -2,8 +2,10 @@ import React from 'react';
 import "../styles/boite.css"
 import Bouton from './bouton';
 import Login from './login';
+import Titre from './titre';
 
-function Boite() {
+
+const Boite = ({ valeurDuTitre }) => {
   return (
     <div className="Fond">
         <div className="EnTete" >
@@ -11,11 +13,8 @@ function Boite() {
             <div className="Couleur2" />
             <div className="Couleur3" />
         </div>
-        <div className='Titre'>
-            <h2>Bienvenue à tous les bénévoles</h2>
-            <h2>passionnés de jeux !</h2>
-        </div>
-        <Login />
+        <Titre valeur='Bienvenue à tous les bénévoles, passionés de jeu !'/>
+        <Login/>
         <Bouton>Connexion</Bouton>       
     </div>
     

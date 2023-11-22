@@ -4,6 +4,7 @@
     position: fixed;
     background: #1d244b;
     display: flex;
+    z-index: 100;
   }
   
   

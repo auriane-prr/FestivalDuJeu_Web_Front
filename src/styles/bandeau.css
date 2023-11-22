@@ -11,6 +11,7 @@
     align-items: center; /* Alignement vertical des éléments */
     justify-content: center; /* Alignement à l'extrémité droite */
     padding: 0 10px;
+    z-index: 100;
   }
   
   

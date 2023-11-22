@@ -1,7 +1,6 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Roboto';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #aaadbf;
@@ -15,7 +14,6 @@ code {
 
 .Container-boite {
   margin-top: 110px;
-  bottom: 0px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -24,7 +22,6 @@ code {
 }
 
 .Container-bouton{
-  margin-top: 0px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -32,3 +29,20 @@ code {
 
 }
 
+.Container-texte {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  margin-top: 2%;
+  font-size: 90%;
+}
+
+@media screen and (max-width: 480px) {
+  .Container-texte {
+    text-align: center;
+    font-size: 80%;
+  }
+  
+}
