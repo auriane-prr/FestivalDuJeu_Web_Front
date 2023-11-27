@@ -7,7 +7,7 @@ import "../styles/Pages/pageLogin.css"
 
 function PageLogin() {
     return (
-        <div className='Page_login'>
+        <div>
             <Bandeau />
                 <Boite valeurDuTitre='Bienvenue à tous les bénévoles, passionés de jeu !'/>
             <Bouton>S'inscrire</Bouton>

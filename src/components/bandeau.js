@@ -7,7 +7,6 @@ function Bandeau() {
     <div className="Bandeau">
       <img className="Logo" src={Logo} alt="Logo" />
     </div>
-    
 
   );
 }
