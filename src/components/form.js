@@ -57,11 +57,13 @@ const Login = () => {
           />
         </Champ>
         
+        <div className="Container-bouton">
           <button type='submit' onClick={doLogin} className="CustomButton">
             <span className="ButtonText">
               Connexion
             </span>
           </button>
+          </div>
         {errorMessage ? <div className="error">{errorMessage}</div> : null}
       </form>
     </div>

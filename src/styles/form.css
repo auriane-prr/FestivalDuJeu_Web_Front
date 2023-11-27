@@ -5,10 +5,11 @@
     flex-direction: column;
     position: relative;
     object-fit: contain;
+    position: relative;
 }
 
 .CustomButton {
-    align-items: center;
+    align-self: center;
     background-color: rgba(29, 36, 75, 0.8);
     padding: 5px 10%;
     border: none;
@@ -25,4 +26,13 @@
     font-size: 150%;
     font-family: 'Toma';
     word-wrap: break-word;
+  }
+
+  .Container-bouton{
+    margin-top: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  
   }
