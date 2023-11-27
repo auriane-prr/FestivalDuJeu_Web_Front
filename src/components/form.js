@@ -1,6 +1,6 @@
 import React, { useReducer, useState } from 'react';
 import Champ from './champ';
-import '../styles/login.css';
+import '../styles/form.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthWrapper';
 
@@ -56,13 +56,12 @@ const Login = () => {
             required
           />
         </Champ>
-        <div className='Bouton-container'>
+        
           <button type='submit' onClick={doLogin} className="CustomButton">
             <span className="ButtonText">
               Connexion
             </span>
           </button>
-        </div>
         {errorMessage ? <div className="error">{errorMessage}</div> : null}
       </form>
     </div>

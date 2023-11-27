@@ -3,24 +3,11 @@
     height: fit-content;
     display: flex;
     flex-direction: column;
-    text-align: left;
-    align-items: left;
-    border-radius: 11px;
     position: relative;
     object-fit: contain;
 }
 
-.Bouton-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-top: 20px;
-}
-
 .CustomButton {
-    
-    display: flex;
-    flex-direction: row;
     align-items: center;
     background-color: rgba(29, 36, 75, 0.8);
     padding: 5px 10%;

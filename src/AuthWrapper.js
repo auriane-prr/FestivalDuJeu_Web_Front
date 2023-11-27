@@ -38,7 +38,6 @@ const AuthWrapper = ({ children }) => {
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
       <>
-        <Bandeau />
         <RenderMenu />
         <RenderRoutes />
         {children} 

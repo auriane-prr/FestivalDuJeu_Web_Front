@@ -1,11 +1,11 @@
 import React from 'react';
-import Bandeau from '../components/bandeau';
 import "../styles/Pages/pageAccueil.css"
+import BandeauLogo from '../components/bandeauLogo';
 
 function PageAccueil() {
   return (
     <div className="accueil">
-      <Bandeau />
+      <BandeauLogo />
       <div className="Titre">
         <h1>Accueil</h1>
       </div>

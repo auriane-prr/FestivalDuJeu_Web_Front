@@ -1,11 +1,12 @@
 import React from 'react';
 import "../styles/boite.css";
-import Login from './login';
+import Login from './form';
 import Titre from './titre';
 
 
 const Boite = ({ valeurDuTitre }) => {
   return (
+    <div className="Container-boite">
     <div className="Fond">
         <div className="EnTete" >
             <div className="Couleur1" />
@@ -15,7 +16,7 @@ const Boite = ({ valeurDuTitre }) => {
         <Titre valeurDuTitre={valeurDuTitre}/> 
         <Login />
     </div>
-    
+    </div>
   );
 }
 

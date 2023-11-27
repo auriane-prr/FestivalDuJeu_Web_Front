@@ -17,3 +17,12 @@
   font-family: 'Toma';
   word-wrap: break-word;
 }
+
+.Container-bouton{
+  margin-top: 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
