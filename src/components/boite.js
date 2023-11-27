@@ -1,6 +1,5 @@
 import React from 'react';
-import "../styles/boite.css"
-import Bouton from './bouton';
+import "../styles/boite.css";
 import Login from './login';
 import Titre from './titre';
 
@@ -13,9 +12,8 @@ const Boite = ({ valeurDuTitre }) => {
             <div className="Couleur2" />
             <div className="Couleur3" />
         </div>
-        <Titre valeur='Bienvenue à tous les bénévoles, passionés de jeu !'/>
-        <Login/>
-        <Bouton>Connexion</Bouton>       
+        <Titre valeurDuTitre={valeurDuTitre}/> 
+        <Login />
     </div>
     
   );

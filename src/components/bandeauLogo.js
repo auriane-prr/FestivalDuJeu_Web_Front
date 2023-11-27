@@ -5,7 +5,7 @@ import ProfileImage from '../Logo/icon_profil.png';
 import CalendrierImage from '../Logo/icon_calendar.png';
 import AlerteImage from '../Logo/alerte_icon.png';
 
-function Bandeau() {
+function BandeauLogo() {
   return (
     <div className="Bandeau">
         <img className="Logo" src={Logo} alt="Logo" />
@@ -20,4 +20,4 @@ function Bandeau() {
 }
 
 
-export default Bandeau;
+export default BandeauLogo;

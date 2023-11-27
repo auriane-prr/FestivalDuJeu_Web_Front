@@ -1,55 +1,73 @@
-import React, { useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import Champ from './champ';
-import'../styles/login.css';
-
-
+import '../styles/login.css';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthWrapper';
 
 const Login = () => {
-    const [pseudo, setpseudo] = useState('');
-    const [password, setPassword] = useState('');
-  
-    const handlepseudoChange = (e) => {
-      setpseudo(e.target.value);
-    };
-  
-    const handlePasswordChange = (e) => {
-      setPassword(e.target.value);
-    };
-  
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      // Ajoutez ici la logique de validation et de gestion de connexion
-      console.log('pseudo:', pseudo);
-      console.log('Mot de passe:', password);
-      // Réinitialise les champs après la soumission
-      setpseudo('');
-      setPassword('');
-    };
-  
-    return (
-      <div className='Form-login'>
-              <form onSubmit={handleSubmit}>
-                  <Champ label="Pseudo :">
-                      <input 
-                          className='customInput'
-                          type="text"
-                          value={pseudo}
-                          onChange={handlepseudoChange}
-                          required
-                      />
-                  </Champ>
-                  <Champ label="Mot de passe :">
-                      <input
-                          className='customInput'
-                          type="password"
-                          value={password}
-                          onChange={handlePasswordChange}
-                          required
-                      />
-                  </Champ>
-              </form>
-          </div>
-    );
+  const [formData, setFormData] = useReducer((formData, newItem) => {
+    return { ...formData, ...newItem };
+  }, { pseudo: "", password: "" });
+
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const doLogin = async () => {
+
+    try {
+         
+         await login(formData.pseudo, formData.password)
+         navigate("/accueil")
+         console.log('pseudo ici:', formData.pseudo);
+
+    } catch (error) {
+
+         setErrorMessage(error)
+         
+    }
   };
-  
-  export default Login;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('pseudo:', formData.pseudo);
+    console.log('Mot de passe:', formData.password);
+  };
+
+
+  return (
+    <div className='Form-login'>
+      <form onSubmit={handleSubmit}>
+        <Champ label='Pseudo :'>
+          <input
+            className='customInput'
+            type='text'
+            value={formData.pseudo}
+            onChange={(e) => setFormData({ pseudo: e.target.value })}
+            required
+          />
+        </Champ>
+        <Champ label='Mot de passe :'>
+          <input
+            className='customInput'
+            type='password'
+            value={formData.password}
+            onChange={(e) => setFormData({ password: e.target.value })}
+            required
+          />
+        </Champ>
+        <div className='Bouton-container'>
+          <button type='submit' onClick={doLogin} className="CustomButton">
+            <span className="ButtonText">
+              Connexion
+            </span>
+          </button>
+        </div>
+        {errorMessage ? <div className="error">{errorMessage}</div> : null}
+      </form>
+    </div>
+  );
+};
+
+
+export default Login;
