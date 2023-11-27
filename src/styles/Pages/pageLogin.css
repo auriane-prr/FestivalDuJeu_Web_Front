@@ -1,0 +1,13 @@
+@media screen and (max-width: 480px) {
+  .Container-texte {
+    text-align: center;
+    font-size: 80%;
+  }
+  
+}
+
+.Page_login {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

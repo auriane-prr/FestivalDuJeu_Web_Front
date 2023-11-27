@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
 import { RenderMenu, RenderRoutes } from "./renderNavigation";
-import Bandeau from "./components/bandeau";
 
 const AuthContext = createContext();
 

@@ -12,23 +12,6 @@ code {
     monospace;
 }
 
-.Container-boite {
-  margin-top: 110px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: auto;
-}
-
-.Container-bouton{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-}
-
 .Container-texte {
   display: flex;
   flex-direction: column;
@@ -39,10 +22,3 @@ code {
   font-size: 90%;
 }
 
-@media screen and (max-width: 480px) {
-  .Container-texte {
-    text-align: center;
-    font-size: 80%;
-  }
-  
-}
