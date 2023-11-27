@@ -1,6 +1,7 @@
 import React from 'react';
 import "../styles/Pages/pageAccueil.css"
 import BandeauLogo from '../components/bandeauLogo';
+import Boite from '../components/boite';
 
 function PageAccueil() {
   return (
@@ -8,7 +9,8 @@ function PageAccueil() {
       <BandeauLogo />
       <div className="Titre">
         <h1>Accueil</h1>
-        Bienvenue 
+        <Boite></Boite>
+        
       </div>
     </div>
   );
