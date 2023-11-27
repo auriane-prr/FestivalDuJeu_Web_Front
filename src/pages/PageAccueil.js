@@ -8,6 +8,7 @@ function PageAccueil() {
       <BandeauLogo />
       <div className="Titre">
         <h1>Accueil</h1>
+        Bienvenue 
       </div>
     </div>
   );

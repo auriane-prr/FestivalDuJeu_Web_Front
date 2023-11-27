@@ -19,7 +19,6 @@ const Login = () => {
          
          await login(formData.pseudo, formData.password)
          navigate("/accueil")
-         console.log('pseudo ici:', formData.pseudo);
 
     } catch (error) {
 
@@ -63,7 +62,7 @@ const Login = () => {
               Connexion
             </span>
           </button>
-          </div>
+        </div>
         {errorMessage ? <div className="error">{errorMessage}</div> : null}
       </form>
     </div>
