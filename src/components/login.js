@@ -1,6 +1,6 @@
 import React, { useReducer, useState } from 'react';
 import Champ from './champ';
-import '../styles/form.css';
+import '../styles/login.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthWrapper';
 

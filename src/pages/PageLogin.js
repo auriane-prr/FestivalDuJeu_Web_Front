@@ -14,6 +14,9 @@ function PageLogin() {
                 <Boite valeurDuTitre='Bienvenue à tous les bénévoles, passionés de jeu !'>
                     <Login />
                 </Boite>
+                <div className="Container-texte">
+                    <h2>Si tu n'as pas encore de compte, tu peux en créer un ici :</h2>
+                </div>
                 <Link to="/register">
                     <Bouton>S'inscrire</Bouton>
                 </Link>
