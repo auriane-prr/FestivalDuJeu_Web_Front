@@ -6,19 +6,19 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 const AuthWrapper = ({ children }) => {
-  const [user, setUser] = useState({ name: "", isAuthenticated: false });
+  const [user, setUser] = useState({ name: "",admin:"", referent:"", nom:"", prenom:"", password:"", taille_tshirt:"", vegetarien:"", mail:"", hebergement:"",   isAuthenticated: false });
 
   const login = async (pseudo, password) => {
     try {
       const response = await fetch('http://localhost:3500/benevole/');
       const data = await response.json();
-      const user = data.find(
+      const founduser = data.find(
         (user) => user.pseudo === pseudo && user.password === password
       );
-      console.log(user);
+      console.log(founduser);
 
-      if (user) {
-        setUser({ name: pseudo, isAuthenticated: true });
+      if (founduser) {
+        setUser({ isAuthenticated: true, userInfo: founduser });
         return "success";
 
       } else {

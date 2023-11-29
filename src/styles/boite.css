@@ -59,7 +59,7 @@
     
 .Container-boite {
     margin-top: 110px;
-    bottom: 0px;
+    bottom: 30px;
     display: flex;
     flex-direction: column;
     justify-content: center;
