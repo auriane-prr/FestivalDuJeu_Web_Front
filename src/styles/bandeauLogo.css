@@ -21,7 +21,7 @@
 
 .Profile{
     height: 60%; 
-    padding-left: 90%;
+    /* padding-left: 90%; */
     top: 50%;
     transform: translateY(-50%); 
     position: absolute;
@@ -30,7 +30,7 @@
 
 .Calendrier{
     height: 60%;
-    padding-left: 80%;
+    /* padding-left: 80%; */
     top: 50%; 
     transform: translateY(-50%);
     position: absolute; 
@@ -39,7 +39,7 @@
 
 .Alerte{
     height: 60%; 
-    padding-left: 70%;
+    /* padding-left: 70%; */
     top: 50%; 
     transform: translateY(-50%); 
     position: absolute;   

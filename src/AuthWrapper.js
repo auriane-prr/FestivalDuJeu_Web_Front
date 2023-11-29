@@ -10,17 +10,15 @@ const AuthWrapper = ({ children }) => {
 
   const login = async (pseudo, password) => {
     try {
-      const response = await fetch('http://localhost:3500/benevole/');
+      const response = await fetch('http://localhost:3500/benevole');
       const data = await response.json();
-      const user = data.find(
+      const foundUser = data.find(
         (user) => user.pseudo === pseudo && user.password === password
       );
-      console.log(user);
 
-      if (user) {
+      if (foundUser) {
         setUser({ name: pseudo, isAuthenticated: true });
         return "success";
-
       } else {
         const errorData = await data.json();
         throw new Error(errorData.message);
@@ -34,12 +32,50 @@ const AuthWrapper = ({ children }) => {
     setUser({ ...user, isAuthenticated: false });
   };
 
+  const register = async (formData) => {
+    const { mail, password, pseudo, nom, prenom, association, taille_tshirt, vegetarien, hebergement, num_telephone, admin, referent} = formData;
+
+    try {
+      const response = await fetch('http://localhost:3500/benevole', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mail,
+          password,
+          pseudo,
+          nom,
+          prenom,
+          association,
+          taille_tshirt,
+          vegetarien,
+          hebergement,
+          num_telephone,
+          admin,
+          referent,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setUser({ name: data.pseudo, isAuthenticated: true });
+        return "success";
+      } else {
+        throw new Error(data.message || "Erreur lors de l'inscription");
+      }
+    } catch (error) {
+      throw new Error("Erreur lors de l'inscription");
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, register }}>
       <>
         <RenderMenu />
         <RenderRoutes />
-        {children} 
+        {children}
       </>
     </AuthContext.Provider>
   );
