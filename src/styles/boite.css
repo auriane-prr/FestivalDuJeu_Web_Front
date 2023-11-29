@@ -48,12 +48,25 @@
       border-top-right-radius: 0.75rem; /* Rayon de bordure arrondie supérieur droit de 3 pixels */
       border-bottom-left-radius: 0.75rem; /* Rayon de bordure arrondie inférieur gauche de 3 pixels */
   }
+
+  .Container-boite {
+    margin-top: 5%;
+    /* bottom: 0px; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+  }
     
 
 
 @media (max-width: 1024px) {
     .Fond{
         width: 70%;
+    }
+    .Container-boite{
+        margin-top: 15%;
     }
 }
     
