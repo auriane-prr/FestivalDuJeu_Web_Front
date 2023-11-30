@@ -10,24 +10,31 @@ const AuthWrapper = ({ children }) => {
 
   const login = async (pseudo, password) => {
     try {
-      const response = await fetch('http://localhost:3500/benevole');
+      const response = await fetch('http://localhost:3500/benevole/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pseudo,
+          password,
+        }),
+      });
+  
       const data = await response.json();
-      const founduser = data.find(
-        (user) => user.pseudo === pseudo && user.password === password
-      );
-      console.log(founduser);
-
-      if (founduser) {
-        setUser({ isAuthenticated: true, userInfo: founduser });
+  
+      if (response.ok) {
+        setUser({ isAuthenticated: true, userInfo: data.userInfo });
         return "success";
+      
       } else {
-        const errorData = await data.json();
-        throw new Error(errorData.message);
+        throw new Error(data.message || "Erreur lors de l'authentification");
       }
     } catch (error) {
       throw new Error("Erreur lors de l'authentification");
     }
   };
+  
 
   const logout = () => {
     setUser({ ...user, isAuthenticated: false });
