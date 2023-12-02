@@ -18,24 +18,13 @@ const Login = () => {
       const response = await login(formData.pseudo, formData.password);
       const { token } = response;
       localStorage.setItem('authToken', token); // Stocker le token dans le localStorage
+      localStorage.setItem('pseudo', formData.pseudo); // Stocker le pseudo dans le localStorage
   
       navigate("/accueil");
     } catch (error) {
       setErrorMessage(error);
     }
-  };
-  const fetchUserProfile = async () => {
-    const token = localStorage.getItem('authToken');
-    const response = await fetch('http://localhost:3500/benevole/${formData.pseudo}', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // Inclure le token dans l'en-tête Authorization
-      }
-    });
-  }
-  
-  
+  };  
 
   const handleSubmit = (e) => {
     e.preventDefault();

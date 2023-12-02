@@ -24,7 +24,7 @@ const AuthWrapper = ({ children }) => {
       const data = await response.json();
   
       if (response.ok) {
-        setUser({ isAuthenticated: true, userInfo: data.userInfo });
+        setUser({ ...user,isAuthenticated: true, userInfo: data.userInfo });
         return "success";
       
       } else {
