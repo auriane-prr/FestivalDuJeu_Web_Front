@@ -17,20 +17,30 @@ const Login = () => {
     try {
       const response = await login(formData.pseudo, formData.password);
       const { token } = response;
-      localStorage.setItem('authToken', token); // Stocker le token dans le localStorage
-      localStorage.setItem('pseudo', formData.pseudo); // Stocker le pseudo dans le localStorage
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('pseudo', formData.pseudo);
   
       navigate("/accueil");
     } catch (error) {
-      setErrorMessage(error);
+      setErrorMessage('Identifiants invalides'); // Message spécifique pour des identifiants invalides
     }
-  };  
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('pseudo:', formData.pseudo);
-    console.log('Mot de passe:', formData.password);
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.pseudo || !formData.password) {
+      setErrorMessage('Veuillez saisir un pseudo et un mot de passe'); // Message si des champs sont vides
+      return;
+    }
+
+    try {
+      await doLogin();
+    } catch (error) {
+      console.error('Erreur lors de la tentative de connexion :', error);
+      setErrorMessage('Une erreur s\'est produite lors de la connexion');
+    }
+  };
+
 
 
   return (
