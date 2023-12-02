@@ -44,7 +44,7 @@ const AuthWrapper = ({ children }) => {
     const { mail, password, pseudo, nom, prenom, association, taille_tshirt, vegetarien, hebergement, num_telephone, admin, referent} = formData;
 
     try {
-      const response = await fetch('http://localhost:3500/benevole', {
+      const response = await fetch('http://localhost:3500/benevole/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

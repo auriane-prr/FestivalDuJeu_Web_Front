@@ -1,13 +1,15 @@
-import { BrowserRouter } from 'react-router-dom';
-// import './styles/app.css';
-import AuthWrapper  from './AuthWrapper';
-
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import AuthWrapper from './AuthWrapper';
+import FormInscription from './components/form_register';
 
 function App() {
   return (
-      <BrowserRouter>
-        <AuthWrapper />
-      </BrowserRouter>   
+    <BrowserRouter>
+      <Routes>
+        <Route path="/inscription" element={<FormInscription />} />
+        <Route path="/*" element={<AuthWrapper />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
