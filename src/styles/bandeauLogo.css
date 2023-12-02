@@ -1,73 +1,26 @@
-.Bandeau {
-    width: 100%; /* Prend la largeur totale de la page */
-    height: 10%; /* Hauteur en pourcentage par rapport au contenant parent */
+.Bandeau-logo {
+    width: 100%;
+    height: 10%; /* Hauteur fixe du bandeau */
     position: fixed;
     background: #1d244b;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    top: 0;
+    left: 0;
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
     z-index: 100;
   }
   
+  .Logo-BL {
+    width: auto;
+    height: 80%; /* Ajuster la hauteur des logos */
+    cursor: pointer;
+    margin-right: 5%; /* Espacement entre les logos */
+  }
   
-.Logo {
-    width: auto; /* Vous pouvez spécifier une largeur en pourcentage ou une valeur fixe */
-    height: 100%; /* La hauteur s'ajustera automatiquement pour maintenir le ratio d'aspect */
-    object-fit: contain; /* Ajuste automatiquement l'image tout en conservant son ratio d'aspect */
-    left: 10px; 
-    top: 50%;
-    transform: translateY(-50%); 
-    position: absolute;
-    cursor: pointer;
-}
-
-.Profile{
-    height: 60%; 
-    /* padding-left: 90%; */
-    top: 50%;
-    transform: translateY(-50%); 
-    position: absolute;
-    cursor: pointer;
-}
-
-.Calendrier{
-    height: 60%;
-    /* padding-left: 80%; */
-    top: 50%; 
-    transform: translateY(-50%);
-    position: absolute; 
-    cursor: pointer;
-}
-
-.Alerte{
-    height: 60%; 
-    /* padding-left: 70%; */
-    top: 50%; 
-    transform: translateY(-50%); 
-    position: absolute;   
-    cursor: pointer;
-} 
-
-
-@media (max-width: 1024px) {
-    .Alerte{
-        height: 60%; 
-        padding-left: 80%;
-        top: 50%; 
-        transform: translateY(-50%); 
-        position: absolute;   
-    }
-    .Calendrier{
-        height: 60%;
-        padding-left: 50%;
-        top: 50%; 
-        transform: translateY(-50%);
-        position: absolute; 
-    }
-    .Profile{
-        height: 60%; 
-        padding-left: 20%;
-        top: 50%;
-        transform: translateY(-50%); 
-        position: absolute;
-    }
-}
-
+  .Logo-BL:first-child {
+    margin-right: auto; /* Déplacer le premier logo vers la gauche */
+  }
+  

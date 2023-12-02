@@ -7,11 +7,11 @@ import AlerteImage from '../Logo/alerte_icon.png';
 
 function BandeauLogo() {
   return (
-    <div className="Bandeau">
-        <img className="Logo" src={Logo} alt="Logo" />
-        <img className="Profile" src={ProfileImage} alt="Profile" />
-        <img className="Calendrier" src={CalendrierImage} alt="Calandrier" />
-        <img className="Alerte" src={AlerteImage} alt="Alerte" />
+    <div className="Bandeau-logo">
+        <img className="Logo-BL" src={Logo} alt="Logo" />
+        <img className="Profile Logo-BL" src={ProfileImage} alt="Profile" />
+        <img className="Calendrier Logo-BL" src={CalendrierImage} alt="Calandrier" />
+        <img className="Alerte Logo-BL" src={AlerteImage} alt="Alerte" />
 
     </div>
     
