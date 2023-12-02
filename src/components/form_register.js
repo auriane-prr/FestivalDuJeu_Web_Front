@@ -70,7 +70,7 @@ const FormInscription = () => {
       if (response === 'success') {
         setSuccessMessage('Inscription réussie');
         setErrorMessage(null);
-        navigate('/PageLogin');
+        navigate('/');
       } else {
         setErrorMessage('L\'inscription a échoué');
         setSuccessMessage(null);
