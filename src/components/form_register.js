@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useReducer, useState, useEffect } from 'react';
 import Champ from './champ';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthWrapper';
@@ -28,17 +28,24 @@ const FormInscription = () => {
     admin: false,
     referent: false,
   });
-  console.log(formData);
 
   const [pseudo, setPseudo] = useState('');
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [isPopupVisible, setPopupVisible] = useState(false);
 
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Cette fonction sera appelée après que le composant ait été rendu
+    // et que setPseudo ait mis à jour l'état
+    dispatchFormData({ type: 'UPDATE_FIELD', field: 'pseudo', value: pseudo });
+  }, [pseudo]); // Assurez-vous d'ajouter pseudo comme dépendance ici
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    const prevData = { ...formData };
     dispatchFormData({ type: 'UPDATE_FIELD', field: name, value });
   
     // Si le champ végétarien est sélectionné, convertir la valeur en booléen
@@ -48,19 +55,21 @@ const FormInscription = () => {
     }
   
     // Update pseudo when changing in the name or surname fields
-    if (name === 'nom' || name === 'prenom') {
-      generatePseudo();
-    }
+    if (name === 'prenom' || name === 'nom') {
+        generatePseudo(e); 
+    };
   };
 
-  const generatePseudo = () => {
-    const { nom, prenom } = formData;
+  const generatePseudo = (e) => {
+    const prenom = e.target.value;
+    const { nom } = formData;
     if (nom && prenom) {
       const newPseudo = `${prenom}${nom.charAt(0)}`;
       setPseudo(newPseudo);
       dispatchFormData({ type: 'UPDATE_FIELD', field: 'pseudo', value: newPseudo });
     }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,16 +79,22 @@ const FormInscription = () => {
       if (response === 'success') {
         setSuccessMessage('Inscription réussie');
         setErrorMessage(null);
-        navigate('/');
+        setPopupVisible(true); // Afficher la fenêtre contextuelle
+        // La redirection sera effectuée après que l'utilisateur a vu la fenêtre contextuelle
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
       } else {
         setErrorMessage('L\'inscription a échoué');
         setSuccessMessage(null);
+        setPopupVisible(true); // Afficher la fenêtre contextuelle
         // Handle other cases, display error messages, etc.
       }
     } catch (error) {
       console.error("Erreur lors de l'inscription :", error);
       setErrorMessage('L\'inscription a échoué');
       setSuccessMessage(null);
+      setPopupVisible(true); // Afficher la fenêtre contextuelle
       // Handle registration errors here
     }
   };
@@ -87,7 +102,7 @@ const FormInscription = () => {
   return (
     <div className='Form-login'>
       <form onSubmit={handleSubmit}>
-        
+ 
       <Champ label='Nom :'>
           <input
             className='customInput'
@@ -99,8 +114,8 @@ const FormInscription = () => {
             required
           />
         </Champ>
-
-        <Champ label='Prenom :'>
+        
+      <Champ label='Prenom :'>
           <input
             type='text'
             id='prenom'
@@ -111,6 +126,7 @@ const FormInscription = () => {
             required
           />
         </Champ>
+       
 
         <Champ label='Pseudo :'>
           <input
@@ -118,6 +134,7 @@ const FormInscription = () => {
             name='pseudo'
             id='pseudo'
             value={pseudo}
+            onChange={handleInputChange}
             readOnly
             className='customInput'
             required
@@ -149,7 +166,7 @@ const FormInscription = () => {
         </Champ>
 
         <Champ label='Taille de Tee-shirt :'>
-          <input
+          <select
             type='text'
             name='taille_tshirt'
             id='taille_tshirt'
@@ -157,7 +174,15 @@ const FormInscription = () => {
             onChange={handleInputChange}
             className='customInput'
             required
-          />
+          >
+            <option value=''>-- Sélectionnez une option --</option>
+            <option value='XS'>XS</option>
+            <option value='S'>S</option>
+            <option value='M'>M</option>
+            <option value='L'>L</option>
+            <option value='XL'>XL</option>
+            <option value='XXL'>XXL</option>
+          </select>
         </Champ>
 
         <Champ label='Téléphone :'>
@@ -196,9 +221,9 @@ const FormInscription = () => {
             className='customInput'
           >
             <option value="">-- Sélectionnez une option --</option>
-//           <option value="recherche">Recherche</option>
-//           <option value="proposition">Proposition</option>
-//           <option value="rien">Rien</option>
+           <option value="recherche">Recherche</option>
+           <option value="proposition">Proposition</option>
+           <option value="rien">Rien</option>
           </select>
         </Champ>
 
@@ -216,15 +241,24 @@ const FormInscription = () => {
           </select>
         </Champ>
 
-        {/* ... autres champs ... */}
-
         <div className='Container-bouton'>
           <button type='submit' className='CustomButton'>
             <span className='ButtonText'>Je m'inscris</span>
           </button>
         </div>
+
+
+        {isPopupVisible && (
+          <div className='popup'>
+            <p>{successMessage || errorMessage}</p>
+          <button onClick={() => setPopupVisible(false)}>Fermer</button>
+        </div>
+      )}
+
       </form>
     </div>
+
+    
   );
 };
 
