@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useEffect } from 'react';
+import React, { useReducer, useState, useEffect, useRef } from 'react';
 import Champ from './champ';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthWrapper';
@@ -23,6 +23,7 @@ const FormInscription = () => {
     taille_tshirt: '',
     vegetarien: '',
     hebergement: '',
+    adresse: '',
     num_telephone: '',
     mail: '',
     admin: false,
@@ -32,7 +33,8 @@ const FormInscription = () => {
   const [pseudo, setPseudo] = useState('');
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [isPopupVisible, setPopupVisible] = useState(false); // Afficher la fenêtre contextuelle
+  const isPropositionSelected = useRef(false); // Afficher le champ adresse
 
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -45,13 +47,19 @@ const FormInscription = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    const prevData = { ...formData };
     dispatchFormData({ type: 'UPDATE_FIELD', field: name, value });
   
     // Si le champ végétarien est sélectionné, convertir la valeur en booléen
     if (name === 'vegetarien') {
       const vegetarienValue = name === 'vegetarien' ? value === 'oui' : value;
       dispatchFormData({ type: 'UPDATE_FIELD', field: name, value : vegetarienValue});
+    }
+
+    // Si "proposition" est sélectionné, afficher le champ d'adresse
+    if (name === 'hebergement' && value !== 'proposition') {
+      isPropositionSelected.current = false;
+    } else if (name === 'hebergement' && value === 'proposition') {
+      isPropositionSelected.current = true;
     }
   
     // Update pseudo when changing in the name or surname fields
@@ -73,6 +81,23 @@ const FormInscription = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { num_telephone } = formData;
+
+    // Vérification pour le numéro de téléphone s'il est renseigné
+    if (num_telephone && (num_telephone.length !== 10 || isNaN(num_telephone))) {
+      setErrorMessage('Le numéro de téléphone doit contenir exactement 10 chiffres.');
+      setSuccessMessage(null);
+      setPopupVisible(true);
+      return;
+    }
+
+  if (isPropositionSelected.current && formData.adresse.trim() === '') {
+    setErrorMessage('L\'adresse est obligatoire si vous sélectionnez "proposition" pour l\'hébergement.');
+    setSuccessMessage(null);
+    setPopupVisible(true);
+    return;
+  }
+
     try {
       const response = await register(formData);
 
@@ -165,6 +190,17 @@ const FormInscription = () => {
           />
         </Champ>
 
+        <Champ label='Téléphone :'>
+          <input
+            type='tel'
+            name='num_telephone'
+            id='num_telephone'
+            value={formData.num_telephone}
+            onChange={handleInputChange}
+            className='customInput'
+          />
+        </Champ>
+
         <Champ label='Taille de Tee-shirt :'>
           <select
             type='text'
@@ -185,17 +221,6 @@ const FormInscription = () => {
           </select>
         </Champ>
 
-        <Champ label='Téléphone :'>
-          <input
-            type='tel'
-            name='num_telephone'
-            id='num_telephone'
-            value={formData.num_telephone}
-            onChange={handleInputChange}
-            className='customInput'
-          />
-        </Champ>
-
         <Champ label='Association :'>
           <select
             name='association'
@@ -212,6 +237,21 @@ const FormInscription = () => {
           </select>
         </Champ>
 
+        <Champ label='Végétarien ? :'>
+          <select
+            name='vegetarien'
+            id='vegetarien'
+            value={formData.vegetarien}
+            onChange={handleInputChange}
+            className='customInput'
+            required
+          >
+            <option value=''>-- Sélectionnez une option --</option>
+            <option value='true'>oui</option>
+            <option value='false'>non</option>
+          </select>
+        </Champ>
+
         <Champ label='Hébergement :'>
           <select
             name='hebergement'
@@ -219,6 +259,7 @@ const FormInscription = () => {
             value={formData.hebergement}
             onChange={handleInputChange}
             className='customInput'
+            required
           >
             <option value="">-- Sélectionnez une option --</option>
            <option value="recherche">Recherche</option>
@@ -227,19 +268,18 @@ const FormInscription = () => {
           </select>
         </Champ>
 
-        <Champ label='Végétarien ? :'>
-          <select
-            name='vegetarien'
-            id='vegetarien'
-            value={formData.vegetarien}
-            onChange={handleInputChange}
-            className='customInput'
-          >
-            <option value=''>-- Sélectionnez une option --</option>
-            <option value='true'>oui</option>
-            <option value='false'>non</option>
-          </select>
-        </Champ>
+        {isPropositionSelected.current && (
+          <Champ label='Adresse :'>
+            <input
+              type='text'
+              name='adresse'
+              id='adresse'
+              value={formData.adresse}
+              onChange={handleInputChange}
+              className='customInput'
+            />
+          </Champ>
+        )}
 
         <div className='Container-bouton'>
           <button type='submit' className='CustomButton'>
