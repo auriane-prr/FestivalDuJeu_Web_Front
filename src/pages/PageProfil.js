@@ -1,6 +1,6 @@
 import "../styles/Pages/pageProfil.css";
 import React, { useState, useEffect } from 'react';
-import Bandeau from "../components/bandeau";
+import BandeauLogo from "../components/bandeauLogo";
 import Boite from '../components/boite';
 import Champ from '../components/champ';
 import { useAuth } from '../AuthWrapper';
@@ -74,7 +74,7 @@ function PageProfil() {
 
   return (
     <div className="profil">
-      <Bandeau />
+      <BandeauLogo />
       <Boite valeurDuTitre="Informations personnelles">
         <div className="Container-profil-info">
         <Champ label="Pseudo :">
