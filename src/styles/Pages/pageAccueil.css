@@ -1,0 +1,12 @@
+.columns {
+    display: flex;
+    justify-content: space-between; /* Espace équitablement les colonnes */
+    margin-bottom: 20px; /* Ajoute un espace entre les blocs d'heures */
+  }
+  
+  .column {
+    flex: 1; /* Étend chaque colonne pour occuper la moitié de l'espace disponible */
+    padding: 0 10px; /* Ajoute un peu d'espace autour des éléments dans la colonne */
+    
+  }
+  
