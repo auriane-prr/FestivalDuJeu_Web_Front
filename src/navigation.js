@@ -9,7 +9,7 @@ import PageProfil from "./pages/PageProfil";
 export const nav = [
     { path : "/", name : "PageLogin", element: <PageLogin />, isMenu: false, isPrivate: false},
     { path : "/accueil", name : "PageAccueil", element: <PageAccueil />, isMenu: true, isPrivate: true},
-    { path : "/register", name : "PageRegister", element: <PageRegister />, isMenu: false, isPrivate: true},
+    { path : "/register", name : "PageRegister", element: <PageRegister />, isMenu: true, isPrivate: false},
     { path : "/profil", name : "PageProfil", element: <PageProfil />, isMenu: true, isPrivate: true},
 
 ]
