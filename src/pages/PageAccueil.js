@@ -11,7 +11,7 @@ function PageAccueil() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/stand.xlsx'); // Assurez-vous que le chemin du fichier est correct
+        const response = await fetch('./stand.xlsx'); // Assurez-vous que le chemin du fichier est correct
         const arrayBuffer = await response.arrayBuffer();
         const data = new Uint8Array(arrayBuffer);
         const workbook = XLSX.read(data, { type: 'array' });
