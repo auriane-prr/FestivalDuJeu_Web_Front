@@ -8,7 +8,7 @@ function PageRegister() {
   return (
     <div>
       <Bandeau />
-      <Boite valeurDuTitre='Merci de vous joindre à nous pour cette nouvelle édition du Festival du Jeu à Montpellier !'>
+      <Boite valeurDuTitre={'Merci de vous joindre à nous pour cette nouvelle édition du Festival du Jeu à Montpellier !'}>
         <FormInscription />
       </Boite>
     </div>

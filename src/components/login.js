@@ -41,14 +41,12 @@ const Login = () => {
     }
   };
 
-
-
   return (
     <div className='Form-login'>
       <form onSubmit={handleSubmit}>
         <Champ label='Pseudo :'>
           <input
-            className='customInput'
+            className='input'
             type='text'
             value={formData.pseudo}
             onChange={(e) => setFormData({ pseudo: e.target.value })}
@@ -57,7 +55,7 @@ const Login = () => {
         </Champ>
         <Champ label='Mot de passe :'>
           <input
-            className='customInput'
+            className='input'
             type='password'
             value={formData.password}
             onChange={(e) => setFormData({ password: e.target.value })}
@@ -65,13 +63,14 @@ const Login = () => {
           />
         </Champ>
         
-        <div className="Container-bouton">
-          <button type='submit' onClick={doLogin} className="CustomButton">
-            <span className="ButtonText">
-              Connexion
-            </span>
+        <div className='button_container'>
+          <button type='submit' onClick={doLogin}>
+            <span className="shadow"></span>
+            <span className="edge"></span>
+            <span className="front text"> Connexion </span>
           </button>
         </div>
+
         {errorMessage ? <div className="error">{errorMessage}</div> : null}
       </form>
     </div>

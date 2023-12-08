@@ -1,7 +1,22 @@
+@font-face {
+    font-family: 'Indie';
+    src: url('../Police/IndieFlower-Regular.ttf') format('truetype');
+}
+
 .Titre {
-    font-family: 'Toma';
-    font-size: 150%;
+    font-family: 'INDIE';
+    font-size: 160%;
     text-align: center;
-    margin-bottom: 5%;
-    width : 70%;
+    margin-bottom: 3%;
+    margin-top: 5%;
+    width: 100%; /* Ajustez la largeur selon vos besoins */
+    padding-right: 3%;
+    padding-left: 3%;
+    box-sizing: border-box; /* Assurez-vous que la taille totale inclut le padding */
+}
+
+@media screen and (max-width: 768px) {
+    .Titre {
+        font-size: 100%;
+    }
 }

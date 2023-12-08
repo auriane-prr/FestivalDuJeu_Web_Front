@@ -2,7 +2,7 @@ import React, { useReducer, useState, useEffect, useRef } from 'react';
 import Champ from './champ';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthWrapper';
-import '../styles/login.css';
+import '../styles/register.css';
 
 const FormInscription = () => {
   const formReducer = (state, action) => {
@@ -125,12 +125,12 @@ const FormInscription = () => {
   };
 
   return (
-    <div className='Form-login'>
+    <div className='Form-register'>
       <form onSubmit={handleSubmit}>
  
       <Champ label='Nom :'>
           <input
-            className='customInput'
+            className='input'
             type='text'
             name='nom'
             id='nom'
@@ -140,14 +140,14 @@ const FormInscription = () => {
           />
         </Champ>
         
-      <Champ label='Prenom :'>
+      <Champ label='Prénom :'>
           <input
             type='text'
             id='prenom'
             name='prenom'
             value={formData.prenom}
             onChange={handleInputChange}
-            className='customInput'
+            className='input'
             required
           />
         </Champ>
@@ -161,7 +161,7 @@ const FormInscription = () => {
             value={pseudo}
             onChange={handleInputChange}
             readOnly
-            className='customInput'
+            className='input'
             required
           />
         </Champ>
@@ -173,7 +173,7 @@ const FormInscription = () => {
             name='password'
             value={formData.password}
             onChange={handleInputChange}
-            className='customInput'
+            className='input'
             required
           />
         </Champ>
@@ -185,7 +185,7 @@ const FormInscription = () => {
             id='mail'
             value={formData.mail}
             onChange={handleInputChange}
-            className='customInput'
+            className='input'
             required
           />
         </Champ>
@@ -197,7 +197,7 @@ const FormInscription = () => {
             id='num_telephone'
             value={formData.num_telephone}
             onChange={handleInputChange}
-            className='customInput'
+            className='input'
           />
         </Champ>
 
@@ -208,10 +208,11 @@ const FormInscription = () => {
             id='taille_tshirt'
             value={formData.taille_tshirt}
             onChange={handleInputChange}
-            className='customInput'
             required
+            style={{ height: '30px', width: '102%' }}
+            className='input'
           >
-            <option value=''>-- Sélectionnez une option --</option>
+            <option value=''>Sélectionnez une option</option>
             <option value='XS'>XS</option>
             <option value='S'>S</option>
             <option value='M'>M</option>
@@ -227,10 +228,11 @@ const FormInscription = () => {
             id='association' 
             value={formData.association}
             onChange={handleInputChange}
-            className='customInput'
+            className='input'
+            style={{ height: '30px', width: '102%' }}
             required
           >
-            <option value=''>-- Sélectionnez une option --</option>
+            <option value=''>Sélectionnez une option</option>
             <option value='APCU'>APCU</option>
             <option value='MEN'>MEN</option>
             <option value='SMI'>SMI</option>
@@ -243,12 +245,13 @@ const FormInscription = () => {
             id='vegetarien'
             value={formData.vegetarien}
             onChange={handleInputChange}
-            className='customInput'
+            className='input'
+            style={{ height: '30px', width: '102%' }}
             required
           >
-            <option value=''>-- Sélectionnez une option --</option>
-            <option value='true'>oui</option>
-            <option value='false'>non</option>
+           <option value=''>Sélectionnez une option</option>
+            <option value='true'>Oui</option>
+            <option value='false'>Non</option>
           </select>
         </Champ>
 
@@ -258,10 +261,11 @@ const FormInscription = () => {
             id='hebergement'
             value={formData.hebergement}
             onChange={handleInputChange}
-            className='customInput'
+            className='input'
+            style={{ height: '30px', width: '102%' }}
             required
           >
-            <option value="">-- Sélectionnez une option --</option>
+            <option value=''>Sélectionnez une option</option>
            <option value="recherche">Recherche</option>
            <option value="proposition">Proposition</option>
            <option value="rien">Rien</option>
@@ -276,24 +280,26 @@ const FormInscription = () => {
               id='adresse'
               value={formData.adresse}
               onChange={handleInputChange}
-              className='customInput'
+              className='input'
             />
           </Champ>
         )}
 
-        <div className='Container-bouton'>
-          <button type='submit' className='CustomButton'>
-            <span className='ButtonText'>Je m'inscris</span>
-          </button>
-        </div>
+    <div className='button_container'>
+      <button type='submit'>
+        <span className="shadow"></span>
+        <span className="edge"></span>
+        <span className="front text"> Je m'inscris </span>
+      </button>
+    </div>
 
 
-        {isPopupVisible && (
+        {/* {isPopupVisible && (
           <div className='popup'>
             <p>{successMessage || errorMessage}</p>
           <button onClick={() => setPopupVisible(false)}>Fermer</button>
         </div>
-      )}
+      )} */}
 
       </form>
     </div>

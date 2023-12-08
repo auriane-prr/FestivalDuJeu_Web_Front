@@ -5,7 +5,7 @@ const Champ = (props) => {
   return (
     <div className="field">
       <label htmlFor={props.label}>{props.label}</label>
-      <div className="input">
+      <div>
         {props.children}
       </div>
     </div>

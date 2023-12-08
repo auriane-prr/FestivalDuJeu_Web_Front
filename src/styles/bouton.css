@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'Olive';
+  src: url('../Police/OlivessansPimiento.ttf') format('truetype');
+  /* Assurez-vous d'ajuster le chemin en fonction de la structure de votre projet */
+}
+
 .CustomButton {
   background-color: rgba(29, 36, 75, 0.8);
   padding: 5px 10%;
@@ -13,7 +19,7 @@
 .CustomButton span.ButtonText {
   color: white;
   font-size: 150%;
-  font-family: 'Toma';
+  font-family: 'Olive';
   word-wrap: break-word;
 }
 
@@ -22,5 +28,4 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
 }
