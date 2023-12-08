@@ -1,0 +1,44 @@
+.FenetrePopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: #fff;
+    border: 2px solid #333;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out; /* Ajoutez cette ligne pour la transition */
+  }
+
+  .closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #555; /* Couleur du texte du bouton */
+  }
+
+  
+  .FenetrePopup.error {
+    background-color: #ffcccc;
+    border-color: #ff0000;
+    color: #ff0000;
+  }
+  
+  .FenetrePopup.success {
+    background-color: #ccffcc;
+    border-color: #3be43b;
+    color: #3be43b;
+  }
+  
+  .FenetrePopup.show {
+    display: block;
+    opacity: 1;
+  }
+  

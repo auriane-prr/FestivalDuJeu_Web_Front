@@ -15,7 +15,7 @@ function PageLogin() {
                     <Login />
                 </Boite>
                 <Titre valeurDuTitre="Si tu n'as pas encore de compte, tu peux en créer un ici :" />
-                <Link to="/register">
+                <Link to="/register" style={{ textDecoration: 'none' }}>
                     <div className='button_container'>
                         <button type='submit'>
                             <span className="shadow"></span>

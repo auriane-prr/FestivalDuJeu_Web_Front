@@ -3,6 +3,7 @@ import Champ from './champ';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthWrapper';
 import '../styles/register.css';
+import FenetrePopup from './fenetre_popup';
 
 const FormInscription = () => {
   const formReducer = (state, action) => {
@@ -38,6 +39,10 @@ const FormInscription = () => {
 
   const { register } = useAuth();
   const navigate = useNavigate();
+
+  const hidePopup = () => {
+    setPopupVisible(false);
+  };
 
   useEffect(() => {
     // Cette fonction sera appelée après que le composant ait été rendu
@@ -98,30 +103,28 @@ const FormInscription = () => {
     return;
   }
 
-    try {
-      const response = await register(formData);
+  try {
+    const response = await register(formData);
 
-      if (response === 'success') {
-        setSuccessMessage('Inscription réussie');
-        setErrorMessage(null);
-        setPopupVisible(true); // Afficher la fenêtre contextuelle
-        // La redirection sera effectuée après que l'utilisateur a vu la fenêtre contextuelle
-        setTimeout(() => {
-          navigate('/');
-        }, 2000);
-      } else {
-        setErrorMessage('L\'inscription a échoué');
-        setSuccessMessage(null);
-        setPopupVisible(true); // Afficher la fenêtre contextuelle
-        // Handle other cases, display error messages, etc.
-      }
-    } catch (error) {
-      console.error("Erreur lors de l'inscription :", error);
+    if (response === 'success') {
+      setSuccessMessage('Inscription réussie');
+      setErrorMessage(null);
+      setPopupVisible(true);
+      // La redirection sera effectuée après que l'utilisateur a vu la fenêtre contextuelle
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    } else {
       setErrorMessage('L\'inscription a échoué');
       setSuccessMessage(null);
-      setPopupVisible(true); // Afficher la fenêtre contextuelle
-      // Handle registration errors here
+      setPopupVisible(true);
     }
+  } catch (error) {
+    console.error("Erreur lors de l'inscription :", error);
+    setErrorMessage('L\'inscription a échoué');
+    setSuccessMessage(null);
+    setPopupVisible(true);
+  }
   };
 
   return (
@@ -293,15 +296,24 @@ const FormInscription = () => {
       </button>
     </div>
 
-
-        {/* {isPopupVisible && (
-          <div className='popup'>
-            <p>{successMessage || errorMessage}</p>
-          <button onClick={() => setPopupVisible(false)}>Fermer</button>
-        </div>
-      )} */}
-
       </form>
+
+      {errorMessage && isPopupVisible && (
+        <FenetrePopup
+          message={errorMessage}
+          type="error"
+          onClose={hidePopup}
+        />
+      )}
+
+      {successMessage && isPopupVisible && (
+        <FenetrePopup
+          message={successMessage}
+          type="success"
+          onClose={hidePopup}
+        />
+      )}
+
     </div>
 
     

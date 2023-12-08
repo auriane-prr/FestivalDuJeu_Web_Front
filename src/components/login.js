@@ -3,6 +3,7 @@ import Champ from './champ';
 import '../styles/login.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthWrapper';
+import FenetrePopup from './fenetre_popup';
 
 const Login = () => {
   const [formData, setFormData] = useReducer((formData, newItem) => {
@@ -12,7 +13,12 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [errorMessage, setErrorMessage] = useState(null);
+  const [isPopupVisible, setPopupVisible] = useState(false);
 
+  const hidePopup = () => {
+    setPopupVisible(false);
+  };
+  
   const doLogin = async () => {
     try {
       const response = await login(formData.pseudo, formData.password);
@@ -22,7 +28,8 @@ const Login = () => {
   
       navigate("/accueil");
     } catch (error) {
-      setErrorMessage('Identifiants invalides'); // Message spécifique pour des identifiants invalides
+      setErrorMessage('Identifiants invalides');
+      setPopupVisible(true);  // Afficher la popup en cas d'identifiants invalides
     }
   };
 
@@ -70,9 +77,16 @@ const Login = () => {
             <span className="front text"> Connexion </span>
           </button>
         </div>
-
-        {errorMessage ? <div className="error">{errorMessage}</div> : null}
       </form>
+
+      {errorMessage && isPopupVisible && (
+        <FenetrePopup
+          message={errorMessage}
+          type="error"
+          onClose={hidePopup}
+        />
+      )}
+
     </div>
   );
 };
