@@ -3,48 +3,42 @@ import "../styles/Pages/pageAccueil.css";
 import BandeauLogo from '../components/bandeauLogo';
 import Boite from '../components/boite';
 import Jauge from '../components/jauge';
-import * as XLSX from 'xlsx';
 
 function PageAccueil() {
-  const [scheduleData, setScheduleData] = useState([]);
+  const [standsByHour, setStandsByHour] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('./stand.xlsx'); // Assurez-vous que le chemin du fichier est correct
-        const arrayBuffer = await response.arrayBuffer();
-        const data = new Uint8Array(arrayBuffer);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const schedule = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-        setScheduleData(schedule);
+        const response = await fetch('http://localhost:3500/stands');
+        if (response.ok) {
+          const data = await response.json();
+          const standsByHour = groupStandsByHourAndColumn(data);
+          setStandsByHour(standsByHour);
+        } else {
+          throw new Error('Erreur lors de la récupération des stands');
+        }
       } catch (error) {
-        console.error('Erreur lors du chargement du fichier Excel :', error);
+        console.error('Erreur lors de la récupération des stands :', error);
       }
     };
 
     fetchData();
   }, []);
 
-  // Fonction pour regrouper les stands par heure et par colonne
-  const groupStandsByHourAndColumn = () => {
+  const groupStandsByHourAndColumn = (standsData) => {
     const standsByHour = {};
-    scheduleData.forEach((row) => {
-      const hour = row[0];
-      if (!standsByHour[hour]) {
-        standsByHour[hour] = { column1: [], column2: [] };
-      }
-      if (standsByHour[hour].column1.length < 3) {
-        standsByHour[hour].column1.push(row[1]);
-      } else {
-        standsByHour[hour].column2.push(row[1]);
-      }
+    standsData.forEach((stand) => {
+      stand.horaireCota.forEach((horaire) => {
+        const { heure, nb_benevole } = horaire;
+        if (!standsByHour[heure]) {
+          standsByHour[heure] = [];
+        }
+        standsByHour[heure].push({ nom_stand: stand.nom_stand, nb_benevole });
+      });
     });
     return standsByHour;
   };
-
-  const standsByHourAndColumn = groupStandsByHourAndColumn();
 
   return (
     <div className="accueil">
@@ -53,18 +47,13 @@ function PageAccueil() {
         <h1>Accueil</h1>
       </div>
       <Boite>
-        {Object.entries(standsByHourAndColumn).map(([hour, columns], index) => (
+        {Object.entries(standsByHour).map(([hour, stands], index) => (
           <div key={index}>
-            <h2>{hour}h</h2>
+            <h2>{hour}</h2>
             <div className="columns">
               <div className="column">
-                {columns.column1.map((stand, i) => (
-                  <Jauge key={i} borderColor='#454C8B'>{stand}</Jauge>
-                ))}
-              </div>
-              <div className="column">
-                {columns.column2.map((stand, i) => (
-                  <Jauge key={i} borderColor='#454C8B'>{stand}</Jauge>
+                {stands.map((stand, i) => (
+                  <Jauge key={i} borderColor='#454C8B'>{stand.nom_stand}</Jauge>
                 ))}
               </div>
             </div>

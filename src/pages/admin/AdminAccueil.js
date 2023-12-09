@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import BandeauAdmin from '../../components/admin/bandeauAdmin';
 import BoiteOnglet from '../../components/boiteOnglet';
-import StandOnglet from '../../components/admin/standOnglet';
+import StandOnglet from '../../components/admin/display_stand';
 
 function AdminPageStand() {
   return (
