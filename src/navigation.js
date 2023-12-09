@@ -2,6 +2,7 @@ import PageLogin from "./pages/PageLogin";
 import PageAccueil from "./pages/PageAccueil";
 import PageRegister from "./pages/PageRegister";
 import PageProfil from "./pages/PageProfil";
+import AdminAccueil from "./pages/admin/AdminAccueil";
 
 
 // isMenu : true si on peut voir la page dans le menu sans être connecté
@@ -11,6 +12,8 @@ export const nav = [
     { path : "/accueil", name : "PageAccueil", element: <PageAccueil />, isMenu: true, isPrivate: true},
     { path : "/register", name : "PageRegister", element: <PageRegister />, isMenu: true, isPrivate: false},
     { path : "/profil", name : "PageProfil", element: <PageProfil />, isMenu: true, isPrivate: true},
+    { path : "/admin", name : "AdminAccueil", element: <AdminAccueil />, isMenu: true, isPrivate: false}
+
 
 ]
 
