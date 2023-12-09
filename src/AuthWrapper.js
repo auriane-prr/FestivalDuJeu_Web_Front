@@ -41,7 +41,7 @@ const AuthWrapper = ({ children }) => {
   };
 
   const register = async (formData) => {
-    const { mail, password, pseudo, nom, prenom, association, taille_tshirt, vegetarien, hebergement, num_telephone, admin, referent} = formData;
+    const { mail, password, pseudo, nom, prenom, association, taille_tshirt, vegetarien, hebergement, adresse, num_telephone, admin, referent} = formData;
 
     try {
       const response = await fetch('http://localhost:3500/benevole/signup', {
@@ -55,6 +55,7 @@ const AuthWrapper = ({ children }) => {
           pseudo,
           nom,
           prenom,
+          adresse,
           association,
           taille_tshirt,
           vegetarien,

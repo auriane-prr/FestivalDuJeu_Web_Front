@@ -16,6 +16,10 @@ function PageProfil() {
   const [pseudoValue, setPseudo] = useState(pseudo);
   const [associationValue, setAssociation] = useState(association);
   const [taille_tshirtValue, setTailleTshirt] = useState(taille_tshirt);
+  const [passwordValue, setPassword] = useState('');
+  const [mailValue, setMail] = useState('');
+  const [telephoneValue, setTelephone] = useState('');
+  const [vegetarienValue, setVegetarien] = useState('');
 
   
   useEffect(() => {
@@ -42,6 +46,10 @@ function PageProfil() {
           setPrenom(benevole.prenom || '');
           setAssociation(benevole.association || '');
           setTailleTshirt(benevole.taille_tshirt || '');
+          setPassword(benevole.password || '');
+          setMail(benevole.mail || '');
+          setTelephone(benevole.num_telephone || '');
+          setVegetarien(benevole.vegetarien || '');
           console.log(benevole);
           console.log('nom : ',benevole.nom);
         } else {
@@ -72,14 +80,30 @@ function PageProfil() {
     setTailleTshirt(e.target.value);
   }
 
+  const handleMailChange = (e) => {
+    setMail(e.target.value);
+  }
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  }
+
+  const handleTelephoneChange = (e) => {
+    setTelephone(e.target.value);
+  }
+
+  const handleVegetarienChange = (e) => {
+    setVegetarien(e.target.value);
+  }
+
   return (
     <div className="profil">
       <BandeauLogo />
-      <Boite valeurDuTitre="Informations personnelles">
+      <Boite valeurDuTitre="Informations Personnelles">
         <div className="Container-profil-info">
         <Champ label="Pseudo :">
           <input 
-          className='customInput'
+          className='input'
           type="text"
           value={pseudoValue}
           readOnly={true}
@@ -87,7 +111,7 @@ function PageProfil() {
         </Champ>
         <Champ label="Nom :">
           <input 
-          className='customInput'
+          className='input'
           type="text"
           value={nomValue}
           onChange={handleNomChange} 
@@ -95,28 +119,69 @@ function PageProfil() {
         </Champ>
         <Champ label="Prenom :">
           <input 
-          className='customInput'
+          className='input'
           type="text"
           value={prenomValue}
           onChange={handlePrenomChange} 
           />
         </Champ>
-        <Champ label="Nom Association :">
+        <Champ label='Mot de passe :'>
+          <input
+            type='password'
+            id='password'
+            name='password'
+            value={passwordValue}
+            onChange={handlePasswordChange}
+            className='input'
+            required
+          />
+        </Champ>
+        <Champ label='Email :'>
+          <input
+            type='text'
+            name='mail'
+            id='mail'
+            value={mailValue}
+            onChange={handleMailChange}
+            className='input'
+            required
+          />
+        </Champ>
+        <Champ label="Association :">
           <input 
-          className='customInput'
+          className='input'
           type="text"
           value={associationValue}
           onChange={handleAssociationChange} 
           />
         </Champ>
-        <Champ label="taille_tshirt :">
+        <Champ label="Taille de tee-shirt :">
           <input 
-          className='customInput'
+          className='input'
           type="text"
           value={taille_tshirtValue}
           onChange={handleTailleTshirtChange} 
           />
         </Champ>
+        <Champ label='Téléphone :'>
+          <input
+            type='tel'
+            name='num_telephone'
+            id='num_telephone'
+            value={telephoneValue}
+            onChange={handleTelephoneChange}
+            className='input'
+          />
+        </Champ>
+        <Champ label="Végétarien :">
+          <input 
+          className='input'
+          type="text"
+          value={vegetarienValue}
+          onChange={handleVegetarienChange} 
+          />
+        </Champ>
+        
         </div>
       </Boite>
     </div>
