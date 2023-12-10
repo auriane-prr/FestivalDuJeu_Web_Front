@@ -1,14 +1,14 @@
-import React, { useReducer, useState, useEffect, useRef } from 'react';
-import Champ from './champ';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthWrapper';
-import '../styles/register.css';
-import FenetrePopup from './fenetre_popup';
+import React, { useReducer, useState, useEffect, useRef } from "react";
+import Champ from "./champ";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthWrapper";
+import "../styles/register.css";
+import FenetrePopup from "./fenetre_popup";
 
 const FormInscription = () => {
   const formReducer = (state, action) => {
     switch (action.type) {
-      case 'UPDATE_FIELD':
+      case "UPDATE_FIELD":
         return { ...state, [action.field]: action.value };
       default:
         return state;
@@ -16,22 +16,22 @@ const FormInscription = () => {
   };
 
   const [formData, dispatchFormData] = useReducer(formReducer, {
-    nom: '',
-    prenom: '',
-    pseudo: '',
-    password: '',
-    association: '',
-    taille_tshirt: '',
-    vegetarien: '',
-    hebergement: '',
-    adresse: '',
-    num_telephone: '',
-    mail: '',
+    nom: "",
+    prenom: "",
+    pseudo: "",
+    password: "",
+    association: "",
+    taille_tshirt: "",
+    vegetarien: "",
+    hebergement: "",
+    adresse: "",
+    num_telephone: "",
+    mail: "",
     admin: false,
     referent: false,
   });
 
-  const [pseudo, setPseudo] = useState('');
+  const [pseudo, setPseudo] = useState("");
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isPopupVisible, setPopupVisible] = useState(false); // Afficher la fenêtre contextuelle
@@ -47,30 +47,34 @@ const FormInscription = () => {
   useEffect(() => {
     // Cette fonction sera appelée après que le composant ait été rendu
     // et que setPseudo ait mis à jour l'état
-    dispatchFormData({ type: 'UPDATE_FIELD', field: 'pseudo', value: pseudo });
+    dispatchFormData({ type: "UPDATE_FIELD", field: "pseudo", value: pseudo });
   }, [pseudo]); // Assurez-vous d'ajouter pseudo comme dépendance ici
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    dispatchFormData({ type: 'UPDATE_FIELD', field: name, value });
-  
+    dispatchFormData({ type: "UPDATE_FIELD", field: name, value });
+
     // Si le champ végétarien est sélectionné, convertir la valeur en booléen
-    if (name === 'vegetarien') {
-      const vegetarienValue = name === 'vegetarien' ? value === 'oui' : value;
-      dispatchFormData({ type: 'UPDATE_FIELD', field: name, value : vegetarienValue});
+    if (name === "vegetarien") {
+      const vegetarienValue = name === "vegetarien" ? value === "oui" : value;
+      dispatchFormData({
+        type: "UPDATE_FIELD",
+        field: name,
+        value: vegetarienValue,
+      });
     }
 
     // Si "proposition" est sélectionné, afficher le champ d'adresse
-    if (name === 'hebergement' && value !== 'proposition') {
+    if (name === "hebergement" && value !== "proposition") {
       isPropositionSelected.current = false;
-    } else if (name === 'hebergement' && value === 'proposition') {
+    } else if (name === "hebergement" && value === "proposition") {
       isPropositionSelected.current = true;
     }
-  
+
     // Update pseudo when changing in the name or surname fields
-    if (name === 'prenom' || name === 'nom') {
-        generatePseudo(e); 
-    };
+    if (name === "prenom" || name === "nom") {
+      generatePseudo(e);
+    }
   };
 
   const generatePseudo = (e) => {
@@ -79,231 +83,234 @@ const FormInscription = () => {
     if (nom && prenom) {
       const newPseudo = `${prenom}${nom.charAt(0)}`;
       setPseudo(newPseudo);
-      dispatchFormData({ type: 'UPDATE_FIELD', field: 'pseudo', value: newPseudo });
+      dispatchFormData({
+        type: "UPDATE_FIELD",
+        field: "pseudo",
+        value: newPseudo,
+      });
     }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { num_telephone } = formData;
 
     // Vérification pour le numéro de téléphone s'il est renseigné
-    if (num_telephone && (num_telephone.length !== 10 || isNaN(num_telephone))) {
-      setErrorMessage('Le numéro de téléphone doit contenir exactement 10 chiffres.');
+    if (
+      num_telephone &&
+      (num_telephone.length !== 10 || isNaN(num_telephone))
+    ) {
+      setErrorMessage(
+        "Le numéro de téléphone doit contenir exactement 10 chiffres."
+      );
       setSuccessMessage(null);
       setPopupVisible(true);
       return;
     }
 
-  if (isPropositionSelected.current && formData.adresse.trim() === '') {
-    setErrorMessage('L\'adresse est obligatoire si vous sélectionnez "proposition" pour l\'hébergement.');
-    setSuccessMessage(null);
-    setPopupVisible(true);
-    return;
-  }
-
-  try {
-    const response = await register(formData);
-
-    if (response === 'success') {
-      setSuccessMessage('Inscription réussie');
-      setErrorMessage(null);
+    if (isPropositionSelected.current && formData.adresse.trim() === "") {
+      setErrorMessage(
+        "L'adresse est obligatoire si vous sélectionnez \"proposition\" pour l'hébergement."
+      );
+      setSuccessMessage(null);
       setPopupVisible(true);
-      // La redirection sera effectuée après que l'utilisateur a vu la fenêtre contextuelle
-      setTimeout(() => {
-        navigate('/');
-      }, 2000);
-    } else {
-      setErrorMessage('L\'inscription a échoué');
+      return;
+    }
+
+    try {
+      const response = await register(formData);
+
+      if (response === "success") {
+        setSuccessMessage("Inscription réussie");
+        setErrorMessage(null);
+        setPopupVisible(true);
+        // La redirection sera effectuée après que l'utilisateur a vu la fenêtre contextuelle
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      } else {
+        setErrorMessage("L'inscription a échoué");
+        setSuccessMessage(null);
+        setPopupVisible(true);
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'inscription :", error);
+      setErrorMessage("L'inscription a échoué");
       setSuccessMessage(null);
       setPopupVisible(true);
     }
-  } catch (error) {
-    console.error("Erreur lors de l'inscription :", error);
-    setErrorMessage('L\'inscription a échoué');
-    setSuccessMessage(null);
-    setPopupVisible(true);
-  }
   };
 
   return (
-    <div className='Form-register'>
+    <div className="Form-register">
       <form onSubmit={handleSubmit}>
- 
-      <Champ label='Nom :'>
+        <Champ label="Nom :">
           <input
-            className='input'
-            type='text'
-            name='nom'
-            id='nom'
+            className="input"
+            type="text"
+            name="nom"
+            id="nom"
             value={formData.nom}
             onChange={handleInputChange}
             required
           />
         </Champ>
-        
-      <Champ label='Prénom :'>
+
+        <Champ label="Prénom :">
           <input
-            type='text'
-            id='prenom'
-            name='prenom'
+            type="text"
+            id="prenom"
+            name="prenom"
             value={formData.prenom}
             onChange={handleInputChange}
-            className='input'
+            className="input"
             required
           />
         </Champ>
-       
 
-        <Champ label='Pseudo :'>
+        <Champ label="Pseudo :">
           <input
-            type='text'
-            name='pseudo'
-            id='pseudo'
+            type="text"
+            name="pseudo"
+            id="pseudo"
             value={pseudo}
             onChange={handleInputChange}
             readOnly
-            className='input'
+            className="input"
             required
           />
         </Champ>
 
-        <Champ label='Mot de passe :'>
+        <Champ label="Mot de passe :">
           <input
-            type='password'
-            id='password'
-            name='password'
+            type="password"
+            id="password"
+            name="password"
             value={formData.password}
             onChange={handleInputChange}
-            className='input'
+            className="input"
             required
           />
         </Champ>
 
-        <Champ label='Email :'>
+        <Champ label="Email :">
           <input
-            type='text'
-            name='mail'
-            id='mail'
+            type="text"
+            name="mail"
+            id="mail"
             value={formData.mail}
             onChange={handleInputChange}
-            className='input'
+            className="input"
             required
           />
         </Champ>
 
-        <Champ label='Téléphone :'>
+        <Champ label="Téléphone :">
           <input
-            type='tel'
-            name='num_telephone'
-            id='num_telephone'
+            type="tel"
+            name="num_telephone"
+            id="num_telephone"
             value={formData.num_telephone}
             onChange={handleInputChange}
-            className='input'
+            className="input"
           />
         </Champ>
 
-        <Champ label='Taille de Tee-shirt :'>
+        <Champ label="Taille de Tee-shirt :">
           <select
-            type='text'
-            name='taille_tshirt'
-            id='taille_tshirt'
+            type="text"
+            name="taille_tshirt"
+            id="taille_tshirt"
             value={formData.taille_tshirt}
             onChange={handleInputChange}
             required
-            style={{ height: '30px', width: '102%' }}
-            className='input'
+            style={{ height: "30px", width: "102%" }}
+            className="input"
           >
-            <option value=''>Sélectionnez une option</option>
-            <option value='XS'>XS</option>
-            <option value='S'>S</option>
-            <option value='M'>M</option>
-            <option value='L'>L</option>
-            <option value='XL'>XL</option>
-            <option value='XXL'>XXL</option>
+            <option value="">Sélectionnez une option</option>
+            <option value="XS">XS</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="XXL">XXL</option>
           </select>
         </Champ>
 
-        <Champ label='Association :'>
+        <Champ label="Association :">
           <select
-            name='association'
-            id='association' 
+            name="association"
+            id="association"
             value={formData.association}
             onChange={handleInputChange}
-            className='input'
-            style={{ height: '30px', width: '102%' }}
+            className="input"
+            style={{ height: "30px", width: "102%" }}
             required
           >
-            <option value=''>Sélectionnez une option</option>
-            <option value='APCU'>APCU</option>
-            <option value='MEN'>MEN</option>
-            <option value='SMI'>SMI</option>
+            <option value="">Sélectionnez une option</option>
+            <option value="APCU">APCU</option>
+            <option value="MEN">MEN</option>
+            <option value="SMI">SMI</option>
           </select>
         </Champ>
 
-        <Champ label='Végétarien ? :'>
+        <Champ label="Végétarien ? :">
           <select
-            name='vegetarien'
-            id='vegetarien'
+            name="vegetarien"
+            id="vegetarien"
             value={formData.vegetarien}
             onChange={handleInputChange}
-            className='input'
-            style={{ height: '30px', width: '102%' }}
+            className="input"
+            style={{ height: "30px", width: "102%" }}
             required
           >
-           <option value=''>Sélectionnez une option</option>
-            <option value='true'>Oui</option>
-            <option value='false'>Non</option>
+            <option value="">Sélectionnez une option</option>
+            <option value="true">Oui</option>
+            <option value="false">Non</option>
           </select>
         </Champ>
 
-        <Champ label='Hébergement :'>
+        <Champ label="Hébergement :">
           <select
-            name='hebergement'
-            id='hebergement'
+            name="hebergement"
+            id="hebergement"
             value={formData.hebergement}
             onChange={handleInputChange}
-            className='input'
-            style={{ height: '30px', width: '102%' }}
+            className="input"
+            style={{ height: "30px", width: "102%" }}
             required
           >
-            <option value=''>Sélectionnez une option</option>
-           <option value="Recherche">Recherche</option>
-           <option value="Proposition">Proposition</option>
-           <option value="Rien">Rien</option>
+            <option value="">Sélectionnez une option</option>
+            <option value="Recherche">Recherche</option>
+            <option value="Proposition">Proposition</option>
+            <option value="Rien">Rien</option>
           </select>
         </Champ>
 
         {isPropositionSelected.current && (
-          <Champ label='Adresse :'>
+          <Champ label="Adresse :">
             <input
-              type='text'
-              name='adresse'
-              id='adresse'
+              type="text"
+              name="adresse"
+              id="adresse"
               value={formData.adresse}
               onChange={handleInputChange}
-              className='input'
+              className="input"
             />
           </Champ>
         )}
 
-    <div className='button_container'>
-      <button type='submit'>
-        <span className="shadow"></span>
-        <span className="edge"></span>
-        <span className="front text"> Je m'inscris </span>
-      </button>
-    </div>
-
+        <div className="button_container">
+          <button type="submit">
+            <span className="shadow"></span>
+            <span className="edge"></span>
+            <span className="front text"> Je m'inscris </span>
+          </button>
+        </div>
       </form>
 
       {errorMessage && isPopupVisible && (
-        <FenetrePopup
-          message={errorMessage}
-          type="error"
-          onClose={hidePopup}
-        />
+        <FenetrePopup message={errorMessage} type="error" onClose={hidePopup} />
       )}
 
       {successMessage && isPopupVisible && (
@@ -313,10 +320,7 @@ const FormInscription = () => {
           onClose={hidePopup}
         />
       )}
-
     </div>
-
-    
   );
 };
 
