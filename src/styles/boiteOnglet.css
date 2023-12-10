@@ -1,0 +1,36 @@
+.EnTete {
+    display: flex;
+    height: 1.5rem; /* Hauteur des onglets */
+    position: relative;
+  }
+  
+  .Couleur1Onglet,
+  .Couleur2Onglet {
+    flex: 1; /* Occupe le même espace pour les deux onglets */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .Couleur1Onglet {
+    background-color: #83b849;
+    border-top-left-radius: 0.75rem;
+    margin-right: 0.25rem; /* Ajustement pour l'espacement correct */
+  }
+  
+  .Couleur2Onglet {
+    background-color: #83b849;
+    border-top-right-radius: 0.75rem;
+    border-top-left-radius: 0.75rem;
+    border-bottom-left-radius: 0.75rem;
+    margin-left: -1rem; /* Ajustement pour l'espacement correct */
+  }
+  
+  .Couleur1Onglet.active,
+  .Couleur2Onglet.active {
+    background-color: #5e8d38;
+    color: #fff;
+    border: 1px solid transparent;
+  }
+  
