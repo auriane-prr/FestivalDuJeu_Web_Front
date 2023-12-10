@@ -15,15 +15,15 @@ function PageLogin() {
                     <Login />
                 </Boite>
                 <Titre valeurDuTitre="Si tu n'as pas encore de compte, tu peux en créer un ici :" />
-                <Link to="/register" style={{ textDecoration: 'none' }}>
-                    <div className='button_container'>
+                <div className='button_container'>
+                     <Link to="/register" style={{ textDecoration: 'none' }}>
                         <button type='submit'>
                             <span className="shadow"></span>
                             <span className="edge"></span>
-                            <span className="front text"> S'inscire </span>
+                            <span className="front text"> S'inscrire </span>
                         </button>
-                    </div>
-                </Link>
+                    </Link>
+                </div>
         </div> // jsp à quoi ça sert mais ça marche pas sans
 
     );

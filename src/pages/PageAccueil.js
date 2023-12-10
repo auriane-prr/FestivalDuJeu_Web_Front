@@ -9,6 +9,11 @@ function PageAccueil() {
   const [standsByHour, setStandsByHour] = useState({});
   const [selectedStand, setSelectedStand] = useState(null); // État pour stocker le stand sélectionné
   const [showModal, setShowModal] = useState(false); // État pour afficher ou masquer la fenêtre modale
+  const columns = {
+    column1: ['valeur1', 'valeur2', 'valeur3'],
+    column2: ['valeur4', 'valeur5', 'valeur6'],
+    // ... Ajoutez d'autres colonnes si nécessaire
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,11 +58,8 @@ function PageAccueil() {
   };
 
   return (
-    <div className="accueil">
+    <div>
       <BandeauLogo />
-      <div className="Titre">
-        <h1>Accueil</h1>
-      </div>
       <Boite>
         {Object.entries(standsByHour).map(([hour, stands], index) => (
           <div key={index}>
@@ -85,6 +87,7 @@ function PageAccueil() {
       )}
     </div>
   );
+  
 }
 
 export default PageAccueil;
