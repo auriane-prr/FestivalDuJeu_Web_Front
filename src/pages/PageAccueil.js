@@ -3,9 +3,12 @@ import "../styles/Pages/pageAccueil.css";
 import BandeauLogo from '../components/bandeauLogo';
 import Boite from '../components/boite';
 import Jauge from '../components/jauge';
+import Fiche_modal from '../components/fiche_modal'; // Import du composant Modal
 
 function PageAccueil() {
   const [standsByHour, setStandsByHour] = useState({});
+  const [selectedStand, setSelectedStand] = useState(null); // État pour stocker le stand sélectionné
+  const [showModal, setShowModal] = useState(false); // État pour afficher ou masquer la fenêtre modale
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,10 +37,19 @@ function PageAccueil() {
         if (!standsByHour[heure]) {
           standsByHour[heure] = [];
         }
-        standsByHour[heure].push({ nom_stand: stand.nom_stand, nb_benevole });
+        standsByHour[heure].push({ ...stand, heure, nb_benevole }); // Ajout de toutes les informations du stand dans standsByHour
       });
     });
     return standsByHour;
+  };
+
+  const handleJaugeClick = (stand) => {
+    setSelectedStand(stand); // Mettre à jour l'état du stand sélectionné
+    setShowModal(true); // Afficher la fenêtre modale
+  };
+
+  const closeModal = () => {
+    setShowModal(false); // Cacher la fenêtre modale
   };
 
   return (
@@ -53,13 +65,24 @@ function PageAccueil() {
             <div className="columns">
               <div className="column">
                 {stands.map((stand, i) => (
-                  <Jauge key={i} borderColor='#454C8B'>{stand.nom_stand}</Jauge>
+                  <div key={i} onClick={() => handleJaugeClick(stand)}>
+                    <Jauge borderColor='#454C8B'>{stand.nom_stand}</Jauge>
+                  </div>
                 ))}
               </div>
             </div>
           </div>
         ))}
       </Boite>
+      {showModal && selectedStand && ( // Affichage conditionnel de la fenêtre modale
+        <Fiche_modal type="success" onClose={closeModal}>
+          <p>Nom du stand: {selectedStand.nom_stand}</p>
+          <p>Description: {selectedStand.description}</p>
+          <p>Heure: {selectedStand.heure}</p>
+          <p>Nombre de bénévoles maximum: {selectedStand.nb_benevole}</p>
+          <button>Participer</button>
+        </Fiche_modal>
+      )}
     </div>
   );
 }
