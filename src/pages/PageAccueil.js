@@ -47,22 +47,19 @@ function PageAccueil() {
   const standsByHourAndColumn = groupStandsByHourAndColumn();
 
   return (
-    <div className="accueil">
+    <div>
       <BandeauLogo />
-      <div className="Titre">
-        <h1>Accueil</h1>
-      </div>
       <Boite>
         {Object.entries(standsByHourAndColumn).map(([hour, columns], index) => (
           <div key={index}>
             <h2>{hour}h</h2>
-            <div className="columns">
-              <div className="column">
+            <div>
+              <div>
                 {columns.column1.map((stand, i) => (
                   <Jauge key={i} borderColor='#454C8B'>{stand}</Jauge>
                 ))}
               </div>
-              <div className="column">
+              <div>
                 {columns.column2.map((stand, i) => (
                   <Jauge key={i} borderColor='#454C8B'>{stand}</Jauge>
                 ))}

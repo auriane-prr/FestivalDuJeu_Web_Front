@@ -20,13 +20,12 @@ const AuthWrapper = ({ children }) => {
           password,
         }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
-        setUser({ ...user,isAuthenticated: true, userInfo: data.userInfo });
-        return "success";
-      
+        setUser({ ...user, isAuthenticated: true, userInfo: data.userInfo });
+        return { token: data.token };  // Retourne le token encapsulé dans un objet
       } else {
         throw new Error(data.message || "Erreur lors de l'authentification");
       }

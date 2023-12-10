@@ -269,9 +269,9 @@ const FormInscription = () => {
             required
           >
             <option value=''>Sélectionnez une option</option>
-           <option value="recherche">Recherche</option>
-           <option value="proposition">Proposition</option>
-           <option value="rien">Rien</option>
+           <option value="Recherche">Recherche</option>
+           <option value="Proposition">Proposition</option>
+           <option value="Rien">Rien</option>
           </select>
         </Champ>
 
