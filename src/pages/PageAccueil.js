@@ -7,12 +7,31 @@ import Fiche_modal from '../components/fiche_modal'; // Import du composant Moda
 
 function PageAccueil() {
   const [standsByHour, setStandsByHour] = useState({});
+  const [userId, setUserId] = useState('');
   const [selectedStand, setSelectedStand] = useState(null); // État pour stocker le stand sélectionné
   const [showModal, setShowModal] = useState(false); // État pour afficher ou masquer la fenêtre modale
-  const columns = {
-    column1: ['valeur1', 'valeur2', 'valeur3'],
-    column2: ['valeur4', 'valeur5', 'valeur6'],
-    // ... Ajoutez d'autres colonnes si nécessaire
+
+  const fetchUserId = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const pseudo = localStorage.getItem('pseudo');
+      const response = await fetch(`http://localhost:3500/benevole/${pseudo}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (response.ok) {
+          const { benevole } = await response.json();
+          console.log('benevoleId', benevole._id);
+          setUserId(benevole._id);
+        } else {
+          throw new Error('Erreur lors de la récupération des informations utilisateur');
+        }
+    } catch (error) {
+      console.error('Erreur lors de la récupération des informations utilisateur :', error);
+    }
   };
 
   useEffect(() => {
@@ -34,6 +53,11 @@ function PageAccueil() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (selectedStand && userId) {
+      handleParticiperClick();
+    }
+  }, [userId]);
   const groupStandsByHourAndColumn = (standsData) => {
     const standsByHour = {};
     standsData.forEach((stand) => {
@@ -56,7 +80,40 @@ function PageAccueil() {
   const closeModal = () => {
     setShowModal(false); // Cacher la fenêtre modale
   };
+  
+  const handleParticiperClick = async () => {
+    await fetchUserId();
+    if (selectedStand && userId) {
+      try {
+        const { _id: idStand, horaireCota } = selectedStand;
+        const idHoraire = horaireCota[0]._id; 
+        const idBenevole = userId;
+        const token = localStorage.getItem('authToken');
+        const response = await fetch(`http://localhost:3500/stands/${idStand}/${idHoraire}/${idBenevole}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
 
+        if (response.ok) {
+          console.log('Participation enregistrée');
+          const updatedResponse = await fetch(`http://localhost:3500/stands/${idStand}`);
+        if (updatedResponse.ok) {
+          const updatedStand = await updatedResponse.json();
+
+          // Mettre à jour selectedStand avec la nouvelle liste de bénévoles inscrits
+          setSelectedStand(updatedStand);
+        }
+        } else {
+          throw new Error('Erreur lors de l enregistrement de la participation');
+        }
+      } catch (error) {
+        console.error('Erreur lors de la participation :', error);
+      }
+    }
+  };
   return (
     <div>
       <BandeauLogo />
@@ -77,12 +134,13 @@ function PageAccueil() {
         ))}
       </Boite>
       {showModal && selectedStand && ( // Affichage conditionnel de la fenêtre modale
-        <Fiche_modal type="success" onClose={closeModal}>
+        <Fiche_modal type="success" onClose={closeModal} onParticipateClick={handleParticiperClick}>
           <p>Nom du stand: {selectedStand.nom_stand}</p>
           <p>Description: {selectedStand.description}</p>
           <p>Heure: {selectedStand.heure}</p>
           <p>Nombre de bénévoles maximum: {selectedStand.nb_benevole}</p>
-          <button>Participer</button>
+          <p>Liste de bénévoles inscrits: {selectedStand.liste_benevole}</p>
+          <button onClick={() => handleParticiperClick()}>Participer</button>
         </Fiche_modal>
       )}
     </div>

@@ -1,7 +1,7 @@
-.FenetrePopup {
+.FenetrePopupF {
     position: fixed;
     top: 50%;
-    width: 40%;
+    width: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px;
@@ -26,19 +26,19 @@
   }
 
   
-  .FenetrePopup.error {
+  .FenetrePopupF.error {
     background-color: #ffcccc;
     border-color: #ff0000;
     color: #ff0000;
   }
   
-  .FenetrePopup.success {
+  .FenetrePopupF.success {
     background-color:white;
-    border-color: #3be43b;
-    color: #3be43b;
+    border-color: white;
+    color:black;
   }
   
-  .FenetrePopup.show {
+  .FenetrePopupF.show {
     display: block;
     opacity: 1;
   }
