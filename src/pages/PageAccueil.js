@@ -6,6 +6,11 @@ import Jauge from '../components/jauge';
 
 function PageAccueil() {
   const [standsByHour, setStandsByHour] = useState({});
+  const columns = {
+    column1: ['valeur1', 'valeur2', 'valeur3'],
+    column2: ['valeur4', 'valeur5', 'valeur6'],
+    // ... Ajoutez d'autres colonnes si nécessaire
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,17 +55,22 @@ function PageAccueil() {
             <div className="columns">
               <div className="column">
                 {stands.map((stand, i) => (
-                  <Jauge key={i} borderColor='#454C8B'>{stand.nom_stand}</Jauge>
-            <h2>{hour}h</h2>
-            <div>
-              <div>
-                {columns.column1.map((stand, i) => (
-                  <Jauge key={i} borderColor='#454C8B'>{stand}</Jauge>
-                ))}
-              </div>
-              <div>
-                {columns.column2.map((stand, i) => (
-                  <Jauge key={i} borderColor='#454C8B'>{stand}</Jauge>
+                  <React.Fragment key={i}>
+                    <Jauge borderColor='#454C8B'>{stand.nom_stand}</Jauge>
+                    <h2>{hour}h</h2>
+                    <div>
+                      <div>
+                        {columns.column1.map((stand, i) => (
+                          <Jauge key={i} borderColor='#454C8B'>{stand}</Jauge>
+                        ))}
+                      </div>
+                      <div>
+                        {columns.column2.map((stand, i) => (
+                          <Jauge key={i} borderColor='#454C8B'>{stand}</Jauge>
+                        ))}
+                      </div>
+                    </div>
+                  </React.Fragment>
                 ))}
               </div>
             </div>
@@ -69,6 +79,7 @@ function PageAccueil() {
       </Boite>
     </div>
   );
+  
 }
 
 export default PageAccueil;
