@@ -135,8 +135,7 @@ const FormInscription = () => {
       }
     } catch (error) {
       console.error("Erreur lors de l'inscription :", error);
-      setErrorMessage("L'inscription a échoué");
-      setSuccessMessage(null);
+      setErrorMessage(null);
       setPopupVisible(true);
     }
   };

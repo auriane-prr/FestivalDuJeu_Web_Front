@@ -3,7 +3,7 @@ import "../styles/Pages/pageAccueil.css";
 import BandeauLogo from '../components/bandeauLogo';
 import Boite from '../components/boite';
 import Jauge from '../components/jauge';
-import Fiche_modal from '../components/fiche_modal'; // Import du composant Modal
+import Fiche_modal from '../components/fiche_stand'; // Import du composant Modal
 
 function PageAccueil() {
   const [standsByHour, setStandsByHour] = useState({});

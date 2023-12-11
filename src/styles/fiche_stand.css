@@ -1,7 +1,7 @@
-.FenetrePopup {
+.FicheStand {
     position: fixed;
     top: 50%;
-    width: 80%;
+    width: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px;
@@ -14,7 +14,7 @@
     transition: opacity 0.5s ease-in-out; /* Ajoutez cette ligne pour la transition */
   }
 
-  .closeForm {
+  .closeButtonF {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -24,21 +24,14 @@
     font-size: 20px;
     color: #555; /* Couleur du texte du bouton */
   }
-
   
-  .FenetrePopup.error {
-    background-color: #ffcccc;
-    border-color: #ff0000;
-    color: #ff0000;
+  .FicheStand.success {
+    background-color:white;
+    border-color: white;
+    color:black;
   }
   
-  .FenetrePopup.success {
-    background-color: #ccffcc;
-    border-color: #3be43b;
-    color: #3be43b;
-  }
-  
-  .FenetrePopup.show {
+  .FicheStand.show {
     display: block;
     opacity: 1;
   }

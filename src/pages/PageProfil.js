@@ -4,6 +4,7 @@ import BandeauLogo from "../components/bandeauLogo";
 import Boite from "../components/boite";
 import Champ from "../components/champ";
 import { useAuth } from "../AuthWrapper";
+import FenetrePopup from "../components/fenetre_popup";
 
 function PageProfil() {
   const { user } = useAuth();
@@ -24,6 +25,9 @@ function PageProfil() {
   } = userInfo;
 
   const [editMode, setEditMode] = useState(false);
+
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const [nomValue, setNom] = useState(nom);
   const [prenomValue, setPrenom] = useState(prenom);
@@ -52,6 +56,11 @@ function PageProfil() {
     setEditMode(!editMode);
   };
 
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const hidePopup = () => {
+    setPopupVisible(false);
+  };
+
   useEffect(() => {
     async function fetchUserProfile() {
       try {
@@ -69,7 +78,7 @@ function PageProfil() {
           }
         );
 
-        if (response.ok) {
+        if (response === "success") {
           const { benevole } = await response.json();
           setPseudo(benevole.pseudo || "");
           setNom(benevole.nom || "");
@@ -152,7 +161,10 @@ function PageProfil() {
 
       // Ajoutez une condition pour vérifier si le champ adresse n'est pas vide
       if (hebergementValue === "Proposition" && adresseValue.trim() === "") {
-        console.error("Veuillez saisir une adresse pour l'hébergement.");
+        setErrorMessage(
+        "Veuillez saisir une adresse pour l'hébergement.");
+        setSuccessMessage(null);
+        setPopupVisible(true);
         return;
       }
 
@@ -187,7 +199,9 @@ function PageProfil() {
 
       if (response.ok) {
         // Les modifications ont été enregistrées avec succès
-        console.log("Modifications enregistrées avec succès");
+        setSuccessMessage("Modifications enregistrées avec succès");
+        setErrorMessage(null);
+        setPopupVisible(true);
 
         // Actualisez l'état local avec les nouvelles données de la base de données
         const updatedResponse = await fetch(`http://localhost:3500/benevole/${pseudo}`, {
@@ -221,13 +235,19 @@ function PageProfil() {
           response.status,
           response.statusText
         );
+        setErrorMessage("Les modifications ne sont pas enregistrées");
+        setErrorMessage(null);
+        setPopupVisible(true);
         const responseData = await response.json();
         console.error("Response Data:", responseData);
       }
     } catch (error) {
       // Gérez les erreurs liées à la requête
       console.error("Erreur lors de la sauvegarde des modifications", error);
+      setErrorMessage(null);
+      setPopupVisible(true);
     }
+    
   };
 
   return (
@@ -241,7 +261,7 @@ function PageProfil() {
               type="text"
               value={nomValue}
               onChange={handleNomChange}
-              readOnly={!editMode}
+              readOnly
             />
           </Champ>
           <Champ label="Prénom :">
@@ -250,7 +270,7 @@ function PageProfil() {
               type="text"
               value={prenomValue}
               onChange={handlePrenomChange}
-              readOnly={!editMode}
+              readOnly
             />
           </Champ>
           <Champ label="Mot de passe :">
@@ -259,7 +279,7 @@ function PageProfil() {
               id="password"
               name="password"
               value={passwordValue}
-              readOnly={!editMode}
+              readOnly
               onChange={handlePasswordChange}
               className="input"
               required
@@ -415,6 +435,19 @@ function PageProfil() {
           </button>
         )}
       </div>
+
+      {errorMessage && isPopupVisible && (
+        <FenetrePopup message={errorMessage} type="error" onClose={hidePopup} />
+      )}
+
+      {successMessage && isPopupVisible && (
+        <FenetrePopup
+          message={successMessage}
+          type="success"
+          onClose={hidePopup}
+        />
+      )}
+
     </div>
   );
 }
