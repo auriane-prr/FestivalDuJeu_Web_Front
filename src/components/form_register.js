@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthWrapper";
 import "../styles/register.css";
 import FenetrePopup from "./fenetre_popup";
+import Aide from "./aide";
 
 const FormInscription = () => {
   const formReducer = (state, action) => {
@@ -143,6 +144,8 @@ const FormInscription = () => {
   return (
     <div className="Form-register">
       <form onSubmit={handleSubmit}>
+
+      <div className="field-with-aide">
         <Champ label="Nom :">
           <input
             className="input"
@@ -154,7 +157,10 @@ const FormInscription = () => {
             required
           />
         </Champ>
+        <Aide />
+        </div>
 
+      <div className="field-with-aide">
         <Champ label="Prénom :">
           <input
             type="text"
@@ -166,6 +172,8 @@ const FormInscription = () => {
             required
           />
         </Champ>
+        <Aide />
+        </div>
 
         <Champ label="Pseudo :">
           <input
@@ -175,11 +183,12 @@ const FormInscription = () => {
             value={pseudo}
             onChange={handleInputChange}
             readOnly
-            className="input"
             required
+            className="input"
           />
         </Champ>
 
+        <div className="field-with-aide">
         <Champ label="Mot de passe :">
           <input
             type="password"
@@ -191,6 +200,8 @@ const FormInscription = () => {
             required
           />
         </Champ>
+        <Aide />
+        </div>
 
         <Champ label="Email :">
           <input
@@ -223,7 +234,6 @@ const FormInscription = () => {
             value={formData.taille_tshirt}
             onChange={handleInputChange}
             required
-            style={{ height: "30px", width: "102%" }}
             className="input"
           >
             <option value="">Sélectionnez une option</option>
@@ -243,7 +253,6 @@ const FormInscription = () => {
             value={formData.association}
             onChange={handleInputChange}
             className="input"
-            style={{ height: "30px", width: "102%" }}
             required
           >
             <option value="">Sélectionnez une option</option>
@@ -260,7 +269,6 @@ const FormInscription = () => {
             value={formData.vegetarien}
             onChange={handleInputChange}
             className="input"
-            style={{ height: "30px", width: "102%" }}
             required
           >
             <option value="">Sélectionnez une option</option>
@@ -276,7 +284,6 @@ const FormInscription = () => {
             value={formData.hebergement}
             onChange={handleInputChange}
             className="input"
-            style={{ height: "30px", width: "102%" }}
             required
           >
             <option value="">Sélectionnez une option</option>
