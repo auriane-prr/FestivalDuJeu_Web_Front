@@ -1,0 +1,17 @@
+.horaire-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0px;
+    margin-bottom: 10px; 
+  }
+  
+
+.horaire-container .input {
+    width: 100%; 
+}
+
+.horaire-container .input-small {
+    width: 50px; 
+    text-align: center;
+}

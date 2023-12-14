@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './fiche_ajouter_stand';
+import Champ from '../champ';
+import '../../styles/Admin/display_stand.css';
 
 function Display_stand(){
   const [showModal, setShowModal] = useState(false);
   const [stands, setStands] = useState([]);
   const [currentStandIndex, setCurrentStandIndex] = useState(0);
   const [benevolePseudos, setBenevolePseudos] = useState({});
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     const fetchStandsData = async () => {
@@ -89,6 +92,10 @@ function Display_stand(){
     setShowModal(false);
   };
 
+  const getPseudosFromIds = (benevoleIds) => {
+    return benevoleIds.map(id => benevolePseudos[id]).join(', ');
+  };
+
   const displayStandsInfo = () => {
     if (stands && stands.length > 0) {
       const currentStand = stands[currentStandIndex];
@@ -96,44 +103,49 @@ function Display_stand(){
       return (
         <div>
           <div>
-            <p>
-              <b>Nom du stand:</b> {currentStand.nom_stand}
-            </p>
-            <p>
-              <b>Description:</b> {currentStand.description}
-            </p>
-            <p>
-              <b>Référent:</b> {currentStand.referents}
-            </p>
+            <Champ label = 'Nom du stand :'>
+              <input type="text"
+               value={currentStand.nom_stand}
+               className='input'
+               readOnly={!editMode} />
+              </Champ> 
+            <Champ label = 'Description :'>
+              <input type="text"
+               value={currentStand.description}
+               className='input'
+               readOnly={!editMode} />
+              </Champ>
+            <Champ label = 'Référent :'>
+              <input type="text"
+               value={currentStand.referents}
+               className='input'
+               readOnly={!editMode} />
+              </Champ>
+              {currentStand.horaireCota.map((horaire, index) => (
+          <div key={index} className="horaire-container">
+            <Champ label='Horaire :'>
+              <input type="text" value={horaire.heure} className='input input-small' readOnly={!editMode} />
+            </Champ>
+            <Champ label='Capacité :'>
+              <input type="text" value={horaire.nb_benevole} className='input input-small' readOnly={!editMode} />
+            </Champ>
+            <Champ label='Liste de bénévoles :'>
+              <input 
+                type="text"
+                value={editMode ? horaire.liste_benevole.join(', ') : getPseudosFromIds(horaire.liste_benevole)}
+                className='input'
+                readOnly={!editMode}
+              />
+            </Champ>
           </div>
-          {currentStand.horaireCota.map((horaire, index) => (
-            <div key={index}>
-              <p>
-                <b>Plage horaire :</b> {horaire.heure}
-              </p>
-              <p>
-                <b>Capacité :</b> {horaire.nb_benevole} personnes
-              </p>
-              <p>
-                <b>Liste de bénévoles : </b>
-                {horaire.liste_benevole.length > 0 ? (
-                  // Afficher les pseudos récupérés
-                  horaire.liste_benevole.map((benevoleId, index) => (
-                    <span key={`benevole_${index}`}>{benevolePseudos[benevoleId]}</span>
-                  ))
-                ) : (
-                  // Sinon, afficher un message indiquant que la liste est vide
-                  <span>Aucun bénévole inscrit</span>
-                )}
-              </p>
-            </div>
-          ))}
-        </div>
-      );
-    } else {
-      return <p>Aucun stand trouvé.</p>;
-    }
-  };
+        ))}
+      </div>
+      </div>
+    );
+  } else {
+    return <p>Aucun stand trouvé.</p>;
+  }
+};
 
   return (
     <>
