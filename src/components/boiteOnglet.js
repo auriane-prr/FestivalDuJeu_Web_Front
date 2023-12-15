@@ -25,7 +25,7 @@ const BoiteOnglet = ({ children,nomOnglet1,nomOnglet2 }) => {
             {nomOnglet2}
           </div>
         </div>
-        <div className="TabContent">{children[activeTab]}</div>
+        {children[activeTab]}
       </div>
     </div>
   );

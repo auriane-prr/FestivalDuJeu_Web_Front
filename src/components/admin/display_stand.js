@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Modal from './fiche_ajouter_stand';
 import Champ from '../champ';
 import '../../styles/Admin/display_stand.css';
+import BoutonPageSuivante from '../BoutonPageSuivante';
+import BoutonPagePrecedente from '../BoutonPagePrecedente';
 
 function Display_stand(){
   const [showModal, setShowModal] = useState(false);
@@ -9,6 +11,10 @@ function Display_stand(){
   const [currentStandIndex, setCurrentStandIndex] = useState(0);
   const [benevolePseudos, setBenevolePseudos] = useState({});
   const [editMode, setEditMode] = useState(false);
+
+  const handleEditModeToggle = () => {
+    setEditMode(!editMode);
+  };
 
   useEffect(() => {
     const fetchStandsData = async () => {
@@ -101,8 +107,7 @@ function Display_stand(){
       const currentStand = stands[currentStandIndex];
 
       return (
-        <div>
-          <div>
+          <div className='form-display'>
             <Champ label = 'Nom du stand :'>
               <input type="text"
                value={currentStand.nom_stand}
@@ -124,22 +129,27 @@ function Display_stand(){
               {currentStand.horaireCota.map((horaire, index) => (
           <div key={index} className="horaire-container">
             <Champ label='Horaire :'>
-              <input type="text" value={horaire.heure} className='input input-small' readOnly={!editMode} />
+              <input type="text"
+               value={horaire.heure} 
+               className='input input-small' 
+               readOnly={!editMode} />
             </Champ>
             <Champ label='Capacité :'>
-              <input type="text" value={horaire.nb_benevole} className='input input-small' readOnly={!editMode} />
+              <input type="text"
+               value={horaire.nb_benevole}
+               className='input input-small' 
+               readOnly={!editMode} />
             </Champ>
             <Champ label='Liste de bénévoles :'>
               <input 
                 type="text"
-                value={editMode ? horaire.liste_benevole.join(', ') : getPseudosFromIds(horaire.liste_benevole)}
-                className='input'
+                value={getPseudosFromIds(horaire.liste_benevole)}
+                className='input input-list'
                 readOnly={!editMode}
               />
             </Champ>
           </div>
         ))}
-      </div>
       </div>
     );
   } else {
@@ -149,14 +159,27 @@ function Display_stand(){
 
   return (
     <>
-      <b>Stands</b>
+    <div className='Entete-btn'>
+      <div className="btn-container-precedent" onClick={showPreviousStand}>
+        <BoutonPagePrecedente />
+        </div>
+        <h2 className="stand-name">{stands.length > 0 ? stands[currentStandIndex].nom_stand : ''}</h2>
+      <div className="btn-container-suivant" onClick={showNextStand}>
+        <BoutonPageSuivante />
+        </div>
+      </div>
       {displayStandsInfo()}
 
-      <button onClick={openModal}>Ajouter un stand</button>
+      
+
+      <button type="button" onClick={openModal}>
+        <span className="shadow"></span>
+            <span className="edge"></span>
+            <span className="front text"> Ajouter un stand </span>
+          </button>
       <br />
-      <button onClick={showPreviousStand}>Stand Précédent</button>
+      
       <br />
-      <button onClick={showNextStand}>Stand Suivant</button>
       {/* Fenêtre modale */}
       {showModal && (
         <Modal
@@ -166,7 +189,11 @@ function Display_stand(){
         />
       )}
       <br />
-      <button>Modifier</button>
+      <button type="button" onClick={handleEditModeToggle}>
+            <span className="shadow"></span>
+            <span className="edge"></span>
+            <span className="front text"> Modifier </span>
+          </button>
     </>
   );
 }
