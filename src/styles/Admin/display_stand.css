@@ -45,6 +45,14 @@
     margin-bottom: 10px;
   }
 
+  .button_container {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    align-items: center;
+  }
+  
+
 
 @font-face {
         font-family: 'Indie';
