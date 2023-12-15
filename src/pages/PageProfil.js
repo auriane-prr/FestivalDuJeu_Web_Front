@@ -78,7 +78,7 @@ function PageProfil() {
           }
         );
 
-        if (response === "success") {
+        if (response.ok) {
           const { benevole } = await response.json();
           setPseudo(benevole.pseudo || "");
           setNom(benevole.nom || "");

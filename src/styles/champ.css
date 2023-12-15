@@ -1,41 +1,40 @@
 .field {
+  display: flex;
+  flex-direction: column; /* Alignez les éléments en colonne */
   padding-bottom: 5%;
-  align-items: left;
-  width: 100%;
-}
-
-@font-face {
-  font-family: 'Toma';
-  src: url('../Police/Toma-Regular.ttf') format('truetype');
-  /* Assurez-vous d'ajuster le chemin en fonction de la structure de votre projet */
+  width: 85%; /* Assurez-vous que le conteneur remplit la largeur du parent */
+  margin-left: 5%;
 }
 
 .field label {
   font-family: 'Toma'; 
   font-size: 16px;
-  color: #333; 
+  color: #333;
+  margin-bottom: 0.5rem; /* Ajoutez un espace entre le label et le champ */
 }
 
-.input {
-  width: 100%;
-  height: 25px;
+/* Ajustez la largeur à 100% pour remplir le conteneur .field */
+input.input, select.input {
+  width: 100%; /* Mettez à jour la largeur ici */
+  height: 30px; /* Ajustez la hauteur pour correspondre à celle des select si nécessaire */
   border: 2px solid transparent;
   border-radius: 10px;
   outline: none;
   background-color: rgba(170, 173, 191, 0.5);
   color: #0d0c22;
   transition: .5s ease;
-  margin-top: 1%;
+  box-sizing: border-box; /* Assurez-vous que la bordure et le padding sont inclus dans la largeur */
 }
 
-.input:focus, input:hover {
+input.input:focus, input.input:hover,
+select.input:focus, select.input:hover {
   outline: none;
   border-color: #454C8B;
   background-color: rgba(170, 173, 191, 0.5);
 }
 
 @media screen and (max-width: 768px) {
- .field label {
+  .field label {
     font-size: 12px;
   }
 }

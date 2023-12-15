@@ -5,7 +5,7 @@
 }
 
 .Form-register {
-  width: 80%;
+  width: 100%;
   height: fit-content;
   display: flex;
   flex-direction: column;
@@ -13,7 +13,16 @@
   object-fit: contain;
   position: relative;
   margin-bottom: 5%;
+  padding-right : 10%;
+  padding-left: 10%;
 }
+
+.field-with-aide {
+  display: flex;
+  align-items: center; /* Pour aligner verticalement */
+  justify-content: space-between; /* Pour l'espacement horizontal */
+}
+
 
 .button_container {
   margin-top: 3%;
