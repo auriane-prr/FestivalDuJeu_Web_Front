@@ -68,7 +68,7 @@ function PageProfil() {
         const pseudo = localStorage.getItem("pseudo");
 
         const response = await fetch(
-          `http://localhost:3500/benevole/${pseudo}`,
+          `http://localhost:3500/benevole/pseudo/${pseudo}`,
           {
             method: "GET",
             headers: {
@@ -183,7 +183,7 @@ function PageProfil() {
       };
 
       // Effectuez la requête PUT au serveur avec les données modifiées
-      const response = await fetch(`http://localhost:3500/benevole/${pseudo}`, {
+      const response = await fetch(`http://localhost:3500/benevole/pseudo/${pseudo}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -204,7 +204,7 @@ function PageProfil() {
         setPopupVisible(true);
 
         // Actualisez l'état local avec les nouvelles données de la base de données
-        const updatedResponse = await fetch(`http://localhost:3500/benevole/${pseudo}`, {
+        const updatedResponse = await fetch(`http://localhost:3500/benevole/pseudo/${pseudo}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

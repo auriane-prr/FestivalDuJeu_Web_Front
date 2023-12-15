@@ -6,11 +6,17 @@ import BoutonPageSuivante from '../BoutonPageSuivante';
 import BoutonPagePrecedente from '../BoutonPagePrecedente';
 
 function Display_stand(){
+  
   const [showModal, setShowModal] = useState(false);
   const [stands, setStands] = useState([]);
   const [currentStandIndex, setCurrentStandIndex] = useState(0);
+  const currentStand = stands[currentStandIndex] || {};
   const [benevolePseudos, setBenevolePseudos] = useState({});
+  const [referentInput, setReferentInput] = useState([]);  
+  const [referents, setReferents] = useState(currentStand.referents || []);
   const [editMode, setEditMode] = useState(false);
+
+  
 
   const handleEditModeToggle = () => {
     setEditMode(!editMode);
@@ -63,11 +69,28 @@ function Display_stand(){
     setStands(updatedStands);
   };
 
-  const handleReferentsChange = (e) => {
-    const updatedStands = [...stands];
-    updatedStands[currentStandIndex].referents = e.target.value;
-    setStands(updatedStands);
+  const handleReferentInputChange = (e) => {
+    setReferentInput(e.target.value);
   };
+  
+
+  const handleAddReferent = async () => {
+    if (referentInput.trim()) {
+      try {
+        const response = await fetch(`http://localhost:3500/benevole/${referentInput.trim()}`);
+        if (response.ok) {
+          setReferents(oldReferents => [...oldReferents, referentInput.trim()]);
+          setReferentInput(""); // Réinitialiser l'input après l'ajout
+        } else {
+          throw new Error('Référent non trouvé');
+        }
+      } catch (error) {
+        console.error('Erreur lors de la vérification du référent', error);
+        //FAIRE UN POPUP
+      }
+    }
+  };
+  
 
   const handleNbBenevoleChange = (index, value) => {
     const updatedStands = [...stands];
@@ -197,21 +220,25 @@ function Display_stand(){
                onChange={handleNomStandChange}
                className='input'
                readOnly={!editMode} />
-              </Champ> 
+            </Champ> 
             <Champ label = 'Description :'>
               <input type="text"
                value={currentStand.description}
                 onChange={handleDescriptionChange}
                className='input'
                readOnly={!editMode} />
-              </Champ>
-            <Champ label = 'Référent :'>
-              <input type="text"
-              value={currentStand.referents}
-              onChange={handleReferentsChange}
-              className='input'
-              readOnly={!editMode} />
-              </Champ>
+            </Champ>
+            <Champ label='Référent :'>
+              <input
+                type="text"
+                value={referentInput}
+                onChange={handleReferentInputChange}
+                onKeyPress={(e) => { if (e.key === 'Enter') handleAddReferent(); }}
+                className='input'
+                readOnly={!editMode}
+              />
+              <button onClick={handleAddReferent} readOnly={!editMode} disabled={!editMode}>Ajouter</button>
+            </Champ>
               {currentStand.horaireCota.map((horaire, index) => (
           <div key={index} className="horaire-container">
             <Champ label='Horaire :'>

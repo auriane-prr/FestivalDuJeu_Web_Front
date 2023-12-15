@@ -15,7 +15,7 @@ function PageAccueil() {
     try {
       const token = localStorage.getItem('authToken');
       const pseudo = localStorage.getItem('pseudo');
-      const response = await fetch(`http://localhost:3500/benevole/${pseudo}`, {
+      const response = await fetch(`http://localhost:3500/benevole/pseudo/${pseudo}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ function PageAccueil() {
         const idHoraire = horaireCota[0]._id; 
         const idBenevole = userId;
         const token = localStorage.getItem('authToken');
-        const response = await fetch(`http://localhost:3500/stands/${idStand}/${idHoraire}/${idBenevole}`, {
+        const response = await fetch(`http://localhost:3500/stands/participer/${idHoraire}/${idBenevole}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

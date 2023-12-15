@@ -65,8 +65,8 @@
         text-align: center;
         margin-bottom: 3%;
         margin-top: 5%;
-        width: 100%; /* Ajustez la largeur selon vos besoins */
+        width: 100%;
         padding-right: 3%;
         padding-left: 3%;
-        box-sizing: border-box; /* Assurez-vous que la taille totale inclut le padding */
+        box-sizing: border-box; 
     }
