@@ -146,7 +146,7 @@ function Display_stand(){
       <br />
       <button onClick={showNextStand}>Stand Suivant</button>
       {/* Fenêtre modale */}
-      {showModal && <Modal onClose={closeModal} />}
+      {showModal && <div className="overlay showOverlay"><Modal onClose={closeModal} /></div>}
       <br />
       <button>Modifier</button>
     </>

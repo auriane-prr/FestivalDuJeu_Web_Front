@@ -1,15 +1,12 @@
 import React from "react";
 import "../../../styles/Admin/stands/fenetre_ajouter_stand.css";
 import StandForm from "./form_ajouter_stand";
+import EnTete from "../../general/en_tete";
 
 const Modal = ({ onClose }) => {
   return (
     <div className="FicheAjoutStand show">
-      <div className="EnTete">
-        <div className="Couleur1" />
-        <div className="Couleur2" />
-        <div className="Couleur3" />
-      </div>
+      <EnTete />
       <StandForm onClose={onClose} />
     </div>
   );

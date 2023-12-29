@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import BandeauAdmin from '../../components/admin/bandeauAdmin';
 import BoiteOnglet from '../../components/general/boiteOnglet';
 import Display_stand from '../../components/admin/stands/display_stand';
+import '../../styles/Pages/admin/accueil_admin.css';
 
 function AdminPageStand() {
   return (
