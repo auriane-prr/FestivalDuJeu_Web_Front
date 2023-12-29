@@ -4,6 +4,7 @@ import '../../styles/login&register/login.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../AuthWrapper';
 import FenetrePopup from '../general/fenetre_popup';
+import Bouton from '../general/bouton';
 
 const Login = () => {
   const [formData, setFormData] = useReducer((formData, newItem) => {
@@ -71,11 +72,7 @@ const Login = () => {
         </Champ>
         
         <div className='button_container'>
-          <button type='submit' onClick={doLogin}>
-            <span className="shadow"></span>
-            <span className="edge"></span>
-            <span className="front text"> Connexion </span>
-          </button>
+          <Bouton onClick={doLogin} type="submit" >Se connecter</Bouton>
         </div>
       </form>
 
@@ -91,6 +88,4 @@ const Login = () => {
   );
 };
 
-
 export default Login;
-
