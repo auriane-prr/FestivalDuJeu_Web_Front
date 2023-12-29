@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import "../styles/Pages/pageAccueil.css";
-import BandeauLogo from '../components/bandeauLogo';
-import Boite from '../components/boite';
-import Jauge from '../components/jauge';
-import Fiche_modal from '../components/fiche_stand'; // Import du composant Modal
+import "../../styles/Pages/pageAccueil.css";
+import BandeauLogo from '../../components/benevole/bandeauBenevole';
+import Boite from '../../components/general/boite';
+import Jauge from '../../components/benevole/stands/jauge';
+import Fiche_modal from '../../components/benevole/stands/fiche_stand_participer'; // Import du composant Modal
 
 function PageAccueil() {
   const [standsByHour, setStandsByHour] = useState({});

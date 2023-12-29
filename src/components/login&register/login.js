@@ -1,9 +1,9 @@
 import React, { useReducer, useState } from 'react';
-import Champ from './champ';
-import '../styles/login.css';
+import Champ from '../general/champ';
+import '../../styles/login&register/login.css';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthWrapper';
-import FenetrePopup from './fenetre_popup';
+import { useAuth } from '../../AuthWrapper';
+import FenetrePopup from '../general/fenetre_popup';
 
 const Login = () => {
   const [formData, setFormData] = useReducer((formData, newItem) => {

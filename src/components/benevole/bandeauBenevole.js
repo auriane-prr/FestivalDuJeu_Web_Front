@@ -1,10 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import "../styles/bandeauLogo.css";
-import Logo from '../Logo/logo_court.png';
-import ProfileImage from '../Logo/icon_profil.png';
-import CalendrierImage from '../Logo/icon_calendar.png';
-import AlerteImage from '../Logo/alerte_icon.png';
+import "../../styles/benevoles/bandeauBenevole.css";
+import Logo from '../../Logo/logo_court.png';
+import ProfileImage from '../../Logo/icon_profil.png';
+import CalendrierImage from '../../Logo/icon_calendar.png';
+import AlerteImage from '../../Logo/alerte_icon.png';
 
 function BandeauLogo() {
   const navigate = useNavigate();

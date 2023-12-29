@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import "../styles/jauge.css";
+import "../../../styles/jauge.css";
 
 const Jauge = ({ children, borderColor }) => {
     const jaugeStyle = {

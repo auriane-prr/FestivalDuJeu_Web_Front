@@ -1,6 +1,6 @@
 import React from 'react';
-import "../styles/bandeau.css"
-import Logo from '../Logo/logo_long.png';
+import "../../styles/login&register/bandeau_login.css"
+import Logo from '../../Logo/logo_long.png';
 
 function Bandeau() {
   return (

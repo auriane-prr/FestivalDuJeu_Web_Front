@@ -1,10 +1,10 @@
-import "../styles/Pages/pageProfil.css";
+import "../../styles/Pages/pageProfil.css";
 import React, { useState, useEffect } from "react";
-import BandeauLogo from "../components/bandeauLogo";
-import Boite from "../components/boite";
-import Champ from "../components/champ";
-import { useAuth } from "../AuthWrapper";
-import FenetrePopup from "../components/fenetre_popup";
+import BandeauLogo from "../../components/benevole/bandeauBenevole";
+import Boite from "../../components/general/boite";
+import Champ from "../../components/general/champ";
+import { useAuth } from "../../AuthWrapper";
+import FenetrePopup from "../../components/general/fenetre_popup";
 
 function PageProfil() {
   const { user } = useAuth();

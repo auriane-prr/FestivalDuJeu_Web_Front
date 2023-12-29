@@ -1,9 +1,9 @@
 import React, { useReducer, useState, useEffect, useRef } from "react";
-import Champ from "./champ";
+import Champ from "../general/champ";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../AuthWrapper";
-import "../styles/register.css";
-import FenetrePopup from "./fenetre_popup";
+import { useAuth } from "../../AuthWrapper";
+import "../../styles/login&register/register.css";
+import FenetrePopup from "../general/fenetre_popup";
 import Aide from "./aide";
 
 const FormInscription = () => {

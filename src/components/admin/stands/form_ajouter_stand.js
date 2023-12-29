@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Champ from '../champ';
+import Champ from '../../general/champ';
 
 function StandForm({ onClose }) {
   const [nom_stand, setNom_stand] = useState('');

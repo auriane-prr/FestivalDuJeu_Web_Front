@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Olive';
-  src: url('../Police/OlivessansPimiento.ttf') format('truetype');
+  src: url('../../Police/OlivessansPimiento.ttf') format('truetype');
   /* Assurez-vous d'ajuster le chemin en fonction de la structure de votre projet */
 }
 

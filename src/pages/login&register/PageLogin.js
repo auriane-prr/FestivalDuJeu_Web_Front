@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Boite from '../components/boite';
-import Bandeau from '../components/bandeau';
-import "../styles/Pages/pageLogin.css"
-import Login from '../components/login';
-import Titre from '../components/titre';
+import Boite from '../../components/general/boite';
+import Bandeau from '../../components/login&register/bandeau';
+import "../../styles/Pages/login&register/pageLogin.css"
+import Login from '../../components/login&register/login';
+import Titre from '../../components/general/titre';
 
 
 function PageLogin() {

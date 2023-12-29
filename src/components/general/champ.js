@@ -1,5 +1,5 @@
 import React from 'react';
-import "../styles/champ.css";
+import "../../styles/champ.css";
 
 const Champ = (props) => {
   return (

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/boiteOnglet.css';
+import '../../styles/boiteOnglet.css';
 
 const BoiteOnglet = ({ children,nomOnglet1,nomOnglet2 }) => {
   const [activeTab, setActiveTab] = useState(0);

@@ -1,6 +1,6 @@
 import React from 'react';
-import '../../styles/Admin/fiche_ajouter_stand.css';
-import StandForm from './form_stand';
+import '../../../styles/Admin/stands/fenetre_ajouter_stand.css';
+import StandForm from './form_ajouter_stand';
 
 const Modal = ({ message, type, onClose }) => {
   const ficheAjoutClasses = `FicheAjoutStand ${type} ${message ? 'show' : ''}`;
@@ -8,7 +8,6 @@ const Modal = ({ message, type, onClose }) => {
   return (
     <div className={ficheAjoutClasses}>
       <p>{message}</p>
-      {/* Inclure le formulaire StandForm */}
       <StandForm onClose={onClose} />
     </div>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/fiche_stand.css';
+import '../../../styles/fiche_stand.css';
 
 const Fiche_stand = ({ children, type, onClose }) => {
   const ficheClasses = `FicheStand ${type} ${children ? 'show' : ''}`;
