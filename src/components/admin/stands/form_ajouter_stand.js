@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Champ from '../../general/champ';
+import '../../../styles/Admin/stands/form_ajouter.css';
 
 function StandForm({ onClose }) {
   const [nom_stand, setNom_stand] = useState('');
@@ -65,8 +66,8 @@ function StandForm({ onClose }) {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <div className="FormAjout-container">
+      <form onSubmit={handleSubmit} className='FormAjout'>
       <Champ label='Nom Stand :'>
           <input
             className='customInput'

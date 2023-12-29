@@ -1,0 +1,16 @@
+.FormAjout {
+    width: 100%;
+}
+
+.FormAjout-container {
+    max-height: 80vh; /* Hauteur maximale de 80% de la hauteur de la fenêtre */
+    overflow-y: auto; /* Ajoute le défilement si nécessaire */
+  }
+
+.customInput {
+    width: 95%; /* Légèrement moins que 100% pour tenir compte du padding/margin */
+    padding: 10px;
+    margin: 5px 0; /* Un peu d'espace autour de chaque champ */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}

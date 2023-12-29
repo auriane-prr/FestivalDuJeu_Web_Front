@@ -146,13 +146,7 @@ function Display_stand(){
       <br />
       <button onClick={showNextStand}>Stand Suivant</button>
       {/* Fenêtre modale */}
-      {showModal && (
-        <Modal
-          message="Contenu de la fenêtre modale"
-          type="success"
-          onClose={closeModal}
-        />
-      )}
+      {showModal && <Modal onClose={closeModal} />}
       <br />
       <button>Modifier</button>
     </>
