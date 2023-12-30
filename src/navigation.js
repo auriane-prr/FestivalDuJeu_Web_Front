@@ -1,7 +1,7 @@
-import PageLogin from "./pages/PageLogin";
-import PageAccueil from "./pages/PageAccueil";
-import PageRegister from "./pages/PageRegister";
-import PageProfil from "./pages/PageProfil";
+import PageLogin from "./pages/login&register/PageLogin";
+import PageAccueil from "./pages/benevole/PageAccueil";
+import PageRegister from "./pages/login&register/PageRegister";
+import PageProfil from "./pages/benevole/PageProfil";
 import AdminAccueil from "./pages/admin/AdminAccueil";
 
 

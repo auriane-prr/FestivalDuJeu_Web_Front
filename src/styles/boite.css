@@ -10,43 +10,6 @@
     align-items: center;
   }
     
-  .EnTete {
-      width: 100%;
-      height: 1.75rem;
-      position: relative;
-      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-      
-  }
-    
-  .Couleur1,
-  .Couleur2,
-  .Couleur3 {
-      position: absolute;
-      height: 1.75rem; /* Hauteur de 7 pixels */
-  }
-    
-  .Couleur1 {
-    width: 40%;
-    background-color: #83b849;
-    border-top-left-radius: 0.75rem; /* Rayon de bordure arrondie supérieur gauche de 3 pixels */
-  }
-    
-  .Couleur2 {
-      background-color: #5e8d38;
-      width: 40%;
-      left: 33%;
-      border-top-left-radius: 0.75rem;
-      border-bottom-left-radius: 0.75rem; 
-  }
-    
-  .Couleur3 {
-      background-color: #485f3f;
-      left: 65%; /* Position horizontale de 158 pixels par rapport à l'élément parent */
-      width: 35%;
-      border-top-left-radius: 0.75rem; /* Rayon de bordure arrondie supérieur gauche de 3 pixels */
-      border-top-right-radius: 0.75rem; /* Rayon de bordure arrondie supérieur droit de 3 pixels */
-      border-bottom-left-radius: 0.75rem; /* Rayon de bordure arrondie inférieur gauche de 3 pixels */
-  }
 
   .Container-boite {
     margin-bottom: 3%;
@@ -57,7 +20,6 @@
     align-items: center;
     height: auto;
   }
-    
 
 
 @media (max-width: 1024px) {

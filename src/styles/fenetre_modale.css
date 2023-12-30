@@ -1,0 +1,71 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px); /* pour Safari */
+  /* background: rgba(0, 0, 0, 0.5); */
+  z-index: 500;
+  display: none;
+}
+
+.showOverlay {
+  display: block;
+}
+
+.fenetre-modale {
+  display: flex; /* Utilisez flexbox pour une disposition en colonnes */
+  flex-direction: column; /* Les éléments s'empilent verticalement */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto; /* La largeur s'adapte au contenu */
+  min-width: 30%; /* Minimum width of the modal */
+  max-width: 80%; /* Maximum width of the modal */
+  height: auto; /* La hauteur s'adapte au contenu */
+  max-height: 80vh; /* Hauteur maximale de la modale */
+  background: #E5E5E5;
+  border: 1px solid #ccc;
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  overflow: auto; /* Empêche tout débordement direct de la modale */
+}
+
+.show {
+  /* Cette classe peut être utilisée pour contrôler l'affichage via React */
+  display: block; /* Assurez-vous qu'elle est visible lorsque la classe .show est ajoutée */
+}
+  
+.modal-close-button{
+  position: relative;
+  width: 2.5em;
+  height: 2.5em;
+  border: none;
+  background: rgb(170, 173, 191, 0.3);
+  border-radius: 5px;
+  transition: background-color 0.5s ease-out;
+  margin-left: 0.5em;
+  margin-top: 3%;
+}
+
+.modal-close-button:hover {
+  background-color: rgb(29, 36, 75, 0.8);
+}
+
+.modal-close-button:active {
+  background-color: rgb(29, 36, 75);
+}
+
+.modal-close-button:hover > .close {
+  animation: close 0.2s forwards 0.25s;
+}
+
+@keyframes close {
+  100% {
+    opacity: 1;
+  }
+}

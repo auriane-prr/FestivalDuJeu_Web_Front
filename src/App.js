@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AuthWrapper from './AuthWrapper';
-import FormInscription from './components/form_register';
+import FormInscription from './components/login&register/form_register';
 
 function App() {
   return (

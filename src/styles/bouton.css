@@ -1,28 +1,4 @@
-@font-face {
-    font-family: 'Olive';
-    src: url('../Police/OlivessansPimiento.ttf') format('truetype');
-    /* Assurez-vous d'ajuster le chemin en fonction de la structure de votre projet */
-  }
-
-.Form-login{
-    width: 80%;
-    height: fit-content;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    object-fit: contain;
-    position: relative;
-    margin-bottom: 5%;
-}
-
-.button_container {
-    margin-top: 3%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  button {
+button {
     position: relative;
     border: none;
     background: transparent;
@@ -113,15 +89,4 @@
    
    button:focus:not(:focus-visible) {
     outline: none;
-   }
-  
-   @media screen and (max-width: 768px) {
-    .front {
-      padding: 8px 50px;
-      font-size: 1rem;
-    }
-    .button_container {
-      margin-top: 10%;
-      margin-bottom: 5%;
-    }
    }

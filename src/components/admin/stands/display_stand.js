@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
+<<<<<<< HEAD:src/components/admin/display_stand.js
 import Modal from './fiche_ajouter_stand';
 import Champ from '../champ';
 import '../../styles/Admin/display_stand.css';
 import BoutonPageSuivante from '../BoutonPageSuivante';
 import BoutonPagePrecedente from '../BoutonPagePrecedente';
+=======
+import Modal from '../../general/fenetre_modale';
+import StandForm from './form_ajouter_stand';
+import Titre from '../../general/titre';
+>>>>>>> b2611606ed0e637afc77de1c21af41c6609fd5d4:src/components/admin/stands/display_stand.js
 
 function Display_stand(){
   
@@ -318,12 +324,22 @@ function Display_stand(){
       <br />
       {/* Fenêtre modale */}
       {showModal && (
+<<<<<<< HEAD:src/components/admin/display_stand.js
         <Modal
           message="Contenu de la fenêtre modale"
           type="success"
           onClose={closeModal}
         />
       )}
+=======
+      <Modal onClose={closeModal}>
+        <Titre valeurDuTitre="Ajouter un stand" />
+        <StandForm onClose={closeModal} />
+      </Modal>
+    )}
+      <br />
+      <button>Modifier</button>
+>>>>>>> b2611606ed0e637afc77de1c21af41c6609fd5d4:src/components/admin/stands/display_stand.js
     </>
   );
 }

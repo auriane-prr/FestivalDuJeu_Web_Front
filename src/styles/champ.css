@@ -1,3 +1,25 @@
+.horaire-row {
+  display: flex;
+  justify-content: space-between; /* This will space out the children evenly */
+  align-items: center; /* This will vertically align the children in the middle */
+}
+
+.horaire-row .field:first-child {
+  flex: 2;
+}
+
+.horaire-row .field:last-child {
+  width: 20%; /* Or whatever width makes it align with the others */
+  margin-right: 10%;
+}
+
+/* Responsive adjustment if necessary */
+@media screen and (max-width: 768px) {
+  .horaire-row {
+    flex-direction: column; /* Stack the fields on smaller screens */
+  }
+}
+
 .field {
   display: flex;
   flex-direction: column; /* Alignez les éléments en colonne */

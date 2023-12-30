@@ -1,8 +1,8 @@
 import React from 'react';
-import Bandeau from '../components/bandeau';
-import Boite from '../components/boite';
-import FormInscription from '../components/form_register';
-import '../styles/Pages/pageRegister.css';
+import Bandeau from '../../components/login&register/bandeau';
+import Boite from '../../components/general/boite';
+import FormInscription from '../../components/login&register/form_register';
+import '../../styles/Pages/login&register/pageRegister.css';
 
 function PageRegister() {
   return (

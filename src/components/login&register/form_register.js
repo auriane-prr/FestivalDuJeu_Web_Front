@@ -1,10 +1,11 @@
 import React, { useReducer, useState, useEffect, useRef } from "react";
-import Champ from "./champ";
+import Champ from "../general/champ";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../AuthWrapper";
-import "../styles/register.css";
-import FenetrePopup from "./fenetre_popup";
+import { useAuth } from "../../AuthWrapper";
+import "../../styles/login&register/register.css";
+import FenetrePopup from "../general/fenetre_popup";
 import Aide from "./aide";
+import Bouton from "../general/bouton";
 
 const FormInscription = () => {
   const formReducer = (state, action) => {
@@ -306,12 +307,8 @@ const FormInscription = () => {
           </Champ>
         )}
 
-        <div className="button_container">
-          <button type="submit">
-            <span className="shadow"></span>
-            <span className="edge"></span>
-            <span className="front text"> Je m'inscris </span>
-          </button>
+        <div className='button_container'>
+          <Bouton type="submit" >Se connecter</Bouton>
         </div>
       </form>
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/aide.css';
+import '../../styles/login&register/aide.css';
 
 function Aide() {
     const [isHovered, setIsHovered] = useState(false);
