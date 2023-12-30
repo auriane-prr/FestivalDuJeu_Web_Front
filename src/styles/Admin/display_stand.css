@@ -1,0 +1,72 @@
+.horaire-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 20%;
+    margin-right: 15%;
+    margin-bottom: 10px;
+  }
+  
+
+.horaire-container .input-list {
+    width: auto; 
+}
+
+.horaire-container .input-small {
+    width: 70px; 
+    text-align: center;
+}
+
+.form-display {
+    width: 80%;
+    max-width: 100%;
+    align-items: center;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+
+.btn-container-suivant {
+    display: flex;
+    justify-content: flex-end; /* Aligner à droite */
+    align-items: center; /* Aligner verticalement au centre */
+    padding: 10px; /* Ajoutez un padding si nécessaire */
+  }
+
+
+  .Entete-btn{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+    margin-bottom: 10px;
+  }
+
+  .button_container {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    align-items: center;
+  }
+  
+
+
+@font-face {
+        font-family: 'Indie';
+        src: url('../../Police/IndieFlower-Regular.ttf') format('truetype');
+    }
+    
+    .stand-name {
+        font-family: 'INDIE';
+        font-size: 160%;
+        text-align: center;
+        margin-bottom: 3%;
+        margin-top: 5%;
+        width: 100%;
+        padding-right: 3%;
+        padding-left: 3%;
+        box-sizing: border-box; 
+    }
