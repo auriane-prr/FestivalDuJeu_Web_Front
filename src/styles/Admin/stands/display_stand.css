@@ -56,7 +56,7 @@
 
 @font-face {
         font-family: 'Indie';
-        src: url('../../Police/IndieFlower-Regular.ttf') format('truetype');
+        src: url('../../../Police/IndieFlower-Regular.ttf') format('truetype');
     }
     
     .stand-name {
