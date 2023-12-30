@@ -3,6 +3,7 @@ import BandeauAdmin from '../../components/admin/bandeauAdmin';
 import BoiteOnglet from '../../components/general/boiteOnglet';
 import Display_stand from '../../components/admin/stands/display_stand';
 import Ajouter_jeux from '../../components/admin/stands/ajouter_jeux';
+import Display_jeux from '../../components/admin/stands/display_jeux';
 import '../../styles/Pages/admin/accueil_admin.css';
 
 function AdminPageStand() {
@@ -14,7 +15,7 @@ function AdminPageStand() {
           <Display_stand />
         </div>
         <div>Jeux
-        <Ajouter_jeux />
+        <Display_jeux />
         </div>
       </BoiteOnglet>
     </div>
