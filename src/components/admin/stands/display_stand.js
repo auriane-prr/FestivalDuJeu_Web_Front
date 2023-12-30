@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Modal from './fenetre_ajouter_stand';
+import Modal from '../../general/fenetre_modale';
+import StandForm from './form_ajouter_stand';
+import Titre from '../../general/titre';
 
 function Display_stand(){
   const [showModal, setShowModal] = useState(false);
@@ -146,7 +148,12 @@ function Display_stand(){
       <br />
       <button onClick={showNextStand}>Stand Suivant</button>
       {/* Fenêtre modale */}
-      {showModal && <div className="overlay showOverlay"><Modal onClose={closeModal} /></div>}
+      {showModal && (
+      <Modal onClose={closeModal}>
+        <Titre valeurDuTitre="Ajouter un stand" />
+        <StandForm onClose={closeModal} />
+      </Modal>
+    )}
       <br />
       <button>Modifier</button>
     </>
