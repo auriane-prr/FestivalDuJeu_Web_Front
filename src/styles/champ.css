@@ -13,13 +13,6 @@
   margin-right: 10%;
 }
 
-/* Responsive adjustment if necessary */
-@media screen and (max-width: 768px) {
-  .horaire-row {
-    flex-direction: column; /* Stack the fields on smaller screens */
-  }
-}
-
 .field {
   display: flex;
   flex-direction: column; /* Alignez les éléments en colonne */

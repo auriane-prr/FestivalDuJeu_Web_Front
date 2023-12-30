@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'Olive';
+    src: url("../Police/OlivessansPimiento.ttf") format("truetype");
+}
+
 button {
     position: relative;
     border: none;

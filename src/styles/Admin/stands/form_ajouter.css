@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'Toma';
+  src: url('../../../Police/Toma-Regular.ttf') format('truetype');
+  /* Assurez-vous d'ajuster le chemin en fonction de la structure de votre projet */
+}
+
 .FormAjout {
   width: 100%;
 }
@@ -28,7 +34,7 @@
   box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
   width: 90%;
   font-size: 14px;
-  margin: 3% 5%;
+  margin: 5% 5%;
 }
 
 .radio-inputs .radio {
@@ -50,6 +56,7 @@
   padding: .5rem 0;
   color: #83B849;
   transition: all .15s ease-in-out;
+  font-family: 'Toma';
 }
 
 .radio-inputs .radio input:checked + .name {

@@ -58,43 +58,83 @@ function StandForm({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (nom_stand && horairesData.some((item) => item.nb_benevole !== "")) {
       try {
-        const newStand = {
-          nom_stand,
-          description,
-          date: selectedDate,
-          horaireCota: horairesData,
-        };
-
-        const response = await fetch("http://localhost:3500/stands", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newStand),
-        });
-
-        if (response.ok) {
-          // const data = await response.json();
-          setSuccessMessage("Nouveau stand ajouté avec succès");
-          setErrorMessage(null);
-          setPopupVisible(true);
-          setTimeout(() => {
-            onClose();
-          window.location.reload();
-          }, 2000);
-        } else {
-          let errorMessageText = "Une erreur est survenue, le stand n'a pas pu être créé";
+        if (selectedDate === "both") {
+          // Si "Les deux jours" est sélectionné, créez deux instances de stand
+          const stand1 = {
+            nom_stand,
+            description,
+            date: dateDebut,
+            horaireCota: horairesData,
+          };
+          const stand2 = {
+            nom_stand,
+            description,
+            date: dateFin,
+            horaireCota: horairesData,
+          };
   
-          if (!selectedDate) {
-            errorMessageText = "Veuillez sélectionner une date pour ce stand";
+          // Envoie les deux instances au serveur
+          const response1 = await fetch("http://localhost:3500/stands", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(stand1),
+          });
+  
+          const response2 = await fetch("http://localhost:3500/stands", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(stand2),
+          });
+  
+          if (response1.ok && response2.ok) {
+            setSuccessMessage("Nouveaux stands ajoutés avec succès");
+            setErrorMessage(null);
+            setPopupVisible(true);
+            setTimeout(() => {
+              onClose();
+              window.location.reload();
+            }, 2000);
+          } else {
+            setErrorMessage("Une erreur est survenue, les stands n'ont pas pu être créés");
+            setSuccessMessage(null);
+            setPopupVisible(true);
           }
+        } else {
+          const newStand = {
+            nom_stand,
+            description,
+            date: selectedDate,
+            horaireCota: horairesData,
+          };
   
-          setErrorMessage(errorMessageText);
-          setSuccessMessage(null);
-          setPopupVisible(true);
+          const response = await fetch("http://localhost:3500/stands", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newStand),
+          });
+  
+          if (response.ok) {
+            setSuccessMessage("Nouveau stand ajouté avec succès");
+            setErrorMessage(null);
+            setPopupVisible(true);
+            setTimeout(() => {
+              onClose();
+              window.location.reload();
+            }, 2000);
+          } else {
+            setErrorMessage("Une erreur est survenue, le stand n'a pas pu être créé");
+            setSuccessMessage(null);
+            setPopupVisible(true);
+          }
         }
       } catch (error) {
         setErrorMessage("Erreur de connexion au serveur: " + error.message);
@@ -102,7 +142,7 @@ function StandForm({ onClose }) {
         setPopupVisible(true);
       }
     }
-  };
+  };  
 
   return (
     <div className="FormAjout-container">
