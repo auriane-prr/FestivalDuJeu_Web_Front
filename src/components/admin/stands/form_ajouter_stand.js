@@ -7,9 +7,9 @@ import FenetrePopup from "../../general/fenetre_popup";
 function StandForm({ onClose }) {
   const [nom_stand, setNom_stand] = useState("");
   const [description, setDescription] = useState("");
-  const [dateDebut, setDateDebut] = useState('');
-  const [dateFin, setDateFin] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
+  const [dateDebut, setDateDebut] = useState("");
+  const [dateFin, setDateFin] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
 
   const [horairesData, setHorairesData] = useState([
     { heure: "9-11", nb_benevole: "" },
@@ -26,6 +26,35 @@ function StandForm({ onClose }) {
   const hidePopup = () => {
     setPopupVisible(false);
   };
+
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value);
+  };
+
+  const handleNbBenevoleChange = (index, value) => {
+    const updatedHorairesData = [...horairesData];
+    updatedHorairesData[index].nb_benevole = value;
+    // Assurez-vous que la valeur est supérieure ou égale à 1
+    updatedHorairesData[index].nb_benevole = value >= 0 ? value : "";
+    setHorairesData(updatedHorairesData);
+  };
+
+  const formatHoraire = (horaire) => {
+    return `de ${horaire.replace("-", "h à ")}h`;
+  };
+
+  //cherche les dates
+  useEffect(() => {
+    // Exemple d'appel API pour récupérer les données du festival
+    const fetchData = async () => {
+      const result = await fetch("http://localhost:3500/festival/latest");
+      const body = await result.json();
+      setDateDebut(body.date_debut);
+      setDateFin(body.date_fin);
+      console.log(body.date_debut, body.date_fin);
+    };
+    fetchData();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,51 +77,69 @@ function StandForm({ onClose }) {
         });
 
         if (response.ok) {
-          const data = await response.json();
-          console.log("Nouveau stand ajouté:", data);
-          onClose();
+          // const data = await response.json();
+          setSuccessMessage("Nouveau stand ajouté avec succès");
+          setErrorMessage(null);
+          setPopupVisible(true);
+          setTimeout(() => {
+            onClose();
           window.location.reload();
+          }, 2000);
         } else {
-          console.error("Erreur lors de la création du stand");
+          let errorMessageText = "Une erreur est survenue, le stand n'a pas pu être créé";
+  
+          if (!selectedDate) {
+            errorMessageText = "Veuillez sélectionner une date pour ce stand";
+          }
+  
+          setErrorMessage(errorMessageText);
+          setSuccessMessage(null);
+          setPopupVisible(true);
         }
       } catch (error) {
-        console.error("Erreur de connexion au serveur", error);
+        setErrorMessage("Erreur de connexion au serveur: " + error.message);
+        setSuccessMessage(null);
+        setPopupVisible(true);
       }
     }
   };
 
-  const handleNbBenevoleChange = (index, value) => {
-    const updatedHorairesData = [...horairesData];
-    updatedHorairesData[index].nb_benevole = value;
-    // Assurez-vous que la valeur est supérieure ou égale à 1
-    updatedHorairesData[index].nb_benevole = value >= 0 ? value : "";
-    setHorairesData(updatedHorairesData);
-  };
-
-  const formatHoraire = (horaire) => {
-    return `de ${horaire.replace("-", "h à ")}h`;
-  };
-
-  //cherche les dates 
-  useEffect(() => {
-    // Exemple d'appel API pour récupérer les données du festival
-    const fetchData = async () => {
-      const result = await fetch('http://localhost:3500/festival/latest');
-      const body = await result.json();
-      setDateDebut(body.date_debut);
-      setDateFin(body.date_fin);
-      console.log(body.date_debut, body.date_fin);
-    };
-    fetchData();
-  }, []);
-
   return (
     <div className="FormAjout-container">
       <form onSubmit={handleSubmit} className="FormAjout">
+        <div className="radio-inputs">
+          <label className="radio">
+            <input
+              type="radio"
+              name="dateSelection"
+              value={dateDebut}
+              checked={selectedDate === dateDebut}
+              onChange={handleDateChange}
+            />
+            <span className="name">{dateDebut}</span>
+          </label>
+          <label className="radio">
+            <input
+              type="radio"
+              name="dateSelection"
+              value={dateFin}
+              checked={selectedDate === dateFin}
+              onChange={handleDateChange}
+            />
+            <span className="name">{dateFin}</span>
+          </label>
+          <label className="radio">
+            <input
+              type="radio"
+              name="dateSelection"
+              value="both"
+              checked={selectedDate === "both"}
+              onChange={handleDateChange}
+            />
+            <span className="name">Les deux jours</span>
+          </label>
+        </div>
 
-      <button type="button" onClick={() => setSelectedDate(dateDebut)}>Pour Date de Début </button>
-      <button type="button" onClick={() => setSelectedDate(dateFin)}> Pour Date de Fin</button>
-      
         <Champ label="Nom Stand :">
           <input
             className="input"
@@ -140,6 +187,18 @@ function StandForm({ onClose }) {
           <Bouton type="submit">Ajouter</Bouton>
         </div>
       </form>
+
+      {errorMessage && isPopupVisible && (
+        <FenetrePopup message={errorMessage} type="error" onClose={hidePopup} />
+      )}
+
+      {successMessage && isPopupVisible && (
+        <FenetrePopup
+          message={successMessage}
+          type="success"
+          onClose={hidePopup}
+        />
+      )}
     </div>
   );
 }
