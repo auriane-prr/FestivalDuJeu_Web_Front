@@ -1,0 +1,17 @@
+.btn-container-precedente {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    --color-text: #ffffff;
+    --color-background: #add58c;
+    --color-outline: #446628;
+    --color-shadow: #00000080;
+    margin-left: 10px;
+    border-radius: 100px; /* Si vous voulez des coins arrondis */
+    width: fit-content; /* ou une taille fixe si vous préférez */
+    transform: scaleX(-1); /* Retourne horizontalement le bouton */
+    background: var(--color-background); /* Ajoutez ceci si le fond n'apparaît pas */
+    box-shadow: 0 0 0.2em 0 var(--color-background); /* Ombre du bouton */
+  }
+  

@@ -1,6 +1,6 @@
 .EnTete {
     display: flex;
-    height: 1.5rem; /* Hauteur des onglets */
+    height: 1.75rem; /* Hauteur des onglets */
     position: relative;
   }
   
@@ -33,4 +33,6 @@
     color: #fff;
     border: 1px solid transparent;
   }
+
+
   
