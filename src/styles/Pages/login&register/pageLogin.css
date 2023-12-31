@@ -3,21 +3,6 @@
     text-align: center;
     font-size: 80%;
   }
-  
-}
-
-body {
-  margin: 0;
-  font-family: 'Roboto';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #aaadbf;
-
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
 }
 
 .Container-texte {
