@@ -317,7 +317,6 @@ function Display_stand(){
           <span className="front text"> Ajouter un stand </span>
         </button>
 )}
-      <br />
       {/* Fenêtre modale */}
       {showModal && (
       <Modal onClose={closeModal}>
@@ -325,8 +324,6 @@ function Display_stand(){
         <StandForm onClose={closeModal} />
       </Modal>
     )}
-      <br />
-      <button>Modifier</button>
     </>
   );
 }
