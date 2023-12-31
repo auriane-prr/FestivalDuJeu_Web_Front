@@ -15,6 +15,7 @@ function AdminPageStand() {
           <Display_stand />
         </div>
         <div>Jeux
+          <Ajouter_jeux />
         <Display_jeux />
         </div>
       </BoiteOnglet>
