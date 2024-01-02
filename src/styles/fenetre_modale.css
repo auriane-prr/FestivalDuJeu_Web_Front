@@ -26,7 +26,7 @@
   min-width: 30%; /* Minimum width of the modal */
   max-width: 80%; /* Maximum width of the modal */
   height: auto; /* La hauteur s'adapte au contenu */
-  max-height: 80vh; /* Hauteur maximale de la modale */
+  max-height: 80%; /* Hauteur maximale de la modale */
   background: #E5E5E5;
   border: 1px solid #ccc;
   border-radius: 1rem;

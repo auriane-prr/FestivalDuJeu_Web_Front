@@ -5,14 +5,12 @@ import './styles/App.css';
 
 function App() {
   return (
-    <div className='container'>
     <BrowserRouter>
       <Routes>
         <Route path="/inscription" element={<FormInscription />} />
         <Route path="/*" element={<AuthWrapper />} />
       </Routes>
     </BrowserRouter>
-    </div>
   );
 }
 

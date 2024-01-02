@@ -35,7 +35,7 @@ function StandForm({ onClose }) {
     const updatedHorairesData = [...horairesData];
     updatedHorairesData[index].nb_benevole = value;
     // Assurez-vous que la valeur est supérieure ou égale à 1
-    updatedHorairesData[index].nb_benevole = value >= 0 ? value : "";
+    updatedHorairesData[index].nb_benevole = value >= 1 ? value : "";
     setHorairesData(updatedHorairesData);
   };
 
@@ -145,7 +145,7 @@ function StandForm({ onClose }) {
   };  
 
   return (
-    <div className="FormAjout-container">
+    <div>
       <form onSubmit={handleSubmit} className="FormAjout">
         <div className="radio-inputs">
           <label className="radio">
@@ -200,7 +200,7 @@ function StandForm({ onClose }) {
           />
         </Champ>
 
-        {horairesData.map((horaireData, index) => (
+        {horairesData && horairesData.length > 0 && horairesData.map((horaireData, index) => (
           <div className="horaire-row" key={index}>
             <Champ label="Horaires :">
               <input
@@ -214,7 +214,7 @@ function StandForm({ onClose }) {
               <input
                 className="input"
                 type="number"
-                min="0"
+                min="1"
                 value={horaireData.nb_benevole}
                 required
                 onChange={(e) => handleNbBenevoleChange(index, e.target.value)}

@@ -26,6 +26,9 @@
   font-size: 16px;
   color: #333;
   margin-bottom: 0.5rem; /* Ajoutez un espace entre le label et le champ */
+  white-space: nowrap; /* Empêche le texte de passer à la ligne */
+  overflow: hidden; /* S'assure que le texte ne déborde pas */
+  text-overflow: ellipsis; /* Ajoute des points de suspension si le texte est trop long */
 }
 
 /* Ajustez la largeur à 100% pour remplir le conteneur .field */

@@ -1,12 +1,12 @@
 .Form-login{
-    width: 80%;
     height: fit-content;
     display: flex;
     flex-direction: column;
     position: relative;
     object-fit: contain;
     position: relative;
-    margin: 3% auto;
+    width: 70%; /* ou une largeur fixe comme 500px si nécessaire */
+    margin: auto;
 }
 
 .button_container {

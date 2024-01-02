@@ -8,6 +8,7 @@
   font-size: 160%;
   text-align: center;
   font-weight: bold;
+  margin-bottom: 3%;
 }
 
 @media screen and (max-width: 768px) {
@@ -16,9 +17,9 @@
   }
 }
 
-@media screen and (min-width: 1024px) {
+/* @media screen and (min-width: 1024px) {
     .Titre {
-      margin : auto 5%;
+      margin : 5% 5%;
     }
-  }
+  } */
 

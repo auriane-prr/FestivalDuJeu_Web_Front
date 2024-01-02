@@ -6,12 +6,10 @@ import EnTete from './en_tete';
 
 const Boite = ({ valeurDuTitre, children }) => {
   return (
-    <div className="Container-boite">
-    <div className="Fond">
+    <div className="boite">
         <EnTete/>
         <Titre valeurDuTitre={valeurDuTitre}/> 
         {children}
-    </div>
     </div>
   );
 }
