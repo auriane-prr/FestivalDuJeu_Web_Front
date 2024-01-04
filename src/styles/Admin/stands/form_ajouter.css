@@ -64,3 +64,12 @@
   font-weight: 600;
   color : #EEE;
 }
+
+p {
+  font-family: 'Toma';
+  font-size: 15px;
+  color: #485F3F;
+  text-align: center;
+  width: 300px;
+  margin: 5% auto;
+}

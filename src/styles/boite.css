@@ -7,7 +7,8 @@
   justify-content: center;
   align-items: center;
   width: 65%;
-  margin: 3% auto;
+  margin: 8% auto;
+  padding-bottom: 3%;
 }
 
 @media (max-width: 1024px) {
@@ -21,7 +22,6 @@
 
 .EnTete {
   display: flex;
-  height: 2rem; /* Hauteur des onglets */
   position: relative;
 }
 
@@ -32,25 +32,37 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  transition: opacity 0.3s, z-index 0.3s, border-radius 0.3s; /* Transition douce pour les changements */
+  position: relative; /* Position relative pour z-index */
+  background-color: #83b849;
 }
 
 .Couleur1Onglet {
-  background-color: #83b849;
-  border-top-left-radius: 0.75rem;
-  margin-right: 0.25rem; /* Ajustement pour l'espacement correct */
+  border-radius: 0.75rem 0 0 0; /* HG - HD - BD - BG */
+  z-index: 1; /* Z-index inférieur pour qu'il soit sous l'autre onglet si non actif */
 }
 
 .Couleur2Onglet {
-  background-color: #83b849;
-  border-top-right-radius: 0.75rem;
-  border-top-left-radius: 0.75rem;
-  border-bottom-left-radius: 0.75rem;
-  margin-left: -1rem; /* Ajustement pour l'espacement correct */
+  border-radius: 0 0.75rem 0 0;
+  z-index: 1; /* Z-index inférieur pour qu'il soit sous l'autre onglet si non actif */
 }
 
-.Couleur1Onglet.active,
+.Couleur1Onglet.active {
+  border-radius: 0.75rem 0.75rem 0.75rem 0;
+  opacity: 1; /* Opaque si actif */
+  z-index: 3; /* Z-index supérieur pour passer au-dessus de l'autre onglet */
+  margin-right: -2%; /* Ajustement pour superposer les onglets */
+}
+
 .Couleur2Onglet.active {
-  background-color: #5e8d38;
-  color: #fff;
-  border: 1px solid transparent;
+  border-radius: 0.75rem 0.75rem 0 0.75rem; 
+  opacity: 1; /* Opaque si actif */
+  z-index: 3; /* Z-index supérieur pour passer au-dessus de l'autre onglet */
+  margin-left: -2%; /* Ajustement pour superposer les onglets */
+}
+
+.Couleur1Onglet:not(.active),
+.Couleur2Onglet:not(.active) {
+  opacity: 0.6; /* Moins opaque si non-actif */
+  z-index: 2; /* Assurez-vous que c'est en dessous de l'onglet actif */
 }

@@ -31,6 +31,22 @@
   text-overflow: ellipsis; /* Ajoute des points de suspension si le texte est trop long */
 }
 
+.input {
+  font-family: 'Toma', monospace;
+}
+
+textarea.input {
+  width: 100%; /* Prend toute la largeur disponible */
+  height: auto; /* Permet au textarea de s'agrandir en fonction du contenu */
+  overflow: hidden; /* Cache la barre de défilement */
+  resize: none;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  box-sizing: border-box; /* Inclut le padding et la bordure dans la largeur et la hauteur */
+  background-color: rgba(170, 173, 191, 0.5);
+  color: #0d0c22;
+}
+
 /* Ajustez la largeur à 100% pour remplir le conteneur .field */
 input.input, select.input {
   width: 100%; /* Mettez à jour la largeur ici */
@@ -41,11 +57,12 @@ input.input, select.input {
   background-color: rgba(170, 173, 191, 0.5);
   color: #0d0c22;
   transition: .5s ease;
-  box-sizing: border-box; /* Assurez-vous que la bordure et le padding sont inclus dans la largeur */
+  box-sizing: border-box; 
 }
 
 input.input:focus, input.input:hover,
-select.input:focus, select.input:hover {
+select.input:focus, select.input:hover,
+textarea.input:focus, textarea.input:hover {
   outline: none;
   border-color: #454C8B;
   background-color: rgba(170, 173, 191, 0.5);
@@ -55,4 +72,9 @@ select.input:focus, select.input:hover {
   .field label {
     font-size: 12px;
   }
+}
+
+@font-face {
+  font-family: 'Toma';
+  src: url('../Police/Toma-Regular.ttf') format('truetype');
 }

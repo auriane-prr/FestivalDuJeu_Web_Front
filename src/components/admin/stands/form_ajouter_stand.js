@@ -10,6 +10,8 @@ function StandForm({ onClose }) {
   const [dateDebut, setDateDebut] = useState("");
   const [dateFin, setDateFin] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [descriptionHeight, setDescriptionHeight] = useState('auto');
+
 
   const [horairesData, setHorairesData] = useState([
     { heure: "9-11", nb_benevole: "" },
@@ -25,6 +27,11 @@ function StandForm({ onClose }) {
 
   const hidePopup = () => {
     setPopupVisible(false);
+  };
+
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+    setDescriptionHeight(`${e.target.scrollHeight}px`);
   };
 
   const handleDateChange = (e) => {
@@ -147,6 +154,7 @@ function StandForm({ onClose }) {
   return (
     <div>
       <form onSubmit={handleSubmit} className="FormAjout">
+      
         <div className="radio-inputs">
           <label className="radio">
             <input
@@ -179,6 +187,11 @@ function StandForm({ onClose }) {
             <span className="name">Les deux jours</span>
           </label>
         </div>
+        {selectedDate === "both" && (
+        <p>
+        Vous pourrez modifier la capacité ultérieurement pour chacune des dates.
+      </p>
+      )}
 
         <Champ label="Nom Stand :">
           <input
@@ -191,12 +204,13 @@ function StandForm({ onClose }) {
         </Champ>
 
         <Champ label="Description:">
-          <input
+          <textarea
             className="input"
             required
             type="text"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={handleDescriptionChange}
+            style={{ height: descriptionHeight }} // Appliquez la hauteur calculée
           />
         </Champ>
 

@@ -108,3 +108,24 @@
   position: absolute;
   left: -3%;
 }
+
+@media screen and (max-width: 1024px) {
+  .add-button {
+    margin-left: 5px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .add-button {
+    font-size: 15px;
+    width: 30px;
+    height: 15px;
+  }
+  .supp-button{
+    left: -10%;
+  }
+  .horaire-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

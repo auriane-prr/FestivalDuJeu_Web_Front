@@ -7,6 +7,7 @@ import Modal from "../../general/fenetre_modale";
 import StandForm from "./form_ajouter_stand";
 import Titre from "../../general/titre";
 import Bouton from "../../general/bouton";
+import FenetrePopup from "../../general/fenetre_popup";
 
 function Display_stand() {
   const [showModal, setShowModal] = useState(false);
@@ -19,6 +20,15 @@ function Display_stand() {
   const [showSelector, setShowSelector] = useState(false);
   const [currentStandDetails, setCurrentStandDetails] = useState(null);
   const [selectedHoraireIndex, setSelectedHoraireIndex] = useState(0); // suppose que le premier horaire est sélectionné par défaut
+  const [textareaHeights, setTextareaHeights] = useState({}); // Stocke les hauteurs des textarea pour chaque stand
+
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const hidePopup = () => {
+    setPopupVisible(false);
+  };
 
   const toggleEditMode = () => {
     setEditMode(!editMode);
@@ -42,6 +52,7 @@ function Display_stand() {
             ...stand,
             nom_stand: stand.nom_stand || "",
             description: stand.description || "",
+            date: stand.date || "",
             referents: stand.referents || "",
             horaireCota: stand.horaireCota.map((horaire) => ({
               ...horaire,
@@ -64,7 +75,6 @@ function Display_stand() {
   useEffect(() => {
     fetchStandsData();
   }, [editMode]);
-  
 
   const fetchNonReferentBenevoles = async () => {
     try {
@@ -114,9 +124,21 @@ function Display_stand() {
     setStands(updatedStands);
   };
 
-  const handleDescriptionChange = (e) => {
+  const handleDescriptionChange = (e, standIndex) => {
     const updatedStands = [...stands];
     updatedStands[currentStandIndex].description = e.target.value;
+    setStands(updatedStands);
+
+    // Ajustez la hauteur du textarea correspondant
+    setTextareaHeights((prevHeights) => ({
+      ...prevHeights,
+      [standIndex]: `${e.target.scrollHeight}px`,
+    }));
+  };
+
+  const handleDateChange = (e) => {
+    const updatedStands = [...stands];
+    updatedStands[currentStandIndex].date = e.target.value;
     setStands(updatedStands);
   };
 
@@ -172,56 +194,57 @@ function Display_stand() {
       console.log("Données à envoyer :", JSON.stringify(currentStand));
 
       if (response.ok) {
-        console.log("Stand modifié");
-        // Mise à jour uniquement du stand actuel
         const updatedStands = [...stands];
         updatedStands[currentStandIndex] = currentStand;
         setStands(updatedStands);
 
         // Désactive le mode édition
         toggleEditMode();
+        setSuccessMessage("Modifications enregistrées avec succès");
+        setErrorMessage(null);
       } else {
-        // Afficher un message d'erreur spécifique en fonction du statut de réponse
-        if (response.status === 404) {
-          console.error("Erreur : Stand non trouvé. Vérifiez l'ID du stand.");
-        } else if (response.status === 500) {
-          console.error(
-            "Erreur serveur : Une erreur s'est produite lors de la modification du stand."
-          );
-        } else {
-          console.error("Erreur inattendue :", await response.text());
-        }
+        throw new Error("Échec de l'enregistrement des modifications");
       }
     } catch (error) {
-      console.error("Erreur :", error);
+      setErrorMessage(
+        "Erreur lors de l'enregistrement des modifications: " + error.message
+      );
+    } finally {
+      setPopupVisible(true);
     }
   };
 
   const handleDeleteStand = async () => {
     try {
-      const response = await fetch(`http://localhost:3500/stands/${currentStand._id}`, {
-        method: "DELETE",
-      });
-  
-      if (response.status === 200) {
+      const response = await fetch(
+        `http://localhost:3500/stands/${currentStand._id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
         // Le stand a été supprimé avec succès, mettez à jour l'interface utilisateur
         const updatedStands = [...stands];
         updatedStands.splice(currentStandIndex, 1); // Supprimez le stand du tableau local
         setStands(updatedStands);
-  
+
         // Réinitialisez le mode d'édition et le stand actuel
         setEditMode(false);
         setCurrentStandIndex(0); // Vous pouvez initialiser l'index à 0 ou une autre valeur appropriée
+        setSuccessMessage("Stand supprimé avec succès");
+        setErrorMessage(null);
       } else {
-        // Gérez les erreurs en conséquence
-        console.error("Erreur lors de la suppression du stand.");
+        throw new Error("Échec de la suppression du stand");
       }
     } catch (error) {
-      console.error("Erreur lors de la suppression du stand :", error);
-      // Gérez les erreurs en conséquence
+      setErrorMessage(
+        "Erreur lors de la suppression du stand: " + error.message
+      );
+    } finally {
+      setPopupVisible(true);
     }
-  }; 
-  
+  };
 
   const showPreviousStand = () => {
     setCurrentStandIndex((prevIndex) => {
@@ -305,206 +328,245 @@ function Display_stand() {
 
   return (
     <>
-      <div className="Entete-btn">
-        <div className="btn-changer-page" onClick={showPreviousStand}>
-          <BoutonPagePrecedente />
-        </div>
-        <Titre
-          valeurDuTitre={
-            stands.length > 0 &&
-            currentStandIndex >= 0 &&
-            currentStandIndex < stands.length
-              ? stands[currentStandIndex].nom_stand
-              : ""
-          }
-        />
-        <div className="btn-changer-page" onClick={showNextStand}>
-          <BoutonPageSuivante />
-        </div>
-      </div>
-
-      {currentStandDetails ? (
+      {stands.length === 0 ? (
         <div className="form-display">
-          {editMode && (
-            <Champ label="Nom du stand :">
-              <input
-                type="text"
-                value={currentStand?.nom_stand || ""}
-                onChange={handleNomStandChange}
-                className="input"
-                readOnly={!editMode}
-              />
-            </Champ>
-          )}
-
-          <Champ label="Description :">
-            <input
-              type="text"
-              value={currentStand?.description || ""}
-              onChange={handleDescriptionChange}
-              className="input"
-              readOnly={!editMode}
-            />
-          </Champ>
-
-          <div className="referent-container">
-            <Champ label="Référents :">
-              {showSelector ? (
-                <select className="input" onChange={handleSelectBenevole}>
-                  <option value="">Sélectionner un bénévole</option>
-                  {nonReferentBenevoles.map((benevole, index) => (
-                    <option key={index} value={benevole._id}>
-                      {benevole.pseudo}
-                    </option>
-                  ))}
-                </select>
-              ) : currentStandDetails?.referents &&
-                currentStandDetails.referents.length > 0 ? (
-                currentStandDetails.referents.map((referent) => (
-                  <div key={referent._id} className="referent-input">
-                    <input
-                      type="text"
-                      className="input"
-                      value={referent.pseudo || ""} // Utilisation directe du pseudo
-                      readOnly
-                    />
-                    {editMode && (
-                      <button
-                        onClick={() => handleRemoveReferent(referent._id)}
-                        className="supp-button"
-                      >
-                        X
-                      </button>
-                    )}
-                  </div>
-                ))
-              ) : (
-                <input
-                  type="text"
-                  className="input"
-                  value="Pas de référents"
-                  readOnly
-                />
-              )}
-            </Champ>
-            {editMode && (
-              <div className="add-btn-container">
-                {showSelector ? (
-                  <button
-                    onClick={handleAddReferent}
-                    className="add-button"
-                    style={{ fontSize: "15px" }}
-                  >
-                    OK
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleAddReferentDisplay}
-                    className="add-button"
-                  >
-                    +
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-
-          <div className="horaire-container">
-            <Champ label="Horaire :">
-              <select
-                className="input"
-                value={selectedHoraireIndex}
-                onChange={(e) => setSelectedHoraireIndex(e.target.value)}
-              >
-                {currentStand?.horaireCota &&
-                currentStand.horaireCota.length > 0 ? (
-                  currentStand.horaireCota.map((horaire, index) => (
-                    <option key={index} value={index}>
-                      {horaire.heure}
-                    </option>
-                  ))
-                ) : (
-                  <option>Aucun horaire disponible</option> // Cette option s'affiche s'il n'y a pas d'horaires
-                )}
-              </select>
-            </Champ>
-            <Champ label="Capacité :">
-              <input
-                type="text"
-                value={
-                  currentStand &&
-                  currentStand.horaireCota &&
-                  currentStand.horaireCota[selectedHoraireIndex]
-                    ? currentStand.horaireCota[selectedHoraireIndex]
-                        .nb_benevole || ""
-                    : ""
-                }
-                onChange={(e) =>
-                  handleNbBenevoleChange(selectedHoraireIndex, e.target.value)
-                }
-                className="input"
-                readOnly={!editMode}
-              />
-            </Champ>
-            <Champ label="Liste de bénévoles :">
-              {currentStandDetails?.horaireCota[selectedHoraireIndex]
-                .liste_benevole.length === 0 ? (
-                <input
-                  type="text"
-                  className="input"
-                  value="0 bénévole inscrits"
-                  readOnly
-                />
-              ) : (
-                currentStandDetails?.horaireCota[
-                  selectedHoraireIndex
-                ].liste_benevole.map((benevole, index) => (
-                  <input
-                    key={benevole._id}
-                    type="text"
-                    className="input"
-                    value={benevole.pseudo || ""}
-                    readOnly
-                  />
-                ))
-              )}
-            </Champ>
-          </div>
-        </div>
-      ) : (
-        <p>Aucun stand trouvé.</p>
-      )}
-
-      {editMode ? (
-        <div className="button_container">
-          <Bouton type="button" onClick={() => handleSaveChanges(currentStand)}>
-            Enregistrer
-          </Bouton>
-          <Bouton
-            type="button"
-            onClick={() => handleDeleteStand(currentStand)}
-          >
-            Supprimer ce stand
-          </Bouton>
-        </div>
-      ) : (
-        <div className="button_container">
-          <Bouton type="button" onClick={handleEditStand(currentStandIndex)}>
-            Modifier
-          </Bouton>
-
+          <p>Aucun stand d'ajouté pour l'instant.</p>
           <Bouton type="button" onClick={openModal}>
             Ajouter un stand
           </Bouton>
         </div>
+      ) : (
+        <>
+          <div className="Entete-btn">
+            <div className="btn-changer-page" onClick={showPreviousStand}>
+              <BoutonPagePrecedente />
+            </div>
+            <Titre valeurDuTitre={stands[currentStandIndex]?.nom_stand || ""} />
+            <div className="btn-changer-page" onClick={showNextStand}>
+              <BoutonPageSuivante />
+            </div>
+          </div>
+
+          {currentStandDetails ? (
+            <div className="form-display">
+              {editMode && (
+                <Champ label="Nom du stand :">
+                  <input
+                    type="text"
+                    value={currentStand?.nom_stand || ""}
+                    onChange={handleNomStandChange}
+                    className="input"
+                    readOnly={!editMode}
+                  />
+                </Champ>
+              )}
+
+              <Champ label="Date :">
+                <input
+                  type="text"
+                  value={currentStand?.date || ""}
+                  onChange={handleDateChange}
+                  className="input"
+                  readOnly={!editMode}
+                />
+              </Champ>
+
+              <Champ label="Description :">
+                <textarea
+                  type="text"
+                  value={currentStand?.description || ""}
+                  onChange={(e) =>
+                    handleDescriptionChange(e, currentStandIndex)
+                  }
+                  className="input"
+                  readOnly={!editMode}
+                  style={{
+                    height: textareaHeights[currentStandIndex] || "auto",
+                  }}
+                />
+              </Champ>
+
+              <div className="referent-container">
+                <Champ label="Référents :">
+                  {showSelector ? (
+                    <select className="input" onChange={handleSelectBenevole}>
+                      <option value="">Sélectionner un bénévole</option>
+                      {nonReferentBenevoles.map((benevole, index) => (
+                        <option key={index} value={benevole._id}>
+                          {benevole.pseudo}
+                        </option>
+                      ))}
+                    </select>
+                  ) : currentStandDetails?.referents &&
+                    currentStandDetails.referents.length > 0 ? (
+                    currentStandDetails.referents.map((referent) => (
+                      <div key={referent._id} className="referent-input">
+                        <input
+                          type="text"
+                          className="input"
+                          value={referent.pseudo || ""} // Utilisation directe du pseudo
+                          readOnly
+                        />
+                        {editMode && (
+                          <button
+                            onClick={() => handleRemoveReferent(referent._id)}
+                            className="supp-button"
+                          >
+                            X
+                          </button>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <input
+                      type="text"
+                      className="input"
+                      value="Pas de référents"
+                      readOnly
+                    />
+                  )}
+                </Champ>
+                {editMode && (
+                  <div className="add-btn-container">
+                    {showSelector ? (
+                      <button
+                        onClick={handleAddReferent}
+                        className="add-button"
+                        style={{ fontSize: "15px" }}
+                      >
+                        OK
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleAddReferentDisplay}
+                        className="add-button"
+                      >
+                        +
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="horaire-container">
+                <Champ label="Horaire :">
+                  <select
+                    className="input"
+                    value={selectedHoraireIndex}
+                    onChange={(e) => setSelectedHoraireIndex(e.target.value)}
+                  >
+                    {currentStand?.horaireCota &&
+                    currentStand.horaireCota.length > 0 ? (
+                      currentStand.horaireCota.map((horaire, index) => (
+                        <option key={index} value={index}>
+                          {horaire.heure}
+                        </option>
+                      ))
+                    ) : (
+                      <option>Aucun horaire disponible</option> // Cette option s'affiche s'il n'y a pas d'horaires
+                    )}
+                  </select>
+                </Champ>
+                <Champ label="Capacité :">
+                  <input
+                    type="number"
+                    min="1"
+                    value={
+                      currentStand &&
+                      currentStand.horaireCota &&
+                      currentStand.horaireCota[selectedHoraireIndex]
+                        ? currentStand.horaireCota[selectedHoraireIndex]
+                            .nb_benevole || ""
+                        : ""
+                    }
+                    onChange={(e) =>
+                      handleNbBenevoleChange(
+                        selectedHoraireIndex,
+                        e.target.value
+                      )
+                    }
+                    className="input"
+                    readOnly={!editMode}
+                  />
+                </Champ>
+                <Champ label="Liste de bénévoles :">
+                  {currentStandDetails?.horaireCota[selectedHoraireIndex]
+                    .liste_benevole.length === 0 ? (
+                    <input
+                      type="text"
+                      className="input"
+                      value="0 bénévole inscrits"
+                      readOnly
+                    />
+                  ) : (
+                    currentStandDetails?.horaireCota[
+                      selectedHoraireIndex
+                    ].liste_benevole.map((benevole, index) => (
+                      <input
+                        key={benevole._id}
+                        type="text"
+                        className="input"
+                        value={benevole.pseudo || ""}
+                        readOnly
+                      />
+                    ))
+                  )}
+                </Champ>
+              </div>
+            </div>
+          ) : (
+            <p>Aucun stand trouvé.</p>
+          )}
+
+          <div className="button_container">
+            {editMode ? (
+              <>
+                <Bouton
+                  type="button"
+                  onClick={() => handleSaveChanges(currentStand)}
+                >
+                  Enregistrer
+                </Bouton>
+                <Bouton
+                  type="button"
+                  onClick={() => handleDeleteStand(currentStand)}
+                >
+                  Supprimer ce stand
+                </Bouton>
+              </>
+            ) : (
+              <>
+                <Bouton
+                  type="button"
+                  onClick={handleEditStand(currentStandIndex)}
+                >
+                  Modifier
+                </Bouton>
+                <Bouton type="button" onClick={openModal}>
+                  Ajouter un stand
+                </Bouton>
+              </>
+            )}
+          </div>
+        </>
       )}
 
-      {/* Fenêtre modale */}
       {showModal && (
         <Modal onClose={closeModal}>
           <Titre valeurDuTitre="Ajouter un stand" />
           <StandForm onClose={closeModal} />
         </Modal>
+      )}
+      {errorMessage && isPopupVisible && (
+        <FenetrePopup message={errorMessage} type="error" onClose={hidePopup} />
+      )}
+
+      {successMessage && isPopupVisible && (
+        <FenetrePopup
+          message={successMessage}
+          type="success"
+          onClose={hidePopup}
+        />
       )}
     </>
   );
