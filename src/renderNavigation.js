@@ -4,7 +4,6 @@ import { useAuth } from "./AuthWrapper";
 import { nav } from "./navigation";
 import { useEffect } from "react";
 
-
 export const RenderRoutes = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -37,32 +36,44 @@ export const RenderRoutes = () => {
     );
   }
   
-   
-  export const RenderMenu = () => {
-    const { user } = useAuth();
-    const MenuItem = ({ r }) => {
-      // Afficher un lien de menu différent si l'utilisateur est un admin
-      if (user.admin && r.path === "/admin") {
-        return <div className="menuItem"><Link to="/admin">Admin</Link></div>;
-      }
-      return <div className="menuItem"><Link to={r.path}>{r.name}</Link></div>;
-    }
   
+
+export const RenderMenu = () => {
+  const { user } = useAuth();
+  const MenuItem = ({ r }) => {
+    // Afficher un lien de menu différent si l'utilisateur est un admin
+    if (user.admin && r.path === "/admin") {
+      return (
+        <div className="menuItem">
+          <Link to="/admin">Admin</Link>
+        </div>
+      );
+    }
     return (
-      <div className="menu">
-        {nav.map((r, i) => {
-          if (!r.isPrivate && r.isMenu) {
-            // Afficher les liens de menu publics
-            return <MenuItem key={i} r={r}/>
-          } else if (user.isAuthenticated && r.isMenu && (!r.adminOnly || user.admin)) {
-            // Afficher les liens de menu privés si l'utilisateur est authentifié
-            // et ne montrer que les liens adminOnly si l'utilisateur est admin
-            return <MenuItem key={i} r={r}/>
-          } else {
-            return null; // Ou rien si l'élément de menu ne doit pas être affiché
-          }
-        })}
+      <div className="menuItem">
+        <Link to={r.path}>{r.name}</Link>
       </div>
     );
-  }
-  
+  };
+
+  return (
+    <div className="menu">
+      {nav.map((r, i) => {
+        if (!r.isPrivate && r.isMenu) {
+          // Afficher les liens de menu publics
+          return <MenuItem key={i} r={r} />;
+        } else if (
+          user.isAuthenticated &&
+          r.isMenu &&
+          (!r.adminOnly || user.admin)
+        ) {
+          // Afficher les liens de menu privés si l'utilisateur est authentifié
+          // et ne montrer que les liens adminOnly si l'utilisateur est admin
+          return <MenuItem key={i} r={r} />;
+        } else {
+          return null; // Ou rien si l'élément de menu ne doit pas être affiché
+        }
+      })}
+    </div>
+  );
+};
