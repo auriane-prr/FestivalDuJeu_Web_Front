@@ -12,7 +12,6 @@ export const nav = [
     { path : "/accueil", name : "PageAccueil", element: <PageAccueil />, isMenu: true, isPrivate: false},
     { path : "/register", name : "PageRegister", element: <PageRegister />, isMenu: true, isPrivate: false},
     { path : "/profil", name : "PageProfil", element: <PageProfil />, isMenu: true, isPrivate: false},
-    { path : "/admin", name : "AdminAccueil", element: <AdminAccueil />, isMenu: true, isPrivate: false},
-
+    { path: "/admin", name: "AdminAccueil", element: <AdminAccueil />, isMenu: true, isPrivate: true },
 ]
 

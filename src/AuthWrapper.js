@@ -6,7 +6,19 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 const AuthWrapper = ({ children }) => {
-  const [user, setUser] = useState({ name: "",admin:"", referent:"", nom:"", prenom:"", password:"", taille_tshirt:"", vegetarien:"", mail:"", hebergement:"",   isAuthenticated: false });
+  const [user, setUser] = useState({
+    name: "",
+    admin: "",
+    referent: "",
+    nom: "",
+    prenom: "",
+    password: "",
+    taille_tshirt: "",
+    vegetarien: "",
+    mail: "",
+    hebergement: "",
+    isAuthenticated: false,
+  });
 
   const login = async (pseudo, password) => {
     try {
@@ -15,22 +27,23 @@ const AuthWrapper = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          pseudo,
-          password,
-        }),
+        body: JSON.stringify({ pseudo, password }),
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setUser({ ...user, isAuthenticated: true, userInfo: data.userInfo });
-        return { token: data.token };  // Retourne le token encapsulé dans un objet
-      } else {
-        throw new Error(data.message || "Erreur lors de l'authentification");
+      if (!response.ok) {
+        // C'est une bonne pratique de retourner la réponse du serveur en cas d'erreur.
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Erreur lors de l'authentification");
       }
+
+      const data = await response.json();
+      setUser({ ...user, isAuthenticated: true, admin: data.admin, ...data });
+      return { token: data.token, admin: data.admin };
+
     } catch (error) {
-      throw new Error("Erreur lors de l'authentification");
+      // Lancer une nouvelle erreur est inutile ici, il suffit de retourner ou de gérer l'erreur.
+      console.error("Erreur lors de l'authentification: ", error.message);
+      throw error; // Ou gérer l'erreur de manière appropriée.
     }
   };
   
