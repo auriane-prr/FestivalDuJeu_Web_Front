@@ -148,6 +148,20 @@ function Display_stand() {
     setStands(updatedStands);
   };
 
+  function formatDate(date) {
+    if (!date) return '';
+  
+    // Crée un nouvel objet Date si date n'est pas déjà une instance de Date
+    const dateObj = date instanceof Date ? date : new Date(date);
+    
+    // Formate la date en 'jj/mm/aaaa'
+    return dateObj.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  }
+
   const handleRemoveReferent = async (referentId) => {
     try {
       if (!currentStand._id || !referentId) {
@@ -364,7 +378,7 @@ function Display_stand() {
               <Champ label="Date :">
                 <input
                   type="text"
-                  value={currentStand?.date || ""}
+                  value={formatDate(currentStand?.date || "")}
                   onChange={handleDateChange}
                   className="input"
                   readOnly={!editMode}

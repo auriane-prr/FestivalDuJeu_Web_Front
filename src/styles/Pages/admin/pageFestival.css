@@ -10,3 +10,23 @@
   object-fit: contain;
   position: relative;
 }
+
+.pageStand {
+  margin-top: -5%;
+  padding-bottom: 1%;
+}
+
+@media screen and (max-width: 768px) {
+  .pageStand {
+    margin-top: 30%;
+    padding-bottom: 5%;
+  }
+  
+}
+
+@media screen and (max-width: 1024px) {
+  .pageStand {
+    margin-top: 20%;
+  }
+}
+

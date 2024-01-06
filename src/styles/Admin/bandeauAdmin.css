@@ -19,10 +19,9 @@
     object-fit: cover; /* Ajuste automatiquement l'image tout en conservant son ratio d'aspect */
     cursor: pointer;
     align-self: center;
+    margin-right: 3%;
 }
 
-.Logo-Admin{
-    margin-right: 5%; /* Espacement entre les logos */
-    height: 100%;
-
-}
+.Logo-AD:first-child {
+    margin-right: auto; /* Déplacer le premier logo vers la gauche */
+  }

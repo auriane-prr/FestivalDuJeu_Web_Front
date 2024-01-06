@@ -63,6 +63,20 @@ function StandForm({ onClose }) {
     fetchData();
   }, []);
 
+  function formatDate(date) {
+    if (!date) return '';
+  
+    // Crée un nouvel objet Date si date n'est pas déjà une instance de Date
+    const dateObj = date instanceof Date ? date : new Date(date);
+    
+    // Formate la date en 'jj/mm/aaaa'
+    return dateObj.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -164,7 +178,7 @@ function StandForm({ onClose }) {
               checked={selectedDate === dateDebut}
               onChange={handleDateChange}
             />
-            <span className="name">{dateDebut}</span>
+            <span className="name">{formatDate(dateDebut)}</span>
           </label>
           <label className="radio">
             <input
@@ -174,7 +188,7 @@ function StandForm({ onClose }) {
               checked={selectedDate === dateFin}
               onChange={handleDateChange}
             />
-            <span className="name">{dateFin}</span>
+            <span className="name">{formatDate(dateFin)}</span>
           </label>
           <label className="radio">
             <input

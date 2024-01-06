@@ -13,3 +13,38 @@
     align-items: center; /* Centrage horizontal */
     gap: 10px; /* Espacement entre les boutons */
   }
+
+.btn-ajout-container  {
+    display: flex;
+    flex-direction: row; /* Alignement horizontal */
+    justify-content: center; /* Centrage vertical */
+    align-items: center; /* Centrage horizontal */
+    padding-top: 10%;
+    margin-bottom: -10%;
+  }
+
+  .festival-item {
+    cursor: pointer;
+    margin-bottom: 10px; /* Ajustez selon vos besoins */
+  }
+  
+  .festival-details {
+    display: none;
+    /* Ajoutez ici plus de styles pour la mise en forme des détails */
+  }
+  
+  .festival-item.selected .festival-details {
+    display: block;
+    /* Styles pour les détails du festival lorsqu'ils sont affichés */
+  }
+
+  @media screen and (max-width: 768px) {
+    .btn-ajout-container {
+      margin-top: 10%;
+    }
+  }
+  @media screen and (max-width: 1024px) {
+    .btn-ajout-container {
+      padding-top: 20%;
+    }
+  }
