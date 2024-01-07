@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import "../../../styles/Admin/display_jeux.css";
 import Champ from '../../general/champ';
 import BoutonPagePrecedente from '../../BoutonPagePrecedente';
 import BoutonPageSuivante from '../../BoutonPageSuivante';
@@ -29,6 +30,7 @@ function Display_jeux() {
   }, [selectedZone]);
 
   const showPreviousJeu = () => {
+    console.log("click",currentJeuIndex);
     setCurrentJeuIndex((prevIndex) => {
       if (prevIndex === 0) {
         return jeux.length - 1;
@@ -60,8 +62,12 @@ function Display_jeux() {
     
     return (
       <>
-      <BoutonPagePrecedente onClick={showPreviousJeu} />
-      <BoutonPageSuivante onClick={showNextJeu} />
+       {/*<BoutonPagePrecedente onClick={showPreviousJeu} />*/}
+      <button onClick={showPreviousJeu}>Précédent</button>
+    
+      {/*<BoutonPageSuivante onClick={showNextJeu} />*/}
+      <button onClick={showNextJeu}>Suivant</button>
+      <br />
 
       <select onChange={(e) => setSelectedZone(e.target.value)} defaultValue="">
         <option value="" disabled>Sélectionnez une zone</option>
@@ -72,24 +78,20 @@ function Display_jeux() {
 
       {jeux.length === 0 ? <p>Aucun jeu trouvé pour cette zone.</p> : (
         <div>
-        <Champ label="Nom du jeu">
-        <input type="text"
-        value={currentJeu.nom_jeu}
-        className='input'
-        readOnly />
-        </Champ>
-        <Champ label="Editeur">
-        <input type="text"
-        value={currentJeu.editeur}
-        className='input'
-        readOnly />
-        </Champ>
-        <Champ label="Âge minimum">
-        <input type="text"
-        value={currentJeu.ageMin}
-        className='input'
-        readOnly />
-        </Champ>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Champ customStyle={{ width: "20%", border: "1px solid #000", borderRadius: "10px", flex: "0 0 auto" }}>
+            <img src={currentJeu.logo} className='input' alt="Logo" />
+          </Champ>
+          <Champ label="Nom du jeu" customStyle={{ flex: 1, marginRight: "10px" }}>
+            <input type="text" value={currentJeu.nom_jeu} className='input' readOnly />
+          </Champ>
+          <Champ label="Editeur" customStyle={{ flex: 1 }}>
+            <input type="text" value={currentJeu.editeur} className='input' readOnly />
+          </Champ>
+        </div>
+        <Champ label="Âge minimum" customStyle={{ marginTop: "10px" }}>
+          <input type="text" value={currentJeu.ageMin} className='input' readOnly />
+        </Champ>      
         <Champ label="Durée">
         <input type="text"
         value={currentJeu.duree}
@@ -135,12 +137,6 @@ function Display_jeux() {
         <Champ label="Lien">
         <input type="text"
         value={currentJeu.lien}
-        className='input'
-        readOnly />
-        </Champ>
-        <Champ label="Logo">
-        <input type="text"
-        value={currentJeu.logo}
         className='input'
         readOnly />
         </Champ>

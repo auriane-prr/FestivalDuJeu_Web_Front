@@ -1,11 +1,11 @@
 import React from 'react';
 import "../../styles/champ.css";
 
-const Champ = (props) => {
+const Champ = ({label, children, customStyle}) => {
   return (
-    <div className="field">
-      <label htmlFor={props.label} className='input'>{props.label}</label>
-        {props.children}
+    <div className="field"  style={customStyle}>
+      <label htmlFor={label} className='input'>{label}</label>
+        {children}
     </div>
   );
 };
