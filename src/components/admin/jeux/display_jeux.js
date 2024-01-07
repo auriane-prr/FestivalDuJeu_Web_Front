@@ -5,64 +5,73 @@ import BoutonPageSuivante from '../../BoutonPageSuivante';
 
 
 function Display_jeux() {
-    const [selectedZone, setSelectedZone] = useState('');
-    const [jeux, setJeux] = useState([]);
-    const [currentJeuIndex, setCurrentJeuIndex] = useState(0);
-    const currentJeu = jeux[currentJeuIndex] || {};
+  const [selectedZone, setSelectedZone] = useState('');
+  const [jeux, setJeux] = useState([]);
+  const [currentJeuIndex, setCurrentJeuIndex] = useState(0);
+  const currentJeu = jeux[currentJeuIndex] || {};
+  const [zones, setZones] = useState([]);
+  
     
-     // Récupération des jeux pour la zone sélectionnée
-    useEffect(() => {
-        async function fetchJeuxData() {
-            if (selectedZone) {
-                try {
-                    const response = await fetch(`http://localhost:3500/jeux/jeuxParZone/${selectedZone}`);
-                    const data = await response.json();
-                    setJeux(data);
-                } catch (error) {
-                    console.error('Erreur lors de la récupération des jeux', error);
-                }
-            }
+  // Récupération des jeux pour la zone sélectionnée
+  useEffect(() => {
+    async function fetchJeuxData() {
+      if (selectedZone) {
+        try {
+          const response = await fetch(`http://localhost:3500/jeux/jeuxParZone/${selectedZone}`);
+          const data = await response.json();
+          setJeux(data);
+        } catch (error) {
+          console.error('Erreur lors de la récupération des jeux', error);
         }
-        fetchJeuxData();
-    }, [selectedZone]);
-
-    const showPreviousJeu = () => {
-        setCurrentJeuIndex((prevIndex) => prevIndex === 0 ? jeux.length - 1 : prevIndex - 1);
-    };
-
-            
-    const showNextJeu = () => {
-        setCurrentJeuIndex((prevIndex) => prevIndex === jeux.length - 1 ? 0 : prevIndex + 1);
-    };
-    const ZoneList = ({ onSelectZone }) => {
-        const [zones, setZones] = useState([]);
-    
-        useEffect(() => {
-          fetch('http://localhost:3500/jeux/zones')
-            .then(response => response.json())
-            .then(data => setZones(data))
-            .catch(error => console.error('Erreur lors de la récupération des zones', error));
-        }, []);
-    
-        return (
-          <select onChange={(e) => onSelectZone(e.target.value)} defaultValue="">
-            <option value="" disabled>Sélectionnez une zone</option>
-            {zones.map((zone, index) => (
-              <option key={index} value={zone}>{zone}</option>
-            ))}
-          </select>
-        );
-      };
-    
-
-
-  // Composant ou fonction pour afficher les jeux
-  const displayJeuxInfo = () => {
-    if (!currentJeu|| jeux.length === 0) {
-        return <p>Aucun jeu trouvé pour cette zone.</p>;
       }
+    }
+    fetchJeuxData();
+  }, [selectedZone]);
+
+  const showPreviousJeu = () => {
+    setCurrentJeuIndex((prevIndex) => {
+      if (prevIndex === 0) {
+        return jeux.length - 1;
+      } else { 
+        return prevIndex - 1;
+      }
+    });
+    console.log("click",currentJeuIndex);
+  };
+
+  const showNextJeu = () => {
+    setCurrentJeuIndex((prevIndex) => {
+      if (prevIndex === jeux.length - 1) {
+        return 0;
+      } else {
+        return prevIndex + 1;
+      }
+    });
+    console.log("click",currentJeuIndex);
+  };
+
+    useEffect(() => {
+      fetch('http://localhost:3500/jeux/zones')
+        .then(response => response.json())
+        .then(data => setZones(data))
+        .catch(error => console.error('Erreur lors de la récupération des zones', error));
+    }, []);
+
+    
     return (
-      <div>
+      <>
+      <BoutonPagePrecedente onClick={showPreviousJeu} />
+      <BoutonPageSuivante onClick={showNextJeu} />
+
+      <select onChange={(e) => setSelectedZone(e.target.value)} defaultValue="">
+        <option value="" disabled>Sélectionnez une zone</option>
+        {zones.map((zone, index) => (
+          <option key={index} value={zone}>{zone}</option>
+        ))}
+      </select>
+
+      {jeux.length === 0 ? <p>Aucun jeu trouvé pour cette zone.</p> : (
+        <div>
         <Champ label="Nom du jeu">
         <input type="text"
         value={currentJeu.nom_jeu}
@@ -136,19 +145,9 @@ function Display_jeux() {
         readOnly />
         </Champ>
       </div>
+      )};
+      </>
     );
   };
-
-  return (
-    <div>
-      <ZoneList onSelectZone={setSelectedZone} />
-      <BoutonPagePrecedente onClick={showPreviousJeu} />
-      <BoutonPageSuivante onClick={showNextJeu} />
-      <div>{displayJeuxInfo()}</div>
-    </div>
-  );
-}
-
-
 
 export default Display_jeux;
