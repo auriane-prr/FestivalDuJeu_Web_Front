@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "../../styles/Pages/pageAccueil.css";
 import BandeauLogo from '../../components/benevole/bandeauBenevole';
-import Boite from '../../components/general/boite';
+import BoiteOnglet from '../../components/general/boiteOnglet';
 import Jauge from '../../components/benevole/stands/jauge';
 import Fiche_modal from '../../components/benevole/stands/fiche_stand_participer'; // Import du composant Modal
 
@@ -117,7 +117,8 @@ function PageAccueil() {
   return (
     <div>
       <BandeauLogo />
-      <Boite>
+      <BoiteOnglet nomOnglet1='Samedi' nomOnglet2='Dimanche'>
+        <div className='nomOnglet1'>
         {Object.entries(standsByHour).map(([hour, stands], index) => (
           <div key={index}>
             <h2>{hour}</h2>
@@ -132,7 +133,10 @@ function PageAccueil() {
             </div>
           </div>
         ))}
-      </Boite>
+        </div>
+        <div className='nomOnglet2'>
+        </div>
+      </BoiteOnglet>
       {showModal && selectedStand && ( // Affichage conditionnel de la fenêtre modale
         <Fiche_modal type="success" onClose={closeModal} onParticipateClick={handleParticiperClick}>
           <p>Nom du stand: {selectedStand.nom_stand}</p>
