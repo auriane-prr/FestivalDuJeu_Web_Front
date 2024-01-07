@@ -162,8 +162,7 @@ function PageProfil() {
 
       // Ajoutez une condition pour vérifier si le champ adresse n'est pas vide
       if (hebergementValue === "Proposition" && adresseValue.trim() === "") {
-        setErrorMessage(
-        "Veuillez saisir une adresse pour l'hébergement.");
+        setErrorMessage("Veuillez saisir une adresse pour l'hébergement.");
         setSuccessMessage(null);
         setPopupVisible(true);
         return;
@@ -184,14 +183,17 @@ function PageProfil() {
       };
 
       // Effectuez la requête PUT au serveur avec les données modifiées
-      const response = await fetch(`http://localhost:3500/benevole/pseudo/${pseudo}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(modifiedData),
-      });
+      const response = await fetch(
+        `http://localhost:3500/benevole/${pseudo}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(modifiedData),
+        }
+      );
 
       if (!token) {
         console.error("Token d'authentification non trouvé");
@@ -205,13 +207,16 @@ function PageProfil() {
         setPopupVisible(true);
 
         // Actualisez l'état local avec les nouvelles données de la base de données
-        const updatedResponse = await fetch(`http://localhost:3500/benevole/pseudo/${pseudo}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const updatedResponse = await fetch(
+          `http://localhost:3500/benevole/pseudo/${pseudo}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (updatedResponse.ok) {
           // Mettez à jour directement tous les états avec les nouvelles valeurs
@@ -231,16 +236,21 @@ function PageProfil() {
         }
       } else {
         // Gérez les erreurs liées à la requête
+        const isJson = response.headers
+          .get("content-type")
+          ?.includes("application/json");
+        const responseData = isJson ? await response.json() : null;
         console.error(
           "Erreur lors de la sauvegarde des modifications",
           response.status,
-          response.statusText
+          responseData
         );
-        setErrorMessage("Les modifications ne sont pas enregistrées");
-        setErrorMessage(null);
+        setErrorMessage(
+          `Erreur lors de la sauvegarde: ${
+            responseData ? responseData.message : response.statusText
+          }`
+        );
         setPopupVisible(true);
-        const responseData = await response.json();
-        console.error("Response Data:", responseData);
       }
     } catch (error) {
       // Gérez les erreurs liées à la requête
@@ -248,7 +258,6 @@ function PageProfil() {
       setErrorMessage(null);
       setPopupVisible(true);
     }
-    
   };
 
   return (
@@ -423,9 +432,13 @@ function PageProfil() {
       </Boite>
       <div className="button_container">
         {editMode ? (
-          <Bouton onClick={handleSaveChanges} type="button" >Enregistrer</Bouton>
+          <Bouton onClick={handleSaveChanges} type="button">
+            Enregistrer
+          </Bouton>
         ) : (
-          <Bouton onClick={handleEditModeToggle} type="button" >Modifier</Bouton>
+          <Bouton onClick={handleEditModeToggle} type="button">
+            Modifier
+          </Bouton>
         )}
       </div>
 
@@ -440,7 +453,6 @@ function PageProfil() {
           onClose={hidePopup}
         />
       )}
-
     </div>
   );
 }

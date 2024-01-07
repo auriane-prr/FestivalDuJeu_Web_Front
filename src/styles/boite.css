@@ -1,33 +1,68 @@
-.Fond {
-    position: relative; /* Changement de position à relative */
-    width: 50%;
-    height: auto;
-    background-color: rgba(218, 218, 221);
-    border-radius: 1rem;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    align-items: center;
-  }
-    
-
-  .Container-boite {
-    margin-bottom: 3%;
-    margin-top: 3%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: auto;
-  }
-
+.boite {
+  position: relative;
+  background-color: rgba(218, 218, 221);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 1rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 65%;
+  margin: 15% auto;
+  padding-bottom: 3%;
+}
 
 @media (max-width: 1024px) {
-    .Fond{
-        width: 70%;
-    }
-    .Container-boite{
-        margin-top: 8%;
-        margin-bottom: 8%;
-    }
+  .container-boite {
+    margin-top: 8%;
+    margin-bottom: 8%;
+    margin-left: auto; /* Centrage horizontal dans les petits écrans */
+    margin-right: auto; /* Centrage horizontal dans les petits écrans */
+  }
+}
+
+.EnTete {
+  display: flex;
+  position: relative;
+}
+
+.Couleur1Onglet,
+.Couleur2Onglet {
+  flex: 1; /* Occupe le même espace pour les deux onglets */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: opacity 0.3s, z-index 0.3s, border-radius 0.3s; /* Transition douce pour les changements */
+  position: relative; /* Position relative pour z-index */
+  background-color: #83b849;
+}
+
+.Couleur1Onglet {
+  border-radius: 0.75rem 0 0 0; /* HG - HD - BD - BG */
+  z-index: 1; /* Z-index inférieur pour qu'il soit sous l'autre onglet si non actif */
+}
+
+.Couleur2Onglet {
+  border-radius: 0 0.75rem 0 0;
+  z-index: 1; /* Z-index inférieur pour qu'il soit sous l'autre onglet si non actif */
+}
+
+.Couleur1Onglet.active {
+  border-radius: 0.75rem 0.75rem 0.75rem 0;
+  opacity: 1; /* Opaque si actif */
+  z-index: 3; /* Z-index supérieur pour passer au-dessus de l'autre onglet */
+  margin-right: -2%; /* Ajustement pour superposer les onglets */
+}
+
+.Couleur2Onglet.active {
+  border-radius: 0.75rem 0.75rem 0 0.75rem; 
+  opacity: 1; /* Opaque si actif */
+  z-index: 3; /* Z-index supérieur pour passer au-dessus de l'autre onglet */
+  margin-left: -2%; /* Ajustement pour superposer les onglets */
+}
+
+.Couleur1Onglet:not(.active),
+.Couleur2Onglet:not(.active) {
+  opacity: 0.6; /* Moins opaque si non-actif */
+  z-index: 2; /* Assurez-vous que c'est en dessous de l'onglet actif */
 }

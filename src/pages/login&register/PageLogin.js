@@ -10,7 +10,7 @@ import Bouton from '../../components/general/bouton';
 
 function PageLogin() {
     return (
-        <div>
+        <>
             <Bandeau />
                 <Boite valeurDuTitre='Bienvenue à tous les bénévoles, passionés de jeu !'>
                     <Login />
@@ -23,7 +23,7 @@ function PageLogin() {
                         <Bouton>S'inscrire</Bouton>
                     </Link>
                 </div>
-        </div> // jsp à quoi ça sert mais ça marche pas sans
+        </>
 
     );
 }

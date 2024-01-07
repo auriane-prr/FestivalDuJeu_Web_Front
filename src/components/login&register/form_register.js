@@ -145,35 +145,34 @@ const FormInscription = () => {
   return (
     <div className="Form-register">
       <form onSubmit={handleSubmit}>
-
-      <div className="field-with-aide">
-        <Champ label="Nom :">
-          <input
-            className="input"
-            type="text"
-            name="nom"
-            id="nom"
-            value={formData.nom}
-            onChange={handleInputChange}
-            required
-          />
-        </Champ>
-        <Aide />
+        <div className="field-with-aide">
+          <Champ label="Nom :">
+            <input
+              className="input"
+              type="text"
+              name="nom"
+              id="nom"
+              value={formData.nom}
+              onChange={handleInputChange}
+              required
+            />
+          </Champ>
+          <Aide />
         </div>
 
-      <div className="field-with-aide">
-        <Champ label="Prénom :">
-          <input
-            type="text"
-            id="prenom"
-            name="prenom"
-            value={formData.prenom}
-            onChange={handleInputChange}
-            className="input"
-            required
-          />
-        </Champ>
-        <Aide />
+        <div className="field-with-aide">
+          <Champ label="Prénom :">
+            <input
+              type="text"
+              id="prenom"
+              name="prenom"
+              value={formData.prenom}
+              onChange={handleInputChange}
+              className="input"
+              required
+            />
+          </Champ>
+          <Aide />
         </div>
 
         <Champ label="Pseudo :">
@@ -190,18 +189,18 @@ const FormInscription = () => {
         </Champ>
 
         <div className="field-with-aide">
-        <Champ label="Mot de passe :">
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-            className="input"
-            required
-          />
-        </Champ>
-        <Aide />
+          <Champ label="Mot de passe :">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              className="input"
+              required
+            />
+          </Champ>
+          <Aide />
         </div>
 
         <Champ label="Email :">
@@ -307,8 +306,8 @@ const FormInscription = () => {
           </Champ>
         )}
 
-        <div className='button_container'>
-          <Bouton type="submit" >Se connecter</Bouton>
+        <div className="button_container">
+          <Bouton type="submit">Se connecter</Bouton>
         </div>
       </form>
 

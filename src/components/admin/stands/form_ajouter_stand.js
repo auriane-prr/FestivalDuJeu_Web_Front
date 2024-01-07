@@ -10,6 +10,8 @@ function StandForm({ onClose }) {
   const [dateDebut, setDateDebut] = useState("");
   const [dateFin, setDateFin] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [descriptionHeight, setDescriptionHeight] = useState('auto');
+
 
   const [horairesData, setHorairesData] = useState([
     { heure: "9-11", nb_benevole: "" },
@@ -27,6 +29,11 @@ function StandForm({ onClose }) {
     setPopupVisible(false);
   };
 
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+    setDescriptionHeight(`${e.target.scrollHeight}px`);
+  };
+
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value);
   };
@@ -35,7 +42,7 @@ function StandForm({ onClose }) {
     const updatedHorairesData = [...horairesData];
     updatedHorairesData[index].nb_benevole = value;
     // Assurez-vous que la valeur est supérieure ou égale à 1
-    updatedHorairesData[index].nb_benevole = value >= 0 ? value : "";
+    updatedHorairesData[index].nb_benevole = value >= 1 ? value : "";
     setHorairesData(updatedHorairesData);
   };
 
@@ -55,6 +62,20 @@ function StandForm({ onClose }) {
     };
     fetchData();
   }, []);
+
+  function formatDate(date) {
+    if (!date) return '';
+  
+    // Crée un nouvel objet Date si date n'est pas déjà une instance de Date
+    const dateObj = date instanceof Date ? date : new Date(date);
+    
+    // Formate la date en 'jj/mm/aaaa'
+    return dateObj.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -145,8 +166,9 @@ function StandForm({ onClose }) {
   };  
 
   return (
-    <div className="FormAjout-container">
+    <div>
       <form onSubmit={handleSubmit} className="FormAjout">
+      
         <div className="radio-inputs">
           <label className="radio">
             <input
@@ -156,7 +178,7 @@ function StandForm({ onClose }) {
               checked={selectedDate === dateDebut}
               onChange={handleDateChange}
             />
-            <span className="name">{dateDebut}</span>
+            <span className="name">{formatDate(dateDebut)}</span>
           </label>
           <label className="radio">
             <input
@@ -166,7 +188,7 @@ function StandForm({ onClose }) {
               checked={selectedDate === dateFin}
               onChange={handleDateChange}
             />
-            <span className="name">{dateFin}</span>
+            <span className="name">{formatDate(dateFin)}</span>
           </label>
           <label className="radio">
             <input
@@ -179,6 +201,11 @@ function StandForm({ onClose }) {
             <span className="name">Les deux jours</span>
           </label>
         </div>
+        {selectedDate === "both" && (
+        <p>
+        Vous pourrez modifier la capacité ultérieurement pour chacune des dates.
+      </p>
+      )}
 
         <Champ label="Nom Stand :">
           <input
@@ -191,16 +218,17 @@ function StandForm({ onClose }) {
         </Champ>
 
         <Champ label="Description:">
-          <input
+          <textarea
             className="input"
             required
             type="text"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={handleDescriptionChange}
+            style={{ height: descriptionHeight }} // Appliquez la hauteur calculée
           />
         </Champ>
 
-        {horairesData.map((horaireData, index) => (
+        {horairesData && horairesData.length > 0 && horairesData.map((horaireData, index) => (
           <div className="horaire-row" key={index}>
             <Champ label="Horaires :">
               <input
@@ -214,7 +242,7 @@ function StandForm({ onClose }) {
               <input
                 className="input"
                 type="number"
-                min="0"
+                min="1"
                 value={horaireData.nb_benevole}
                 required
                 onChange={(e) => handleNbBenevoleChange(index, e.target.value)}

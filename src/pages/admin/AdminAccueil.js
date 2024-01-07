@@ -1,15 +1,12 @@
 import React from 'react';
 import BandeauAdmin from '../../components/admin/bandeauAdmin';
-import BoiteOnglet from '../../components/general/boiteOnglet';
-import Display_stand from '../../components/admin/stands/display_stand';
-import Ajouter_jeux from '../../components/admin/jeux/ajouter_jeux';
-import Display_jeux from '../../components/admin/jeux/display_jeux';
-import '../../styles/Pages/admin/accueil_admin.css';
+import DisplayFestival from '../../components/admin/festivals/display_festival';
 
-function AdminPageStand() {
+function AdminAccueil() {
   return (
-    <div className="pageStand">
+    <div>
       <BandeauAdmin />
+<<<<<<< HEAD
       <BoiteOnglet nomOnglet1='Stand' nomOnglet2='Jeux'>
         <div className='Onglet1'>
           <Display_stand />
@@ -18,8 +15,11 @@ function AdminPageStand() {
         <Display_jeux />
         </div>
       </BoiteOnglet>
+=======
+      <DisplayFestival />
+>>>>>>> 75454ec51df02d66358c14789e13b992b1c17658
     </div>
   );
 }
 
-export default AdminPageStand;
+export default AdminAccueil;

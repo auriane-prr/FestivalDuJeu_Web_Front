@@ -5,18 +5,10 @@
   }
 }
 
-.Container-texte {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: auto;
-}
-
 .titre-container {
   display: flex;
   flex-direction: column;
   justify-content: center; 
   align-items: center;
-  margin: auto 8%;
+  margin: 3% 8%;
 }
