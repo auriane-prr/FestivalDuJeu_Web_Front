@@ -86,7 +86,11 @@ function Display_jeux() {
             <input type="text" value={currentJeu.nom_jeu} className='input' readOnly />
           </Champ>
           <Champ label="Editeur" customStyle={{ flex: 1 }}>
-            <input type="text" value={currentJeu.editeur} className='input' readOnly />
+            <input 
+            type="text" 
+            value={currentJeu.editeur} 
+            className='input' 
+            readOnly />
           </Champ>
         </div>
         <Champ label="Âge minimum" customStyle={{ marginTop: "10px" }}>
