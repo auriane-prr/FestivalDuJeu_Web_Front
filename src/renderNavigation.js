@@ -1,78 +1,61 @@
-import { Link, Route, Routes, useNavigate, Navigate } from "react-router-dom";
+import { Link, Route, Routes, Navigate } from "react-router-dom";
 import "./styles/renderNavigation.css";
 import { useAuth } from "./AuthWrapper";
 import { nav } from "./navigation";
-import { useEffect } from "react";
 
 export const RenderRoutes = () => {
-    const { user } = useAuth();
-    const navigate = useNavigate();
-  
-    useEffect(() => {
-      // Rediriger vers une page spécifique si l'utilisateur est un admin
-      if (user.isAuthenticated && user.admin) {
-        navigate('/admin');
-      }
-      // Vous pouvez également gérer ici la redirection pour les utilisateurs non-admin
-    }, [user, navigate]);
-  
-    return (
-      <Routes>
-        {nav.map((r, i) => {
-          if (r.isPrivate && !user.isAuthenticated) {
-            // Si la route est privée et que l'utilisateur n'est pas authentifié, redirigez-le vers la page de connexion
-            return <Route key={i} path="*" element={<Navigate replace to="/" />} />
-          } else if (r.isPrivate && user.isAuthenticated) {
-            // Si l'utilisateur est authentifié, affichez la route privée
-            return <Route key={i} path={r.path} element={r.element}/>
-          } else if (!r.isPrivate) {
-            // Si la route n'est pas privée, affichez-la normalement
-            return <Route key={i} path={r.path} element={r.element}/>
-          } else {
-            return null; // Ou rediriger vers une page d'erreur si vous préférez
-          }
-        })}
-      </Routes>
-    );
-  }
-  
-  
-
-export const RenderMenu = () => {
   const { user } = useAuth();
-  const MenuItem = ({ r }) => {
-    // Afficher un lien de menu différent si l'utilisateur est un admin
-    if (user.admin && r.path === "/admin") {
-      return (
-        <div className="menuItem">
-          <Link to="/admin">Admin</Link>
-        </div>
-      );
+
+  const getRouteElement = (route) => {
+    // Destructure pour faciliter l'accès aux propriétés de route
+    const { path, element, isPrivate, adminOnly } = route;
+
+    // Si l'utilisateur n'est pas authentifié et que la route est privée, rediriger vers la page de connexion
+    if (isPrivate && !user.isAuthenticated) {
+      return <Navigate replace to="/" />;
     }
-    return (
-      <div className="menuItem">
-        <Link to={r.path}>{r.name}</Link>
-      </div>
-    );
+
+    // Si la route est réservée aux admins et que l'utilisateur n'est pas admin, rediriger
+    if (adminOnly && !user.admin) {
+      return <Navigate replace to="/accueil" />;
+    }
+
+    // Si l'utilisateur a le droit d'accéder à la route, retournez l'élément de la route
+    return element;
   };
 
   return (
+    <Routes>
+      {nav.map((route, index) => (
+        <Route key={index} path={route.path} element={getRouteElement(route)} />
+      ))}
+    </Routes>
+  );
+};
+
+
+
+
+export const RenderMenu = () => {
+  const { user } = useAuth();
+
+  return (
     <div className="menu">
-      {nav.map((r, i) => {
-        if (!r.isPrivate && r.isMenu) {
-          // Afficher les liens de menu publics
-          return <MenuItem key={i} r={r} />;
-        } else if (
-          user.isAuthenticated &&
-          r.isMenu &&
-          (!r.adminOnly || user.admin)
-        ) {
-          // Afficher les liens de menu privés si l'utilisateur est authentifié
-          // et ne montrer que les liens adminOnly si l'utilisateur est admin
-          return <MenuItem key={i} r={r} />;
-        } else {
-          return null; // Ou rien si l'élément de menu ne doit pas être affiché
+      {nav.map((route, index) => {
+        // Condition pour déterminer si le lien de menu doit être affiché
+        const showPublicLink = !route.isPrivate && route.isMenu;
+        const showPrivateLink = user.isAuthenticated && route.isMenu;
+        const isNotAdminRouteOrUserIsAdmin = !route.adminOnly || user.admin;
+
+        // Si la route est publique ou si l'utilisateur est authentifié et autorisé à voir le lien
+        if ((showPublicLink || showPrivateLink) && isNotAdminRouteOrUserIsAdmin) {
+          return (
+            <div className="menuItem" key={index}>
+              <Link to={route.path}>{route.name}</Link>
+            </div>
+          );
         }
+        return null;
       })}
     </div>
   );

@@ -30,17 +30,19 @@ function PageProfil() {
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const [nomValue, setNom] = useState(nom);
-  const [prenomValue, setPrenom] = useState(prenom);
-  const [pseudoValue, setPseudo] = useState(pseudo);
-  const [associationValue, setAssociation] = useState(association);
-  const [taille_tshirtValue, setTailleTshirt] = useState(taille_tshirt);
-  const [passwordValue, setPassword] = useState(password);
-  const [mailValue, setMail] = useState(mail);
+  const [nomValue, setNom] = useState(nom || "");
+  const [prenomValue, setPrenom] = useState(prenom || "");
+  const [pseudoValue, setPseudo] = useState(pseudo || "");
+  const [associationValue, setAssociation] = useState(association || "");
+  const [taille_tshirtValue, setTailleTshirt] = useState(taille_tshirt || "");
+  const [mailValue, setMail] = useState(mail || "");
   const [telephoneValue, setTelephone] = useState(num_telephone || "");
-  const [vegetarienValue, setVegetarien] = useState(vegetarien);
-  const [hebergementValue, setHebergement] = useState(hebergement);
-  const [adresseValue, setAdresse] = useState(adresse);
+  const [vegetarienValue, setVegetarien] = useState(vegetarien || "");
+  const [hebergementValue, setHebergement] = useState(hebergement || "");
+  const [adresseValue, setAdresse] = useState(adresse || "");
+  const [passwordValue, setPassword] = useState(password || "");
+  const [newPassword, setNewPassword] = useState("");
+
   // eslint-disable-next-line no-unused-vars
   const [adresseVisible, setAdresseVisible] = useState(false);
 
@@ -55,6 +57,12 @@ function PageProfil() {
 
   const handleEditModeToggle = () => {
     setEditMode(!editMode);
+
+    // S'assurer que la valeur du mot de passe n'est jamais undefined ou null
+    if (!editMode) {
+      setPassword("");
+      setNewPassword("");
+    }
   };
 
   const [isPopupVisible, setPopupVisible] = useState(false);
@@ -113,12 +121,33 @@ function PageProfil() {
     fetchUserProfile();
   }, [userInfo.pseudo, editMode]);
 
+  const generatePseudo = (nom, prenom) => {
+    if (nom && prenom) {
+      const newPseudo = `${prenom}${nom.charAt(0)}`;
+      setPseudo(newPseudo.toLowerCase());
+    }
+  };
+
+  useEffect(() => {
+    if (editMode) {
+      // Réinitialiser le mot de passe lorsqu'on entre en mode édition
+      setPassword("");
+    } else {
+      // Réinitialiser le mot de passe à la valeur stockée pour l'utilisateur lorsqu'on quitte le mode édition
+      setPassword(userInfo.password || "");
+    }
+  }, [editMode, userInfo.password]);
+
   const handleNomChange = (e) => {
-    setNom(e.target.value);
+    const newNom = e.target.value;
+    setNom(newNom);
+    generatePseudo(newNom, prenomValue); // Utilisez la valeur actuelle de prenomValue
   };
 
   const handlePrenomChange = (e) => {
-    setPrenom(e.target.value);
+    const newPrenom = e.target.value;
+    setPrenom(newPrenom);
+    generatePseudo(nomValue, newPrenom); // Utilisez la valeur actuelle de nomValue
   };
 
   const handleAssociationChange = (e) => {
@@ -134,7 +163,7 @@ function PageProfil() {
   };
 
   const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+    setNewPassword(e.target.value);
   };
 
   const handleTelephoneChange = (e) => {
@@ -173,7 +202,6 @@ function PageProfil() {
         nom: nomValue,
         prenom: prenomValue,
         mail: mailValue,
-        password: passwordValue,
         num_telephone: telephoneValue,
         association: associationValue,
         taille_tshirt: taille_tshirtValue,
@@ -182,18 +210,20 @@ function PageProfil() {
         adresse: adresseValue,
       };
 
+      if (newPassword) {
+        modifiedData.password = newPassword;
+        console.log("Mise à jour du mot de passe");
+      }
+
       // Effectuez la requête PUT au serveur avec les données modifiées
-      const response = await fetch(
-        `http://localhost:3500/benevole/${pseudo}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(modifiedData),
-        }
-      );
+      const response = await fetch(`http://localhost:3500/benevole/${pseudo}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(modifiedData),
+      });
 
       if (!token) {
         console.error("Token d'authentification non trouvé");
@@ -202,6 +232,7 @@ function PageProfil() {
 
       if (response.ok) {
         // Les modifications ont été enregistrées avec succès
+        setNewPassword("");
         setSuccessMessage("Modifications enregistrées avec succès");
         setErrorMessage(null);
         setPopupVisible(true);
@@ -265,182 +296,208 @@ function PageProfil() {
       <BandeauLogo />
       <Boite valeurDuTitre={pseudoValue}>
         <div className="Container-profil-info">
-          <Champ label="Nom :">
-            <input
-              className="input"
-              type="text"
-              value={nomValue}
-              onChange={handleNomChange}
-              readOnly
-            />
-          </Champ>
-          <Champ label="Prénom :">
-            <input
-              className="input"
-              type="text"
-              value={prenomValue}
-              onChange={handlePrenomChange}
-              readOnly
-            />
-          </Champ>
-          <Champ label="Mot de passe :">
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={passwordValue}
-              readOnly
-              onChange={handlePasswordChange}
-              className="input"
-              required
-            />
-          </Champ>
-          <Champ label="Email :">
-            <input
-              type="text"
-              name="mail"
-              id="mail"
-              value={mailValue}
-              onChange={handleMailChange}
-              readOnly={!editMode}
-              className="input"
-              required
-            />
-          </Champ>
-          <Champ label="Association :">
-            {editMode ? (
-              <select
-                className="input"
-                value={associationValue}
-                onChange={handleAssociationChange}
-                style={{ height: "30px", width: "102%" }}
-              >
-                {/* Options du sélecteur, à remplir avec vos valeurs spécifiques */}
-                <option value="">Sélectionnez une option</option>
-                <option value="APCU">APCU</option>
-                <option value="MEN">MEN</option>
-                <option value="SMI">SMI</option>
-                {/* ... Ajoutez d'autres options au besoin */}
-              </select>
-            ) : (
-              <input
-                className="input"
-                type="text"
-                value={associationValue}
-                readOnly={!editMode}
-              />
-            )}
-          </Champ>
-          <Champ label="Taille de tee-shirt :">
-            {editMode ? (
-              <select
-                className="input"
-                value={taille_tshirtValue}
-                onChange={handleTailleTshirtChange}
-                style={{ height: "30px", width: "102%" }}
-              >
-                <option value="">Sélectionnez une option</option>
-                <option value="XS">XS</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-                <option value="XXL">XXL</option>
-              </select>
-            ) : (
-              <input
-                className="input"
-                type="text"
-                value={taille_tshirtValue}
-                readOnly={!editMode}
-              />
-            )}
-          </Champ>
-          {telephoneVisible && (
-            <Champ label="Téléphone :">
-              <input
-                type="tel"
-                name="num_telephone"
-                id="num_telephone"
-                value={telephoneValue}
-                onChange={handleTelephoneChange}
-                className="input"
-                readOnly={!editMode}
-              />
-            </Champ>
-          )}
-          <Champ label="Végétarien ? :">
-            {editMode ? (
-              <select
-                name="vegetarien"
-                id="vegetarien"
-                value={vegetarienValue ? "Oui" : "Non"}
-                onChange={handleVegetarienChange}
-                className="input"
-                style={{ height: "30px", width: "102%" }}
-              >
-                <option value="Oui">Oui</option>
-                <option value="Non">Non</option>
-              </select>
-            ) : (
-              <input
-                className="input"
-                type="text"
-                value={vegetarienValue ? "Oui" : "Non"}
-                readOnly={!editMode}
-              />
-            )}
-          </Champ>
+          <div className="champ-container">
+            <div className="row">
+              <Champ label="Nom :">
+                <input
+                  className="input"
+                  type="text"
+                  name="nom"
+                  value={nomValue}
+                  onChange={handleNomChange}
+                  readOnly={!editMode}
+                  required
+                />
+              </Champ>
 
-          <Champ label="Hébergement :">
-            {editMode ? (
-              <select
-                className="input"
-                value={hebergementValue}
-                onChange={handleHebergementChange}
-                style={{ height: "30px", width: "102%" }}
-              >
-                {/* Options du sélecteur, à remplir avec vos valeurs spécifiques */}
-                <option value="">Sélectionnez une option</option>
-                <option value="Recherche">Recherche</option>
-                <option value="Proposition">Proposition</option>
-                <option value="Rien">Rien</option>
-              </select>
-            ) : (
-              <input
-                className="input"
-                type="text"
-                value={hebergementValue}
-                readOnly={!editMode}
-              />
-            )}
-          </Champ>
-          {showAdresse && (
-            <Champ label="Adresse :">
-              <input
-                type="text"
-                name="adresse"
-                id="adresse"
-                value={adresseValue}
-                onChange={handleAdresseChange}
-                readOnly={!editMode}
-                className="input"
-              />
-            </Champ>
+              <Champ label="Mot de passe :">
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={editMode ? newPassword : passwordValue}
+                  onChange={handlePasswordChange}
+                  readOnly={!editMode}
+                  placeholder={editMode ? "Nouveau mot de passe" : ""}
+                  className="input"
+                />
+              </Champ>
+
+              <Champ label="Végétarien ? :">
+                {editMode ? (
+                  <select
+                    name="vegetarien"
+                    id="vegetarien"
+                    value={vegetarienValue ? "Oui" : "Non"}
+                    onChange={handleVegetarienChange}
+                    className="input"
+                    style={{ height: "30px", width: "102%" }}
+                  >
+                    <option value="Oui">Oui</option>
+                    <option value="Non">Non</option>
+                  </select>
+                ) : (
+                  <input
+                    className="input"
+                    type="text"
+                    value={vegetarienValue ? "Oui" : "Non"}
+                    readOnly={!editMode}
+                  />
+                )}
+              </Champ>
+
+              <Champ label="Hébergement :">
+                {editMode ? (
+                  <select
+                    className="input"
+                    value={hebergementValue}
+                    onChange={handleHebergementChange}
+                    style={{ height: "30px", width: "102%" }}
+                  >
+                    {/* Options du sélecteur, à remplir avec vos valeurs spécifiques */}
+                    <option value="">Sélectionnez une option</option>
+                    <option value="Recherche">Recherche</option>
+                    <option value="Proposition">Proposition</option>
+                    <option value="Rien">Rien</option>
+                  </select>
+                ) : (
+                  <input
+                    className="input"
+                    type="text"
+                    value={hebergementValue}
+                    readOnly={!editMode}
+                  />
+                )}
+              </Champ>
+
+              {showAdresse ? (
+                <Champ label="Adresse :">
+                  <input
+                    type="text"
+                    name="adresse"
+                    id="adresse"
+                    value={adresseValue}
+                    onChange={handleAdresseChange}
+                    readOnly={!editMode}
+                    className="input"
+                  />
+                </Champ>
+              ) : telephoneVisible ? (
+                <div className="invisible-field">
+                  <Champ label="Invisible :">
+                    <input type="text" className="input" />
+                  </Champ>
+                </div>
+              ) : null}
+            </div>
+            <div className="row">
+              <Champ label="Prénom :">
+                <input
+                  className="input"
+                  type="text"
+                  name="prenom"
+                  value={prenomValue}
+                  onChange={handlePrenomChange}
+                  readOnly={!editMode}
+                />
+              </Champ>
+
+              <Champ label="Email :">
+                <input
+                  type="text"
+                  name="mail"
+                  id="mail"
+                  value={mailValue}
+                  onChange={handleMailChange}
+                  readOnly={!editMode}
+                  className="input"
+                  required
+                />
+              </Champ>
+
+              <Champ label="Association :">
+                {editMode ? (
+                  <select
+                    className="input"
+                    value={associationValue}
+                    onChange={handleAssociationChange}
+                    style={{ height: "30px", width: "102%" }}
+                  >
+                    {/* Options du sélecteur, à remplir avec vos valeurs spécifiques */}
+                    <option value="">Sélectionnez une option</option>
+                    <option value="APCU">APCU</option>
+                    <option value="MEN">MEN</option>
+                    <option value="SMI">SMI</option>
+                    {/* ... Ajoutez d'autres options au besoin */}
+                  </select>
+                ) : (
+                  <input
+                    className="input"
+                    type="text"
+                    value={associationValue}
+                    readOnly={!editMode}
+                  />
+                )}
+              </Champ>
+
+              <Champ label="Taille de tee-shirt :">
+                {editMode ? (
+                  <select
+                    className="input"
+                    value={taille_tshirtValue}
+                    onChange={handleTailleTshirtChange}
+                    style={{ height: "30px", width: "102%" }}
+                  >
+                    <option value="">Sélectionnez une option</option>
+                    <option value="XS">XS</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                    <option value="XXL">XXL</option>
+                  </select>
+                ) : (
+                  <input
+                    className="input"
+                    type="text"
+                    value={taille_tshirtValue}
+                    readOnly={!editMode}
+                  />
+                )}
+              </Champ>
+
+              {telephoneVisible ? (
+                <Champ label="Téléphone :">
+                  <input
+                    type="tel"
+                    name="num_telephone"
+                    id="num_telephone"
+                    value={telephoneValue}
+                    onChange={handleTelephoneChange}
+                    className="input"
+                    readOnly={!editMode}
+                  />
+                </Champ>
+              ) : showAdresse ? (
+                <div className="invisible-field">
+                  <Champ label="Invisible :">
+                    <input type="text" className="input" />
+                  </Champ>
+                </div>
+              ) : null}
+            </div>
+          </div>
+          {editMode ? (
+            <Bouton onClick={handleSaveChanges} type="button">
+              Enregistrer
+            </Bouton>
+          ) : (
+            <Bouton onClick={handleEditModeToggle} type="button">
+              Modifier
+            </Bouton>
           )}
         </div>
       </Boite>
-      <div className="button_container">
-        {editMode ? (
-          <Bouton onClick={handleSaveChanges} type="button">
-            Enregistrer
-          </Bouton>
-        ) : (
-          <Bouton onClick={handleEditModeToggle} type="button">
-            Modifier
-          </Bouton>
-        )}
-      </div>
 
       {errorMessage && isPopupVisible && (
         <FenetrePopup message={errorMessage} type="error" onClose={hidePopup} />

@@ -6,7 +6,7 @@ const Bouton = ({ children, onClick, type }) => {
       <button type={type} onClick={onClick}>
         <span className="shadow"></span>
         <span className="edge"></span>
-        <span className="front text">{children}</span>
+        <span className="front">{children}</span>
       </button>
     );
   };

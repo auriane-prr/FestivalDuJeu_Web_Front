@@ -1,0 +1,52 @@
+.header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start; /* Align items to the bottom */
+  margin: auto;
+}
+
+.changer-page-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: fit-content;
+  margin-bottom: 3%;
+}
+
+.field-container {
+  margin-left: 5%;
+  display: flex; /* Use flexbox to align children */
+  align-items: center; /* Align items vertically in the center */
+  justify-content: flex-start; /* Align items to the start of the container */
+  gap: 10px; /* Adjust the gap as needed */
+}
+
+.logo-jeux {
+    max-width: 20%;
+    max-height: 20%;
+    width: auto;
+    height: auto;
+    margin-right: 10%;
+}
+
+.row {
+    display: flex;
+    justify-content: flex-start; /* Align to the start */
+    align-items: center; /* Align items vertically */
+    gap: 10px; /* Adjust the gap as needed */
+    flex-wrap: wrap; /* Wrap onto the next line if necessary */
+    max-width: 100%;
+  }
+
+  @media screen and (max-width: 1024px) {
+    .logo-jeux {
+        max-width: 30%;
+        max-height: 30%;
+        width: auto;
+        height: auto;
+        margin-right: 5%;
+    }
+    
+  }

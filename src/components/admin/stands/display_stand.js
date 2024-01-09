@@ -21,6 +21,7 @@ function Display_stand() {
   const [currentStandDetails, setCurrentStandDetails] = useState(null);
   const [selectedHoraireIndex, setSelectedHoraireIndex] = useState(0); // suppose que le premier horaire est sélectionné par défaut
   const [textareaHeights, setTextareaHeights] = useState({}); // Stocke les hauteurs des textarea pour chaque stand
+  const [selectedStand, setSelectedStand] = useState("");
 
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -74,7 +75,7 @@ function Display_stand() {
 
   useEffect(() => {
     fetchStandsData();
-  }, [editMode]);
+  }, [editMode], selectedStand);
 
   const fetchNonReferentBenevoles = async () => {
     try {
@@ -117,6 +118,13 @@ function Display_stand() {
       }
     }
   }, [currentStandIndex, stands]);
+
+  useEffect(() => {
+    if (selectedStand && stands.length > 0) {
+      const standIndex = stands.findIndex(stand => stand._id === selectedStand);
+      setCurrentStandIndex(standIndex !== -1 ? standIndex : 0);
+    }
+  }, [selectedStand, stands]);
 
   const handleNomStandChange = (e) => {
     const updatedStands = [...stands];
@@ -351,6 +359,24 @@ function Display_stand() {
         </div>
       ) : (
         <>
+        <div className="header-container">
+        <Champ>
+          <select
+            onChange={(e) => setSelectedStand(e.target.value)}
+            defaultValue=""
+            className="input"
+          >
+            <option value="" disabled>
+              Sélectionnez un stand
+            </option>
+            {stands.map((stand, index) => (
+              <option key={index} value={stand._id}>
+                {stand.nom_stand} ({formatDate(stand.date)})
+              </option>
+            ))}
+          </select>
+        </Champ>
+      </div>
           <div className="Entete-btn">
             <div className="btn-changer-page" onClick={showPreviousStand}>
               <BoutonPagePrecedente />

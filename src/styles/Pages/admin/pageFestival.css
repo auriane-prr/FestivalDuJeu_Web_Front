@@ -12,7 +12,6 @@
 }
 
 .pageStand {
-  margin-top: -5%;
   padding-bottom: 1%;
 }
 
@@ -30,3 +29,10 @@
   }
 }
 
+.download-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 5% auto;
+}

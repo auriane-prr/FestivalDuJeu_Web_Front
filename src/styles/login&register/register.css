@@ -35,4 +35,30 @@
     margin-top: 10%;
     margin-bottom: 5%;
   }
+  .champ-container {
+    flex-wrap: wrap;
+  }
  }
+
+ .row {
+  display: flex;
+  justify-content: center; /* Align to the start */
+  align-items: center; /* Align items vertically */
+  gap: 10px; /* Adjust the gap as needed */
+  flex-wrap: wrap; /* Wrap onto the next line if necessary */
+  max-width: 100%;
+}
+
+.champ-container {
+  margin-left: 3%;
+  display: flex; /* Use flexbox to align children */
+  align-items: center; /* Align items vertically in the center */
+  justify-content: flex-start; /* Align items to the start of the container */
+  gap: 10px; /* Adjust the gap as needed */
+  width: 100%;
+}
+
+.invisible-field {
+  visibility: hidden; /* Masque le champ sans le supprimer du flux du document */
+  opacity: 0; /* Rend le champ complètement transparent */
+}

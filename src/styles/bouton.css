@@ -13,7 +13,7 @@ button {
     transition: filter 250ms;
     user-select: none;
     touch-action: manipulation;
-    margin: 0 auto;
+    margin: 3% auto;
     align-items: center;
    }
    
