@@ -13,8 +13,9 @@ function PageFestival() {
         <div className="Onglet1">
           <Display_stand />
         </div>
-        <div>
-          <Display_zone />
+        <div>Jeux
+          <Ajouter_jeux />
+        <Display_jeux />
         </div>
       </BoiteOnglet>
     </div>
