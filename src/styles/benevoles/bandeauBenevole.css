@@ -17,10 +17,12 @@
     width: auto;
     height: 80%; /* Ajuster la hauteur des logos */
     cursor: pointer;
-    margin-right: 5%; /* Espacement entre les logos */
+    margin-right: 3%; /* Espacement entre les logos */
   }
   
-  .Logo-BL:first-child {
-    margin-right: auto; /* Déplacer le premier logo vers la gauche */
+  .LogoApp {
+    width: auto;
+    height: 100%; /* Ajuster la hauteur des logos */
+    cursor: pointer;
+    margin-right: auto; /* Espacement entre les logos */
   }
-  

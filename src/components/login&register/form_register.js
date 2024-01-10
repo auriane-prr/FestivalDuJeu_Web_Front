@@ -51,7 +51,7 @@ const FormInscription = () => {
     dispatchFormData({ type: "UPDATE_FIELD", field: "pseudo", value: pseudo });
   }, [pseudo]); // Assurez-vous d'ajouter pseudo comme dépendance ici
 
-  const handleInputChange = (e) => {
+  const handleInputChange = async (e) => {
     const { name, value } = e.target;
     dispatchFormData({ type: "UPDATE_FIELD", field: name, value });
 
@@ -72,22 +72,48 @@ const FormInscription = () => {
 
     // Update pseudo when changing in the name or surname fields
     if (name === "prenom" || name === "nom") {
-      generatePseudo(e);
+      // Assurez-vous d'avoir à la fois le prénom et le nom pour générer le pseudo
+      const updatedFormData = { ...formData, [name]: value };
+      generatePseudo(updatedFormData.prenom, updatedFormData.nom);
     }
   };
 
-  const generatePseudo = (e) => {
-    const prenom = e.target.value;
-    const { nom } = formData;
-    if (nom && prenom) {
-      const newPseudo = `${prenom}${nom.charAt(0)}`;
-      setPseudo(newPseudo);
-      dispatchFormData({
-        type: "UPDATE_FIELD",
-        field: "pseudo",
-        value: newPseudo,
-      });
+  const checkPseudoUnique = async (pseudo) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3500/benevole/check-pseudo/${pseudo}`
+      );
+      const data = await response.json();
+      return data.exists; // 'exists' est un booléen renvoyé par le serveur indiquant si le pseudo existe
+    } catch (error) {
+      console.error(
+        "Erreur lors de la vérification de l'unicité du pseudo",
+        error
+      );
+      return true; // En cas d'erreur, supposez que le pseudo n'est pas unique pour éviter les doublons
     }
+  };
+
+  const generatePseudo = async (prenom, nom) => {
+    if (!prenom || !nom) return; // Si prénom ou nom est vide, ne faites rien
+
+    let basePseudo = `${prenom}${nom.charAt(0)}`; // Génère le pseudo de base
+    let uniquePseudo = basePseudo;
+    let counter = 1;
+
+    // Vérifie l'unicité du pseudo
+    while (await checkPseudoUnique(uniquePseudo)) {
+      uniquePseudo = `${basePseudo}${counter}`; // Ajoute un chiffre à la fin
+      counter++;
+    }
+
+    // Une fois le pseudo unique trouvé, mettez à jour l'état avec ce pseudo
+    setPseudo(uniquePseudo);
+    dispatchFormData({
+      type: "UPDATE_FIELD",
+      field: "pseudo",
+      value: uniquePseudo,
+    });
   };
 
   const handleSubmit = async (e) => {
