@@ -3,7 +3,7 @@ import "../../../styles/Admin/jeux/display_jeux.css";
 import Champ from "../../general/champ";
 import BoutonPagePrecedente from "../../BoutonPagePrecedente";
 import BoutonPageSuivante from "../../BoutonPageSuivante";
-import Ajouter_jeux from "./download";
+import Download from "./download";
 import Titre from "../../general/titre";
 
 function Display_zones() {
@@ -36,7 +36,7 @@ function Display_zones() {
   return (
     <>
       <div className="header-container">
-        <Ajouter_jeux />
+        <Download />
         <Champ customStyle={{ width: "70%" }}>
           <select
             onChange={(e) => setSelectedZone(e.target.value)}
