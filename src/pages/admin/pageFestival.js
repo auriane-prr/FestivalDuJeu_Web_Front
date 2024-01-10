@@ -16,7 +16,7 @@ function PageFestival() {
         </div>
         <div>Jeux
           <Ajouter_jeux />
-        <Display_jeux />
+        {/*<Display_jeux />*/}
         </div>
       </BoiteOnglet>
     </div>
