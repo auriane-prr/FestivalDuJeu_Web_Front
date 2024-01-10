@@ -9,23 +9,20 @@ import LogoFlexible from '../../Logo/icon_flexible.png';
 function BandeauAdmin() {
   const navigate = useNavigate();
 
-  const redirectToUser = () => {
-    navigate("/admin/user");
+  const redirectToParametre = () => {
+    navigate("/admin/parametre")
+    console.log("je redirige vers parametre admin");
   };
 
-  const redirectToAdmin = () => {
+  const redirectToAccueil = () => {
     navigate("/admin");
-  };
-
-  const redirectToFlexible = () => {
-    navigate("/admin/flexible");
   };
 
   return (
     <div className="Bandeau-admin">
-        <img className="Logo-AD" src={Logo} alt="Logo" onClick={redirectToAdmin} />
-        <img className="Flexible Logo-AD" src={LogoFlexible} alt="Logo" onClick={redirectToFlexible} />
-        <img className="Parametre Logo-AD" src={LogoAdmin} alt="Logo" onClick={redirectToUser} />
+        <img className="Logo-AD" src={Logo} alt="Logo" onClick={redirectToAccueil} />
+        <img className="Flexible Logo-AD" src={LogoFlexible} alt="Logo" />
+        <img className="Parametre Logo-AD" src={LogoAdmin} alt="Logo" onClick={redirectToParametre} />
     </div>
   );
 }

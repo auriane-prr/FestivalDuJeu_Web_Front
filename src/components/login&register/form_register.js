@@ -1,10 +1,9 @@
-import React, { useReducer, useState, useEffect, useRef } from "react";
+import React, { useReducer, useState, useEffect } from "react";
 import Champ from "../general/champ";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthWrapper";
 import "../../styles/login&register/register.css";
 import FenetrePopup from "../general/fenetre_popup";
-import Aide from "./aide";
 import Bouton from "../general/bouton";
 
 const FormInscription = () => {
@@ -37,7 +36,7 @@ const FormInscription = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isPopupVisible, setPopupVisible] = useState(false); // Afficher la fenêtre contextuelle
-  const isPropositionSelected = useRef(false); // Afficher le champ adresse
+  const [isPropositionSelected, setIsPropositionSelected] = useState(false);
 
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -67,10 +66,8 @@ const FormInscription = () => {
     }
 
     // Si "proposition" est sélectionné, afficher le champ d'adresse
-    if (name === "hebergement" && value !== "proposition") {
-      isPropositionSelected.current = false;
-    } else if (name === "hebergement" && value === "proposition") {
-      isPropositionSelected.current = true;
+    if (name === "hebergement") {
+      setIsPropositionSelected(value === "Proposition");
     }
 
     // Update pseudo when changing in the name or surname fields
@@ -145,169 +142,188 @@ const FormInscription = () => {
   return (
     <div className="Form-register">
       <form onSubmit={handleSubmit}>
-        <div className="field-with-aide">
-          <Champ label="Nom :">
-            <input
-              className="input"
-              type="text"
-              name="nom"
-              id="nom"
-              value={formData.nom}
-              onChange={handleInputChange}
-              required
-            />
-          </Champ>
-          <Aide />
+        <div className="champ-container">
+          <div className="row">
+            {/* <div className="field-with-aide"> */}
+            <Champ label="Nom :">
+              <input
+                className="input"
+                type="text"
+                name="nom"
+                id="nom"
+                value={formData.nom}
+                onChange={handleInputChange}
+                required
+              />
+            </Champ>
+            {/* </div>
+              <div className="aide">
+              <Aide />
+            </div> */}
+
+            <Champ label="Pseudo :">
+              <input
+                type="text"
+                name="pseudo"
+                id="pseudo"
+                value={pseudo}
+                onChange={handleInputChange}
+                readOnly
+                required
+                className="input"
+              />
+            </Champ>
+
+            <Champ label="Email :">
+              <input
+                type="text"
+                name="mail"
+                id="mail"
+                value={formData.mail}
+                onChange={handleInputChange}
+                className="input"
+                required
+              />
+            </Champ>
+
+            <Champ label="Végétarien ? :">
+              <select
+                name="vegetarien"
+                id="vegetarien"
+                value={formData.vegetarien}
+                onChange={handleInputChange}
+                className="input"
+                required
+              >
+                <option value="">Sélectionnez une option</option>
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+              </select>
+            </Champ>
+
+            <Champ label="Téléphone :">
+              <input
+                type="tel"
+                name="num_telephone"
+                id="num_telephone"
+                value={formData.num_telephone}
+                onChange={handleInputChange}
+                className="input"
+              />
+            </Champ>
+
+            {isPropositionSelected && (
+              <div className="invisible-field">
+                <Champ label="Invisible :">
+                  <input type="text" className="input" />
+                </Champ>
+              </div>
+            )}
+          </div>
+          <div className="row">
+            {/* <div className="field-with-aide"> */}
+            <Champ label="Prénom :">
+              <input
+                type="text"
+                id="prenom"
+                name="prenom"
+                value={formData.prenom}
+                onChange={handleInputChange}
+                className="input"
+                required
+              />
+            </Champ>
+            {/* </div>
+              <div className="aide">
+              <Aide />
+            </div> */}
+
+            {/* <div className="field-with-aide"> */}
+            <Champ label="Mot de passe :">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="input"
+                required
+              />
+            </Champ>
+            {/* </div>
+              <div className="aide">
+              <Aide /> */}
+            {/* </div> */}
+
+            <Champ label="Association :">
+              <select
+                name="association"
+                id="association"
+                value={formData.association}
+                onChange={handleInputChange}
+                className="input"
+                required
+              >
+                <option value="">Sélectionnez une option</option>
+                <option value="APCU">APCU</option>
+                <option value="MEN">MEN</option>
+                <option value="SMI">SMI</option>
+              </select>
+            </Champ>
+
+            <Champ label="Taille de Tee-shirt :">
+              <select
+                type="text"
+                name="taille_tshirt"
+                id="taille_tshirt"
+                value={formData.taille_tshirt}
+                onChange={handleInputChange}
+                required
+                className="input"
+              >
+                <option value="">Sélectionnez une option</option>
+                <option value="XS">XS</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+                <option value="XXL">XXL</option>
+              </select>
+            </Champ>
+
+            <Champ label="Hébergement :">
+              <select
+                name="hebergement"
+                id="hebergement"
+                value={formData.hebergement}
+                onChange={handleInputChange}
+                className="input"
+                required
+              >
+                <option value="">Sélectionnez une option</option>
+                <option value="Recherche">Recherche</option>
+                <option value="Proposition">Proposition</option>
+                <option value="Rien">Rien</option>
+              </select>
+            </Champ>
+
+            {isPropositionSelected && (
+              <Champ label="Adresse :">
+                <input
+                  type="text"
+                  name="adresse"
+                  id="adresse"
+                  value={formData.adresse}
+                  onChange={handleInputChange}
+                  className="input"
+                />
+              </Champ>
+            )}
+          </div>
         </div>
-
-        <div className="field-with-aide">
-          <Champ label="Prénom :">
-            <input
-              type="text"
-              id="prenom"
-              name="prenom"
-              value={formData.prenom}
-              onChange={handleInputChange}
-              className="input"
-              required
-            />
-          </Champ>
-          <Aide />
-        </div>
-
-        <Champ label="Pseudo :">
-          <input
-            type="text"
-            name="pseudo"
-            id="pseudo"
-            value={pseudo}
-            onChange={handleInputChange}
-            readOnly
-            required
-            className="input"
-          />
-        </Champ>
-
-        <div className="field-with-aide">
-          <Champ label="Mot de passe :">
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className="input"
-              required
-            />
-          </Champ>
-          <Aide />
-        </div>
-
-        <Champ label="Email :">
-          <input
-            type="text"
-            name="mail"
-            id="mail"
-            value={formData.mail}
-            onChange={handleInputChange}
-            className="input"
-            required
-          />
-        </Champ>
-
-        <Champ label="Téléphone :">
-          <input
-            type="tel"
-            name="num_telephone"
-            id="num_telephone"
-            value={formData.num_telephone}
-            onChange={handleInputChange}
-            className="input"
-          />
-        </Champ>
-
-        <Champ label="Taille de Tee-shirt :">
-          <select
-            type="text"
-            name="taille_tshirt"
-            id="taille_tshirt"
-            value={formData.taille_tshirt}
-            onChange={handleInputChange}
-            required
-            className="input"
-          >
-            <option value="">Sélectionnez une option</option>
-            <option value="XS">XS</option>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-            <option value="XXL">XXL</option>
-          </select>
-        </Champ>
-
-        <Champ label="Association :">
-          <select
-            name="association"
-            id="association"
-            value={formData.association}
-            onChange={handleInputChange}
-            className="input"
-            required
-          >
-            <option value="">Sélectionnez une option</option>
-            <option value="APCU">APCU</option>
-            <option value="MEN">MEN</option>
-            <option value="SMI">SMI</option>
-          </select>
-        </Champ>
-
-        <Champ label="Végétarien ? :">
-          <select
-            name="vegetarien"
-            id="vegetarien"
-            value={formData.vegetarien}
-            onChange={handleInputChange}
-            className="input"
-            required
-          >
-            <option value="">Sélectionnez une option</option>
-            <option value="true">Oui</option>
-            <option value="false">Non</option>
-          </select>
-        </Champ>
-
-        <Champ label="Hébergement :">
-          <select
-            name="hebergement"
-            id="hebergement"
-            value={formData.hebergement}
-            onChange={handleInputChange}
-            className="input"
-            required
-          >
-            <option value="">Sélectionnez une option</option>
-            <option value="Recherche">Recherche</option>
-            <option value="Proposition">Proposition</option>
-            <option value="Rien">Rien</option>
-          </select>
-        </Champ>
-
-        {isPropositionSelected.current && (
-          <Champ label="Adresse :">
-            <input
-              type="text"
-              name="adresse"
-              id="adresse"
-              value={formData.adresse}
-              onChange={handleInputChange}
-              className="input"
-            />
-          </Champ>
-        )}
 
         <div className="button_container">
-          <Bouton type="submit">Se connecter</Bouton>
+          <Bouton type="submit">S'inscrire</Bouton>
         </div>
       </form>
 

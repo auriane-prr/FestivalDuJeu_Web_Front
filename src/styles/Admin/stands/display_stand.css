@@ -90,6 +90,10 @@
   width : 95%;
 }
 
+.referent-input {
+  margin-bottom: 2%;
+}
+
 .supp-btn-container {
   display: flex;
   align-items: center;
@@ -128,4 +132,8 @@
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+.header-container {
+  width: 100%;
 }

@@ -7,13 +7,24 @@
   justify-content: center;
   align-items: center;
   width: 65%;
-  margin: 15% auto;
-  padding-bottom: 3%;
+  margin-top: 10%;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 5%;
 }
 
-@media (max-width: 1024px) {
+@media screen and (max-width: 1024px) {
   .container-boite {
     margin-top: 8%;
+    margin-bottom: 8%;
+    margin-left: auto; /* Centrage horizontal dans les petits écrans */
+    margin-right: auto; /* Centrage horizontal dans les petits écrans */
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .boite {
+    margin-top: 30%;
     margin-bottom: 8%;
     margin-left: auto; /* Centrage horizontal dans les petits écrans */
     margin-right: auto; /* Centrage horizontal dans les petits écrans */

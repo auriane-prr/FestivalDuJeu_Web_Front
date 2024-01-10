@@ -58,6 +58,7 @@ input.input, select.input {
   color: #0d0c22;
   transition: .5s ease;
   box-sizing: border-box; 
+  margin-bottom: 0;
 }
 
 input.input:focus, input.input:hover,
@@ -78,3 +79,4 @@ textarea.input:focus, textarea.input:hover {
   font-family: 'Toma';
   src: url('../Police/Toma-Regular.ttf') format('truetype');
 }
+
