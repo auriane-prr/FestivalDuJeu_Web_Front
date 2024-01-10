@@ -46,9 +46,14 @@ function Ajouter_jeux() {
     
         try {
             await uploadZones(file, dateDebut, dateFin);
+            console.log('Zones jour début ajoutées avec succès');
+            console.log('Zones jour fin ajoutées avec succès');
             await uploadHoraireToZone(horairesData);
+            console.log('Horaires ajoutés avec succès');
             await uploadJeux(file);
+            console.log('Jeux ajoutés avec succès');
             await uploadZonesJeux(file);
+            console.log('Jeux ajoutés aux zones avec succès');
 
             console.log('Processus terminé avec succès');
         } catch (error) {
@@ -58,10 +63,12 @@ function Ajouter_jeux() {
 
     async function uploadJeux(file) {
         try {
+            const formData = new FormData();
+            formData.append('file', file);
         // Ensuite, envoyez le fichier Excel au serveur pour créer les jeux
         const responseJeu = await fetch(`http://localhost:3500/jeux/upload`, {
             method: 'POST',
-            body: file,
+            body: formData,
         });
         if (responseJeu.ok) {
         const resultJeu = await responseJeu.json();
@@ -99,7 +106,10 @@ function Ajouter_jeux() {
     }
 }
 
-    async function uploadZonesJeux(formData) {
+    async function uploadZonesJeux(file) {
+        
+        const formData = new FormData();
+        formData.append('file', file);
         try {
             const responseAddJeu = await fetch(`http://localhost:3500/zone/addJeux`, {
                 method: 'POST',
@@ -119,27 +129,25 @@ function Ajouter_jeux() {
         const formDataZone1 = new FormData();
         formDataZone1.append('file', file);
         formDataZone1.append('date', dateDebut);
-        //formDataZone1.append('horaireCota', JSON.stringify(horairesData));
-        console.log(formDataZone1);
 
-        const formDataZone2 = new FormData();
-        formDataZone2.append('file', file);
-        formDataZone2.append('date', dateFin);
-        //formDataZone2.append('horaireCota', JSON.stringify(horairesData));
-        console.log(formDataZone2);
       
             // Envoie les deux instances au serveur
-            const response1 = await fetch(`http://localhost:3500/zone`, {
+            const response1 = await fetch(`http://localhost:3500/zone/jour1`, {
                 method: "POST",
                 body: formDataZone1,
             });
+            
+        const formDataZone2 = new FormData();
+        formDataZone2.append('file', file);
+        formDataZone2.append('date', dateFin);
       
-            const response2 = await fetch(`http://localhost:3500/zone`, {
+            const response2 = await fetch(`http://localhost:3500/zone/jour2`, {
                 method: "POST",
                 body: formDataZone2,
             });
       
-            if (response1.ok && response2.ok) {
+            if (response1.ok) {
+                console.log('Ajout des zones pour dateDebut avec succès');
                 setSuccessMessage("Nouveaux stands ajoutés avec succès");
                 setErrorMessage(null);
                 setPopupVisible(true);
@@ -147,7 +155,17 @@ function Ajouter_jeux() {
                 setErrorMessage("Une erreur est survenue, les stands n'ont pas pu être créés");
                 setSuccessMessage(null);
                 setPopupVisible(true);
-            }  
+            } 
+            if (response2.ok) {
+                console.log('Ajout des zones pour dateFin avec succès');
+                setSuccessMessage("Nouveaux stands ajoutés avec succès");
+                setErrorMessage(null);
+                setPopupVisible(true);
+            } else {
+                setErrorMessage("Une erreur est survenue, les stands n'ont pas pu être créés");
+                setSuccessMessage(null);
+                setPopupVisible(true);
+            } 
         } catch (error) {
             console.error('Erreur lors de l\'ajout des zones', error);
         }
