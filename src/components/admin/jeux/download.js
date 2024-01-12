@@ -64,8 +64,6 @@ function Download() {
 
     try {
       await uploadZones(file, dateDebut, dateFin);
-      console.log("Zones jour début ajoutées avec succès");
-      console.log("Zones jour fin ajoutées avec succès");
       await uploadHoraireToZone(horairesData);
       console.log("Horaires ajoutés avec succès");
       await uploadJeux(file);
