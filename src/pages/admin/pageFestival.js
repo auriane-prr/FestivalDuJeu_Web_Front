@@ -1,8 +1,8 @@
 import React from "react";
 import BandeauAdmin from "../../components/admin/bandeauAdmin";
 import BoiteOnglet from "../../components/general/boiteOnglet";
-import Display_stand from "../../components/admin/stands/display_stand";
-import Display_zone from "../../components/admin/jeux/display_zone";
+import DisplayStand from "../../components/admin/stands/display_stand";
+import DisplayZone from "../../components/admin/jeux/display_zone";
 import "../../styles/Pages/admin/pageFestival.css";
 
 function PageFestival() {
@@ -11,10 +11,10 @@ function PageFestival() {
       <BandeauAdmin />
       <BoiteOnglet nomOnglet1="Stand" nomOnglet2="Jeux">
         <div className="Onglet1">
-          <Display_stand />
+          <DisplayStand />
         </div>
         <div>
-        <Display_zone />
+        <DisplayZone />
         </div>
       </BoiteOnglet>
     </div>

@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../../styles/Admin/jeux/download.css";
+import FenetrePopup from "../../general/fenetre_popup";
+import Loader from "../../general/loaders";
 
 function Download() {
-  const [file, setFile] = useState(null);
   const [dateDebut, setDateDebut] = useState("");
   const [dateFin, setDateFin] = useState("");
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isPopupVisible, setPopupVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   const inputFileRef = useRef(null);
 
@@ -36,24 +38,18 @@ function Download() {
   }, []);
 
   const handleFileChangeAndUpload = async (e) => {
-    const file = e.target.files[0];
-    setFile(file);
+    const selectedFile = e.target.files[0];
 
-    if (file) {
-      // Ici, vous pouvez directement appeler handleUpload ou une nouvelle fonction qui gère l'upload
-      await handleUpload(file); // Assurez-vous que handleUpload peut gérer cet appel
+    if (selectedFile) {
+      await handleUpload(selectedFile);
     } else {
       console.error("Aucun fichier sélectionné");
     }
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setFile(file);
-  };
-
   const handleUpload = async (file) => {
     //e.preventDefault();
+    setIsLoading(true);
     if (!file) {
       console.error("Aucun fichier sélectionné");
       setErrorMessage("Aucun fichier sélectionné");
@@ -64,18 +60,20 @@ function Download() {
 
     try {
       await uploadZones(file, dateDebut, dateFin);
-      console.log("Zones jour début ajoutées avec succès");
-      console.log("Zones jour fin ajoutées avec succès");
       await uploadHoraireToZone(horairesData);
-      console.log("Horaires ajoutés avec succès");
       await uploadJeux(file);
-      console.log("Jeux ajoutés avec succès");
       await uploadZonesJeux(file);
-      console.log("Jeux ajoutés aux zones avec succès");
-
-      console.log("Processus terminé avec succès");
+      setIsLoading(false);
+      setSuccessMessage(
+        "Importation réussie, les zones et les jeux ont bien été créés"
+      );
+      setErrorMessage(null);
+      setPopupVisible(true);
     } catch (error) {
       console.error("Erreur lors de l'envoi du fichier", error);
+      setErrorMessage("Problème lors de l'importation du fichier");
+      setSuccessMessage(null);
+      setPopupVisible(true);
     }
   };
 
@@ -96,6 +94,9 @@ function Download() {
       }
     } catch (error) {
       console.error("Erreur lors de l'ajout des jeux", error);
+      setErrorMessage("Erreur lors de la création des jeux");
+        setSuccessMessage(null);
+        setPopupVisible(true);
     }
   }
 
@@ -113,7 +114,7 @@ function Download() {
       });
 
       if (response.ok) {
-        setSuccessMessage("Horaires mis à jour pour toutes les zones");
+        console.log("Horaires mis à jour pour toutes les zones");
       } else {
         throw new Error("Erreur lors de la mise à jour des horaires");
       }
@@ -163,7 +164,6 @@ function Download() {
 
       if (response1.ok) {
         console.log("Ajout des zones pour dateDebut avec succès");
-        setSuccessMessage("Nouveaux stands ajoutés avec succès");
         setErrorMessage(null);
         setPopupVisible(true);
       } else {
@@ -175,7 +175,6 @@ function Download() {
       }
       if (response2.ok) {
         console.log("Ajout des zones pour dateFin avec succès");
-        setSuccessMessage("Nouveaux stands ajoutés avec succès");
         setErrorMessage(null);
         setPopupVisible(true);
       } else {
@@ -186,31 +185,58 @@ function Download() {
         setPopupVisible(true);
       }
     } catch (error) {
-      console.error("Erreur lors de l'ajout des zones", error);
+      console.error("Erreur lors de la création des zones", error);
+        setErrorMessage("Erreur lors de la création des zones");
+        setSuccessMessage(null);
+        setPopupVisible(true);
     }
   }
 
   return (
     <div>
       <form>
-        <input
+      <input
           ref={inputFileRef}
           type="file"
           accept=".xlsx, .xls"
           onChange={handleFileChangeAndUpload}
-          style={{ display: "none" }} // Vous pouvez aussi mettre le style directement ici
+          style={{ display: "none" }}
         />
         <div className="btn-download" onClick={handleButtonClick}>
           <div className="btn-download-wrapper">
             <div className="text">Importer</div>
             <span className="icon">
-              <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
-                <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                role="img"
+                width="2em"
+                height="2em"
+                preserveAspectRatio="xMidYMid meet"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"
+                />
               </svg>
             </span>
           </div>
         </div>
       </form>
+      {isLoading && <Loader />}
+
+      {isPopupVisible && (
+            <FenetrePopup
+                message={errorMessage || successMessage}
+                type={errorMessage ? 'error' : 'success'}
+                onClose={() => setPopupVisible(false)}
+            />
+        )}
     </div>
   );
 }

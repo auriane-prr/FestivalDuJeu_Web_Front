@@ -201,6 +201,7 @@ function PageProfil() {
       const modifiedData = {
         nom: nomValue,
         prenom: prenomValue,
+        pseudo: pseudoValue,
         mail: mailValue,
         num_telephone: telephoneValue,
         association: associationValue,
@@ -290,6 +291,13 @@ function PageProfil() {
       setPopupVisible(true);
     }
   };
+
+  useEffect(() => {
+    // Désactivez le mode d'édition après qu'un message de succès est défini
+    if (successMessage) {
+      setEditMode(false);
+    }
+  }, [successMessage]);
 
   return (
     <div>

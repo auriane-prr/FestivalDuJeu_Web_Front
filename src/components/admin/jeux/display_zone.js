@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import "../../../styles/Admin/jeux/display_jeux.css";
 import Champ from "../../general/champ";
 import BoutonPagePrecedente from "../../BoutonPagePrecedente";

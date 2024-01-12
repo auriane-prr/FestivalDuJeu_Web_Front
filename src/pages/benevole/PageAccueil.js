@@ -3,7 +3,6 @@ import "../../styles/Pages/pageAccueil.css";
 import BandeauLogo from '../../components/benevole/bandeauBenevole';
 import BoiteOnglet from '../../components/general/boiteOnglet';
 import Jauge from '../../components/benevole/stands/jauge';
-import Champ from '../../components/general/champ';
 import Fiche_modal from '../../components/benevole/stands/fiche_stand_participer'; // Import du composant Modal
 
 function PageAccueil() {
