@@ -55,7 +55,6 @@
   align-items: center;
   width: 100%;
   height: fit-content;
-  margin-bottom: 10px;
 }
 
 .button_container {
@@ -136,4 +135,11 @@
 
 .header-container {
   width: 100%;
+}
+
+.separator-stand {
+  height: 0,5px; /* Hauteur du séparateur */
+  background-color: #1D244B; /* Couleur du séparateur */
+  margin: 0 5%; /* Espace au-dessus et en dessous du séparateur */
+  margin-bottom: 2%;
 }

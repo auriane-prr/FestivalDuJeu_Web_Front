@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../../styles/Admin/jeux/display_jeux.css";
 import Champ from "../../general/champ";
 import BoutonPagePrecedente from "../../BoutonPagePrecedente";
@@ -6,13 +6,12 @@ import BoutonPageSuivante from "../../BoutonPageSuivante";
 import Download from "./download";
 import Titre from "../../general/titre";
 
-function Display_zones() {
+function DisplayZones() {
   const [zones, setZones] = useState([]);
   const [selectedZone, setSelectedZone] = useState("");
   const [currentZoneIndex, setCurrentZoneIndex] = useState(0);
   const currentZone = zones[currentZoneIndex] || {};
   const [currentZoneDetails, setCurrentZoneDetails] = useState(null);
-  const [jeux, setJeux] = useState([]);
 
 
   const showPreviousZone = () => {
@@ -34,6 +33,20 @@ function Display_zones() {
       }
     });
   };
+
+  function formatDate(date) {
+    if (!date) return "";
+
+    // Crée un nouvel objet Date si date n'est pas déjà une instance de Date
+    const dateObj = date instanceof Date ? date : new Date(date);
+
+    // Formate la date en 'jj/mm/aaaa'
+    return dateObj.toLocaleDateString("fr-FR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  }
 
   async function fetchZoneData() {
     try {
@@ -130,7 +143,7 @@ function Display_zones() {
         </select>
         </Champ>
       </div>
-
+      <hr className="separator-zone" />
       <div className="changer-page-container">
         <div className="btn-changer-page" onClick={showPreviousZone}>
           <BoutonPagePrecedente />
@@ -157,7 +170,7 @@ function Display_zones() {
           <Champ label="Date">
             <input
             type="text" 
-            value={currentZone?.date || ""} 
+            value={formatDate(currentZone?.date) || ""} 
             className="input"/>
           </Champ>
         </div>
@@ -168,4 +181,4 @@ function Display_zones() {
   );
 }
 
-export default Display_zones;
+export default DisplayZones;

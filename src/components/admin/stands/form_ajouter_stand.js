@@ -3,6 +3,7 @@ import Champ from "../../general/champ";
 import "../../../styles/Admin/stands/form_ajouter.css";
 import Bouton from "../../general/bouton";
 import FenetrePopup from "../../general/fenetre_popup";
+import RadioButton from "../../general/radioButton";
 
 function StandForm({ onClose }) {
   const [nom_stand, setNom_stand] = useState("");
@@ -41,8 +42,7 @@ function StandForm({ onClose }) {
   const handleNbBenevoleChange = (index, value) => {
     const updatedHorairesData = [...horairesData];
     updatedHorairesData[index].nb_benevole = value;
-    // Assurez-vous que la valeur est supérieure ou égale à 1
-    updatedHorairesData[index].nb_benevole = value >= 1 ? value : "";
+    updatedHorairesData[index].nb_benevole = value ? Number(value) : 0;
     setHorairesData(updatedHorairesData);
   };
 
@@ -77,10 +77,16 @@ function StandForm({ onClose }) {
     });
   }
 
+  const radioOptions = [
+    { label: formatDate(dateDebut), value: dateDebut },
+    { label: formatDate(dateFin), value: dateFin },
+    { label: "Les deux jours", value: "both" }
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    if (nom_stand && horairesData.some((item) => item.nb_benevole !== "")) {
+    if (nom_stand) {
       try {
         if (selectedDate === "both") {
           // Si "Les deux jours" est sélectionné, créez deux instances de stand
@@ -169,38 +175,12 @@ function StandForm({ onClose }) {
     <div>
       <form onSubmit={handleSubmit} className="FormAjout">
       
-        <div className="radio-inputs">
-          <label className="radio">
-            <input
-              type="radio"
-              name="dateSelection"
-              value={dateDebut}
-              checked={selectedDate === dateDebut}
-              onChange={handleDateChange}
-            />
-            <span className="name">{formatDate(dateDebut)}</span>
-          </label>
-          <label className="radio">
-            <input
-              type="radio"
-              name="dateSelection"
-              value={dateFin}
-              checked={selectedDate === dateFin}
-              onChange={handleDateChange}
-            />
-            <span className="name">{formatDate(dateFin)}</span>
-          </label>
-          <label className="radio">
-            <input
-              type="radio"
-              name="dateSelection"
-              value="both"
-              checked={selectedDate === "both"}
-              onChange={handleDateChange}
-            />
-            <span className="name">Les deux jours</span>
-          </label>
-        </div>
+      <RadioButton
+          options={radioOptions}
+          name="dateSelection"
+          selectedValue={selectedDate}
+          onChange={handleDateChange}
+        />
         {selectedDate === "both" && (
         <p>
         Vous pourrez modifier la capacité ultérieurement pour chacune des dates.
@@ -242,9 +222,8 @@ function StandForm({ onClose }) {
               <input
                 className="input"
                 type="number"
-                min="1"
+                min="0"
                 value={horaireData.nb_benevole}
-                required
                 onChange={(e) => handleNbBenevoleChange(index, e.target.value)}
               />
             </Champ>

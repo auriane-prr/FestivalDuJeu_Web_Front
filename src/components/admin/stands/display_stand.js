@@ -73,9 +73,13 @@ function Display_stand() {
     }
   }
 
-  useEffect(() => {
-    fetchStandsData();
-  }, [editMode], selectedStand);
+  useEffect(
+    () => {
+      fetchStandsData();
+    },
+    [editMode],
+    selectedStand
+  );
 
   const fetchNonReferentBenevoles = async () => {
     try {
@@ -121,7 +125,9 @@ function Display_stand() {
 
   useEffect(() => {
     if (selectedStand && stands.length > 0) {
-      const standIndex = stands.findIndex(stand => stand._id === selectedStand);
+      const standIndex = stands.findIndex(
+        (stand) => stand._id === selectedStand
+      );
       setCurrentStandIndex(standIndex !== -1 ? standIndex : 0);
     }
   }, [selectedStand, stands]);
@@ -157,16 +163,16 @@ function Display_stand() {
   };
 
   function formatDate(date) {
-    if (!date) return '';
-  
+    if (!date) return "";
+
     // Crée un nouvel objet Date si date n'est pas déjà une instance de Date
     const dateObj = date instanceof Date ? date : new Date(date);
-    
+
     // Formate la date en 'jj/mm/aaaa'
-    return dateObj.toLocaleDateString('fr-FR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
+    return dateObj.toLocaleDateString("fr-FR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
     });
   }
 
@@ -359,24 +365,25 @@ function Display_stand() {
         </div>
       ) : (
         <>
-        <div className="header-container">
-        <Champ>
-          <select
-            onChange={(e) => setSelectedStand(e.target.value)}
-            defaultValue=""
-            className="input"
-          >
-            <option value="" disabled>
-              Sélectionnez un stand
-            </option>
-            {stands.map((stand, index) => (
-              <option key={index} value={stand._id}>
-                {stand.nom_stand} ({formatDate(stand.date)})
-              </option>
-            ))}
-          </select>
-        </Champ>
-      </div>
+          <div className="header-container">
+            <Champ>
+              <select
+                onChange={(e) => setSelectedStand(e.target.value)}
+                defaultValue=""
+                className="input"
+              >
+                <option value="" disabled>
+                  Sélectionnez un stand
+                </option>
+                {stands.map((stand, index) => (
+                  <option key={index} value={stand._id}>
+                    {stand.nom_stand} ({formatDate(stand.date)})
+                  </option>
+                ))}
+              </select>
+            </Champ>
+          </div>
+          <hr className="separator-stand" />
           <div className="Entete-btn">
             <div className="btn-changer-page" onClick={showPreviousStand}>
               <BoutonPagePrecedente />

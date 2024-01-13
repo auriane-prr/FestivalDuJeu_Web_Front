@@ -6,6 +6,13 @@
   margin: auto;
 }
 
+.separator-zone {
+  height: 0,5px; /* Hauteur du séparateur */
+  background-color: #1D244B; /* Couleur du séparateur */
+  margin: 0 5%;
+  margin-bottom: 2%;
+}
+
 .changer-page-container {
   display: flex;
   justify-content: space-between;

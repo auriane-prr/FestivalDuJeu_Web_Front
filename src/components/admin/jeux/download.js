@@ -9,7 +9,7 @@ function Download() {
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const inputFileRef = useRef(null);
 
@@ -17,13 +17,13 @@ function Download() {
     inputFileRef.current.click();
   };
 
-  const [horairesData, setHorairesData] = useState([
+  const horairesData = [
     { heure: "9-11", nb_benevole: "" },
     { heure: "11-14", nb_benevole: "" },
     { heure: "14-17", nb_benevole: "" },
     { heure: "17-20", nb_benevole: "" },
     { heure: "20-22", nb_benevole: "" },
-  ]);
+  ];
 
   useEffect(() => {
     // Exemple d'appel API pour récupérer les données du festival
@@ -95,8 +95,8 @@ function Download() {
     } catch (error) {
       console.error("Erreur lors de l'ajout des jeux", error);
       setErrorMessage("Erreur lors de la création des jeux");
-        setSuccessMessage(null);
-        setPopupVisible(true);
+      setSuccessMessage(null);
+      setPopupVisible(true);
     }
   }
 
@@ -186,16 +186,16 @@ function Download() {
       }
     } catch (error) {
       console.error("Erreur lors de la création des zones", error);
-        setErrorMessage("Erreur lors de la création des zones");
-        setSuccessMessage(null);
-        setPopupVisible(true);
+      setErrorMessage("Erreur lors de la création des zones");
+      setSuccessMessage(null);
+      setPopupVisible(true);
     }
   }
 
   return (
     <div>
       <form>
-      <input
+        <input
           ref={inputFileRef}
           type="file"
           accept=".xlsx, .xls"
@@ -231,12 +231,12 @@ function Download() {
       {isLoading && <Loader />}
 
       {isPopupVisible && (
-            <FenetrePopup
-                message={errorMessage || successMessage}
-                type={errorMessage ? 'error' : 'success'}
-                onClose={() => setPopupVisible(false)}
-            />
-        )}
+        <FenetrePopup
+          message={errorMessage || successMessage}
+          type={errorMessage ? "error" : "success"}
+          onClose={() => setPopupVisible(false)}
+        />
+      )}
     </div>
   );
 }

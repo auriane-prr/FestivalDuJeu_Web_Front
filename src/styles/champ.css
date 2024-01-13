@@ -16,7 +16,7 @@
 .field {
   display: flex;
   flex-direction: column; /* Alignez les éléments en colonne */
-  padding-bottom: 5%;
+  padding-bottom: 3%;
   width: 85%; /* Assurez-vous que le conteneur remplit la largeur du parent */
   margin-left: 5%;
 }

@@ -1,0 +1,40 @@
+.radio-inputs {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 0.5rem;
+    background-color: #EEE;
+    box-sizing: border-box;
+    box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+    width: 90%;
+    font-size: 14px;
+    margin: 5% 5%;
+  }
+  
+  .radio-inputs .radio {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+  
+  .radio-inputs .radio input {
+    display: none;
+  }
+  
+  .radio-inputs .radio .name {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    border: none;
+    padding: .5rem 0;
+    color: #83B849;
+    transition: all .15s ease-in-out;
+    font-family: 'Toma';
+  }
+  
+  .radio-inputs .radio input:checked + .name {
+    background-color: #83B849;
+    font-weight: 600;
+    color : #EEE;
+  }
