@@ -59,10 +59,13 @@ function Download() {
     formData.append("file", file);
 
     try {
-      await uploadZones(file, dateDebut, dateFin);
-      await uploadHoraireToZone(horairesData);
+      await uploadZonesBenevole(file, dateDebut, dateFin);
+      await uploadZonesPlan(file, dateDebut, dateFin);
+      await uploadHoraireToZoneBenevole(horairesData);
+      await uploadHoraireToZonePlan(horairesData);
       await uploadJeux(file);
-      await uploadZonesJeux(file);
+      await uploadZonesBenevoleJeux(file);
+      await uploadZonesPlanJeux(file);
       setIsLoading(false);
       setSuccessMessage(
         "Importation réussie, les zones et les jeux ont bien été créés"
@@ -100,12 +103,35 @@ function Download() {
     }
   }
 
-  async function uploadHoraireToZone(horairesData) {
+  async function uploadHoraireToZoneBenevole(horairesData) {
     try {
       const horaire = {
         horaireCota: horairesData,
       };
-      const response = await fetch("http://localhost:3500/zone/addHoraires", {
+      const response = await fetch("http://localhost:3500/zoneBenevole/addHoraires", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(horaire),
+      });
+
+      if (response.ok) {
+        console.log("Horaires mis à jour pour toutes les zones");
+      } else {
+        throw new Error("Erreur lors de la mise à jour des horaires");
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Erreur lors de la mise à jour des horaires");
+    }
+  }
+  async function uploadHoraireToZonePlan(horairesData) {
+    try {
+      const horaire = {
+        horaireCota: horairesData,
+      };
+      const response = await fetch("http://localhost:3500/zonePlan/addHoraires", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -124,31 +150,47 @@ function Download() {
     }
   }
 
-  async function uploadZonesJeux(file) {
+  async function uploadZonesBenevoleJeux(file) {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const responseAddJeu = await fetch(`http://localhost:3500/zone/addJeux`, {
+      const responseAddJeu = await fetch(`http://localhost:3500/zoneBenevole/addJeux`, {
         method: "POST",
         body: formData,
       });
 
       if (!responseAddJeu.ok) {
-        console.error("Erreur lors de l'ajout des jeux aux zones");
+        console.error("Erreur lors de l'ajout des jeux aux zones Benevoles");
       }
     } catch (error) {
-      console.error("Erreur lors de l'ajout des jeux aux zones", error);
+      console.error("Erreur lors de l'ajout des jeux aux zones Benevoles", error);
+    }
+  }
+  async function uploadZonesPlanJeux(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const responseAddJeu = await fetch(`http://localhost:3500/zonePlan/addJeux`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!responseAddJeu.ok) {
+        console.error("Erreur lors de l'ajout des jeux aux zones Plan");
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'ajout des jeux aux zones Plan", error);
     }
   }
 
-  async function uploadZones(file, dateDebut, dateFin) {
+  async function uploadZonesBenevole(file, dateDebut, dateFin) {
     try {
       const formDataZone1 = new FormData();
       formDataZone1.append("file", file);
       formDataZone1.append("date", dateDebut);
 
       // Envoie les deux instances au serveur
-      const response1 = await fetch(`http://localhost:3500/zone/jour1`, {
+      const response1 = await fetch(`http://localhost:3500/zoneBenevole/jour1`, {
         method: "POST",
         body: formDataZone1,
       });
@@ -157,13 +199,13 @@ function Download() {
       formDataZone2.append("file", file);
       formDataZone2.append("date", dateFin);
 
-      const response2 = await fetch(`http://localhost:3500/zone/jour2`, {
+      const response2 = await fetch(`http://localhost:3500/zoneBenevole/jour2`, {
         method: "POST",
         body: formDataZone2,
       });
 
       if (response1.ok) {
-        console.log("Ajout des zones pour dateDebut avec succès");
+        console.log("Ajout des zonesBenevole pour dateDebut avec succès");
         setErrorMessage(null);
         setPopupVisible(true);
       } else {
@@ -174,7 +216,58 @@ function Download() {
         setPopupVisible(true);
       }
       if (response2.ok) {
-        console.log("Ajout des zones pour dateFin avec succès");
+        console.log("Ajout des zonesBenevole pour dateFin avec succès");
+        setErrorMessage(null);
+        setPopupVisible(true);
+      } else {
+        setErrorMessage(
+          "Une erreur est survenue, les stands n'ont pas pu être créés"
+        );
+        setSuccessMessage(null);
+        setPopupVisible(true);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la création des zones", error);
+      setErrorMessage("Erreur lors de la création des zones");
+      setSuccessMessage(null);
+      setPopupVisible(true);
+    }
+  }
+  
+  async function uploadZonesPlan(file, dateDebut, dateFin) {
+    try {
+      const formDataZone1 = new FormData();
+      formDataZone1.append("file", file);
+      formDataZone1.append("date", dateDebut);
+
+      // Envoie les deux instances au serveur
+      const response1 = await fetch(`http://localhost:3500/zonePlan/jour1`, {
+        method: "POST",
+        body: formDataZone1,
+      });
+
+      const formDataZone2 = new FormData();
+      formDataZone2.append("file", file);
+      formDataZone2.append("date", dateFin);
+
+      const response2 = await fetch(`http://localhost:3500/zonePlan/jour2`, {
+        method: "POST",
+        body: formDataZone2,
+      });
+
+      if (response1.ok) {
+        console.log("Ajout des zonePlan pour dateDebut avec succès");
+        setErrorMessage(null);
+        setPopupVisible(true);
+      } else {
+        setErrorMessage(
+          "Une erreur est survenue, les stands n'ont pas pu être créés"
+        );
+        setSuccessMessage(null);
+        setPopupVisible(true);
+      }
+      if (response2.ok) {
+        console.log("Ajout des zonePlan pour dateFin avec succès");
         setErrorMessage(null);
         setPopupVisible(true);
       } else {

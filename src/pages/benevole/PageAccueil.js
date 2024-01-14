@@ -4,6 +4,7 @@ import BandeauLogo from '../../components/benevole/bandeauBenevole';
 import BoiteOnglet from '../../components/general/boiteOnglet';
 import Jauge from '../../components/benevole/stands/jauge';
 import Fiche_modal from '../../components/benevole/stands/fiche_stand_participer'; // Import du composant Modal
+import Flexible from '../../components/benevole/stands/flexible';
 
 function PageAccueil() {
   const [standsByHour, setStandsByHour] = useState({});
@@ -155,10 +156,11 @@ function PageAccueil() {
       year: 'numeric',
     });
   }
-  
+
   return (
     <div>
       <BandeauLogo />
+      <Flexible/>
       <BoiteOnglet nomOnglet1={formatDate(dateD)} nomOnglet2={formatDate(dateF)}>
         <div className='nomOnglet1'>
         {standsByDate[dateDebut] && Object.entries(standsByDate[dateDebut]).map(([hour, stands], index) => (
