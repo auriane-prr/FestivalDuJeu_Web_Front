@@ -1,0 +1,32 @@
+.header-zone {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start; /* Align items to the bottom */
+  margin: auto;
+}
+
+.separator-zone {
+  height: 0,5px; /* Hauteur du séparateur */
+  background-color: #1D244B; /* Couleur du séparateur */
+  margin: 0 5%;
+  margin-bottom: 2%;
+}
+
+.changer-page-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: fit-content;
+  margin-bottom: 3%;
+}
+
+.field-container {
+  margin-left: 5%;
+  display: flex; /* Use flexbox to align children */
+  align-items: center; /* Align items vertically in the center */
+  justify-content: flex-start; /* Align items to the start of the container */
+  gap: 10px; /* Adjust the gap as needed */
+}
+

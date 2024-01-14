@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../../../styles/Admin/jeux/display_jeux.css";
+import "../../../styles/Admin/jeux/display_zones.css";
 import Champ from "../../general/champ";
 import BoutonPagePrecedente from "../../BoutonPagePrecedente";
 import BoutonPageSuivante from "../../BoutonPageSuivante";
@@ -124,7 +124,7 @@ function DisplayZones() {
 
   return (
     <>
-      <div className="header-container">
+      <div className="header-zone">
         <Download />
         <Champ customStyle={{ width: "70%" }}>
         <select

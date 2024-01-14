@@ -1,28 +1,41 @@
 .Bandeau-logo {
-    width: 100%;
-    height: 10%; /* Hauteur fixe du bandeau */
-    position: fixed;
-    background: #1d244b;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    z-index: 100;
-  }
-  
+  width: 100%;
+  height: 10%; /* Hauteur fixe du bandeau */
+  position: fixed;
+  background: #1d244b;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* padding: 0 20px; */
+  z-index: 100;
+}
+
+.Logo-BL {
+  width: auto;
+  height: 80%; /* Ajuster la hauteur des logos */
+  cursor: pointer;
+  margin-right: 2%; /* Espacement entre les logos */
+}
+
+.LogoApp {
+  width: auto;
+  height: 100%; /* Ajuster la hauteur des logos */
+  cursor: pointer;
+  margin-right: auto; /* Espacement entre les logos */
+}
+
+@media screen and (max-width: 768px) {
   .Logo-BL {
-    width: auto;
-    height: 80%; /* Ajuster la hauteur des logos */
-    cursor: pointer;
-    margin-right: 3%; /* Espacement entre les logos */
+    margin-right: 4%;
   }
-  
-  .LogoApp {
-    width: auto;
-    height: 100%; /* Ajuster la hauteur des logos */
-    cursor: pointer;
-    margin-right: auto; /* Espacement entre les logos */
+}
+
+@media screen and (max-width: 1024px) {
+  .Logo-BL {
+    margin-right: 3%;
+    height: 70%;
   }
+}

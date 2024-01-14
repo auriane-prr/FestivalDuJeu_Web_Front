@@ -38,6 +38,7 @@ function PageAccueil() {
       console.error('Erreur lors de la récupération des informations utilisateur :', error);
     }
   };
+  
   const fetchStandByDate = async (date) => {
     try {
       const response = await fetch(`http://localhost:3500/stands/date/${date}`);

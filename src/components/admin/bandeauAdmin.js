@@ -28,10 +28,10 @@ function BandeauAdmin() {
 
   return (
     <div className="Bandeau-admin">
-        <img className="Logo-AD" src={Logo} alt="Logo" onClick={redirectToAccueil} />
+        <img className="LogoApp" src={Logo} alt="Logo" onClick={redirectToAccueil} />
         <img className="Flexible Logo-AD" src={LogoFlexible} alt="Logo" />
         <img className="Parametre Logo-AD" src={LogoAdmin} alt="Logo" onClick={redirectToParametre} />
-        <img className='Deconnexion Logo-BL' src={DeconnexionImage} alt='Deconnexion' onClick={handleLogout}/>
+        <img className='Deconnexion Logo-AD' src={DeconnexionImage} alt='Deconnexion' onClick={handleLogout}/>
     </div>
   );
 }
