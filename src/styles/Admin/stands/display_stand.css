@@ -133,8 +133,13 @@
   }
 }
 
-.header-container {
-  width: 100%;
+.header-stand {
+  display: flex; /* Assurez-vous que la disposition est flex */
+  width: 60%;
+  flex-direction: column; /* Les enfants seront alignés verticalement */
+  align-items: center; /* Pour centrer les enfants horizontalement */
+  margin: auto; /* Pour centrer le conteneur dans la page */
+  padding: 20px; /* Espacement autour du contenu */
 }
 
 .separator-stand {

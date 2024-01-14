@@ -8,6 +8,7 @@ import StandForm from "./form_ajouter_stand";
 import Titre from "../../general/titre";
 import Bouton from "../../general/bouton";
 import FenetrePopup from "../../general/fenetre_popup";
+import RadioButton from "../../general/radioButton";
 
 function Display_stand() {
   const [showModal, setShowModal] = useState(false);
@@ -22,6 +23,9 @@ function Display_stand() {
   const [selectedHoraireIndex, setSelectedHoraireIndex] = useState(0); // suppose que le premier horaire est sélectionné par défaut
   const [textareaHeights, setTextareaHeights] = useState({}); // Stocke les hauteurs des textarea pour chaque stand
   const [selectedStand, setSelectedStand] = useState("");
+  const [selectedDate, setSelectedDate] = useState("both");
+  const [dateDebut, setDateDebut] = useState(null);
+  const [dateFin, setDateFin] = useState(null);
 
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -35,6 +39,32 @@ function Display_stand() {
     setEditMode(!editMode);
   };
 
+  useEffect(() => {
+    const loadData = async () => {
+      await fetchFestivalData(); // Assurez-vous que cette fonction définit correctement dateDebut et dateFin
+      await fetchStandsData(); // Charge tous les stands et les trie
+    };
+
+    loadData();
+  }, [dateDebut, dateFin]);
+
+  const fetchFestivalData = async () => {
+    const result = await fetch(`http://localhost:3500/festival/latest`);
+    const body = await result.json();
+    setDateDebut(body.date_debut);
+    // setDateD(body.date_debut);
+    setDateFin(body.date_fin);
+    // setDateF(body.date_fin);
+    console.log(dateDebut, dateFin);
+  };
+
+  useEffect(() => {
+    if (dateDebut && dateFin) {
+      fetchStandsByDate(dateDebut); // Appel pour les stands du samedi
+      fetchStandsByDate(dateFin); // Appel pour les stands du dimanche
+    }
+  }, [dateDebut, dateFin]);
+
   async function fetchStandsData() {
     try {
       // Pas besoin de token ou pseudo ici, sauf si l'API exige une authentification
@@ -46,8 +76,8 @@ function Display_stand() {
       });
 
       if (response.ok) {
-        const standsData = await response.json();
-        console.log("Stands data:", standsData);
+        let standsData = await response.json();
+        standsData.sort(compareStandDates);
         setStands(
           standsData.map((stand) => ({
             ...stand,
@@ -72,6 +102,10 @@ function Display_stand() {
       // Gérer l'erreur, par exemple afficher un message d'erreur à l'utilisateur
     }
   }
+
+  useEffect(() => {
+    fetchStandsData();
+  }, []);
 
   useEffect(
     () => {
@@ -151,10 +185,37 @@ function Display_stand() {
   };
 
   const handleDateChange = (e) => {
-    const updatedStands = [...stands];
-    updatedStands[currentStandIndex].date = e.target.value;
-    setStands(updatedStands);
+    const newDate = e.target.value;
+    setSelectedDate(newDate);
+    if (newDate === "both") {
+      fetchStandsData();
+    } else {
+      const specificDate = newDate === "date_debut" ? dateDebut : dateFin;
+      fetchStandsByDate(specificDate);
+    }
   };
+
+  useEffect(() => {
+    if (dateDebut && dateFin) {
+      handleDateChange({ target: { value: "both" } });
+    }
+  }, [dateDebut, dateFin]);
+
+  const radioOptions = [
+    { label: formatDate(dateDebut), value: "date_debut" },
+    { label: formatDate(dateFin), value: "date_fin" },
+    { label: "Tous les stands", value: "both" },
+  ];
+
+  // Fonction pour comparer les dates
+  const compareStandDates = (a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateA - dateB; // Tri croissant par date
+  };
+
+  // Utilisation de la fonction de tri
+  const sortedStands = [...stands].sort(compareStandDates);
 
   const handleNbBenevoleChange = (index, value) => {
     const updatedStands = [...stands];
@@ -175,6 +236,27 @@ function Display_stand() {
       year: "numeric",
     });
   }
+
+  const fetchStandsByDate = async (date) => {
+    try {
+      let url = "http://localhost:3500/stands";
+      if (date !== "both") {
+        url += `/date/${date}`;
+      }
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.ok) {
+        const standsData = await response.json();
+        setStands(standsData);
+      } else {
+        throw new Error("Erreur lors de la récupération des stands");
+      }
+    } catch (error) {
+      console.error("Erreur: ", error);
+    }
+  };
 
   const handleRemoveReferent = async (referentId) => {
     try {
@@ -365,21 +447,32 @@ function Display_stand() {
         </div>
       ) : (
         <>
-          <div className="header-container">
-            <Champ>
+          <div className="header-stand">
+            {/* RadioButton pour la sélection de la date */}
+            <RadioButton
+              options={radioOptions}
+              name="dateSelection"
+              selectedValue={selectedDate}
+              onChange={handleDateChange}
+            />
+            {/* Filtre les stands dans le select en fonction de la date sélectionnée */}
+            <Champ customStyle={{ marginLeft: "0" }}>
               <select
                 onChange={(e) => setSelectedStand(e.target.value)}
-                defaultValue=""
+                value={selectedStand} // Remplacer defaultValue par value pour le contrôle complet
                 className="input"
               >
-                <option value="" disabled>
-                  Sélectionnez un stand
-                </option>
-                {stands.map((stand, index) => (
-                  <option key={index} value={stand._id}>
-                    {stand.nom_stand} ({formatDate(stand.date)})
-                  </option>
-                ))}
+                <option value="">Tous les stands</option>
+                {stands.map(
+                  (
+                    stand,
+                    index // Pas besoin de trier ici, car stands est déjà trié
+                  ) => (
+                    <option key={index} value={stand._id}>
+                      {stand.nom_stand} ({formatDate(stand.date)})
+                    </option>
+                  )
+                )}
               </select>
             </Champ>
           </div>
