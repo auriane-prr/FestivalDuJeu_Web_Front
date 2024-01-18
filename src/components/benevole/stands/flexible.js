@@ -59,6 +59,15 @@ function Flexible({ benevoleId }) {
       const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const uptatedHorairesData = [{
+                date: selectedDate,
+                heure: selectedHeure,
+                liste_stand: [{ id_stand: selectedStand }]
+            }];
+        } catch (error) {
+            console.error("Erreur de connexion au serveur", error);
+        }
+        try {
             // Créez des objets flexible selon la sélection
             const flexibles = selectedDate === "both" ? 
             [{
@@ -123,6 +132,7 @@ function Flexible({ benevoleId }) {
         setSelectedDate(e.target.value);
     };
 
+
     
     return (
         <div className="button-flexible">
@@ -135,12 +145,20 @@ function Flexible({ benevoleId }) {
                         selectedValue={selectedDate}
                         onChange={handleDateChange}
                     />
+                    <Champ>
+                        <input
+                            type="text"
+                            value={selectedHeure}
+                            onChange={(e) => setSelectedHeure(e.target.value)}
+                            placeholder="Heure (ex: 9-11)"
+                        />
+                    </Champ>
                     <form onSubmit={handleSubmit}>
                         <h2>Choisissez vos stands flexibles</h2>
                         <p>{successMessage || errorMessage}</p>
                         <Champ>
                             <select
-                                onChange={(e) => setSelectedDate(e.target.value)}
+                                onChange={(e) => setSelectedStand(e.target.value)}
                                 defaultValue=""
                                 className="input"
                             >
