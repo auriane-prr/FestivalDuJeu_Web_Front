@@ -8,9 +8,11 @@ function Flexible({ benevoleId }) {
     const [modalOpen, setModalOpen] = useState(false);
     const [stands, setStands] = useState([]);
     const [dateDebut, setDateDebut] = useState("");
+    const [dateDebutDisplay, setDateDebutDisplay] = useState("");
     const [dateFin, setDateFin] = useState("");
+    const [dateFinDisplay, setDateFinDisplay] = useState("");
     const [selectedDate, setSelectedDate] = useState("");
-    const [horairesData, setHorairesData] = useState([]);
+    const [selectedHeure, setSelectedHeure] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [selectedStand, setSelectedStand] = useState("");
@@ -18,16 +20,22 @@ function Flexible({ benevoleId }) {
     useEffect(() => {
         // Exemple d'appel API pour récupérer les données du festival
         const fetchData = async () => {
-          const result = await fetch("http://localhost:3500/festival/latest");
-          const body = await result.json();
-          setDateDebut(body.date_debut);
-          setDateFin(body.date_fin);
-          console.log(body.date_debut, body.date_fin);
+            const result = await fetch("http://localhost:3500/festival/latest");
+            const body = await result.json();
+            setDateDebutDisplay(body.date_debut);
+            setDateFinDisplay(body.date_fin);
+            setDateDebut(body.date_debut);
+            setDateFin(body.date_fin);
+            console.log(body.date_debut, body.date_fin);
         };
         fetchData();
       }, []);
 
       const handleOpenModal = () => setModalOpen(true);
+
+      const [horairesData, setHorairesData] = useState([
+        {date: selectedDate, heure: selectedHeure, liste_stand: selectedStand},
+      ]);
 
       function formatDate(date) {
         if (!date) return '';
@@ -43,8 +51,8 @@ function Flexible({ benevoleId }) {
         });
       }
       const radioOptions = [
-        { label: formatDate(dateDebut), value: dateDebut },
-        { label: formatDate(dateFin), value: dateFin },
+        { label: formatDate(dateDebutDisplay), value: dateDebutDisplay },
+        { label: formatDate(dateFinDisplay), value: dateFinDisplay },
         { label: "Les deux jours", value: "both" }
       ];
 
@@ -55,15 +63,12 @@ function Flexible({ benevoleId }) {
             const flexibles = selectedDate === "both" ? 
             [{
                 benevole_id: benevoleId,
-                date: dateDebut,
                 horaires: horairesData
             }, {
                 benevole_id: benevoleId,
-                date: dateFin,
                 horaires: horairesData
             }] : [{
                 benevole_id: benevoleId,
-                date: selectedDate,
                 horaires: horairesData
             }];
 
@@ -87,6 +92,7 @@ function Flexible({ benevoleId }) {
         }
     };
     async function fetchStandsData() {
+        console.log(selectedDate);
         const url = selectedDate === "both"
             ? `http://localhost:3500/stands/date/both`
             : `http://localhost:3500/stands/date/${selectedDate}`;
