@@ -21,6 +21,14 @@ function Flexible() {
     const[flexibleInfo, setFlexibleInfo] = useState('');
     const [selections, setSelections] = useState([]);
 
+    const [heureData, setHeureData] = useState([
+        { heure: "9-11"},
+        { heure: "11-14"},
+        { heure: "14-17"},
+        { heure: "17-20"},
+        { heure: "20-22"},
+    ]);
+
     const fetchUserId = async () => {
         try {
           const token = localStorage.getItem('authToken');
@@ -55,11 +63,26 @@ function Flexible() {
             setDateFinDisplay(body.date_fin);
             setDateDebut(body.date_debut);
             setDateFin(body.date_fin);
-            console.log(body.date_debut, body.date_fin);
         };
         fetchData();
         fetchUserId();
-      }, []);
+    }, []);
+
+    const [horairesJour1Data, setHorairesJour1Data] = useState([
+        { date:dateDebut, heure: "9-11", liste_stand: []},
+        { date:dateDebut, heure: "11-14", liste_stand: []},
+        { date:dateDebut, heure: "14-17", liste_stand: []},
+        { date:dateDebut, heure: "17-20", liste_stand: []},
+        { date:dateDebut, heure: "20-22", liste_stand: []},
+    ]);
+
+    const [horairesJour2Data, setHorairesJour2Data] = useState([
+        { date:dateFin, heure: "9-11", liste_stand: []},
+        { date:dateFin, heure: "11-14", liste_stand: []},
+        { date:dateFin, heure: "14-17", liste_stand: []},
+        { date:dateFin, heure: "17-20", liste_stand: []},
+        { date:dateFin, heure: "20-22", liste_stand: []},
+    ]);
 
       const handleOpenModal = () => setModalOpen(true);
 
@@ -76,6 +99,9 @@ function Flexible() {
           year: 'numeric',
         });
       }
+      const formatHoraire = (horaire) => {
+        return `de ${horaire.replace("-", "h à ")}h`;
+      };
       const radioOptions = [
         { label: formatDate(dateDebutDisplay), value: dateDebutDisplay },
         { label: formatDate(dateFinDisplay), value: dateFinDisplay },
@@ -84,46 +110,44 @@ function Flexible() {
 
       const handleSubmit = async (e) => {
         e.preventDefault();
+        const filteredHorairesJour1 = horairesJour1Data.filter(h => h.liste_stand.length > 0);
+        const filteredHorairesJour2 = horairesJour2Data.filter(h => h.liste_stand.length > 0);
+        const horairesToSend = [...filteredHorairesJour1, ...filteredHorairesJour2];
+        const flexibleData = {
+            benevole_id: userId,
+            horaire: horairesToSend
+        };
         try {
-            const uptatedHorairesData = [{
-                date: selectedDate,
-                heure: selectedHeure,
-                liste_stand: [{ id_stand: selectedStand }]
-            }];
-
-            // Créez des objets flexible selon la sélection
-            const flexibles = selectedDate === "both" ? 
-            [{
-                benevole_id: userId,
-                horaire: [{ ...uptatedHorairesData[0], date: dateDebut }]
-            }, {
-                benevole_id: userId,
-                horaire: [{ ...uptatedHorairesData[0], date: dateFin }]
-            }] : [{
-                benevole_id: userId,
-                horaire: uptatedHorairesData
-            }];
-
-            for (let flexible of flexibles) {
-                console.log(flexible);
-                const response = await fetch(`http://localhost:3500/flexible`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(flexible),
-                });
-                if (!response.ok) {
-                    throw new Error("Erreur lors de la création du flexible");
-                }
+            console.log("flexibleData envoyer au server: ",flexibleData);
+    
+            // Envoi de la requête
+            const response = await fetch(`http://localhost:3500/flexible`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(flexibleData),
+            });
+    
+            if (!response.ok) {
+                throw new Error("Erreur lors de la création du flexible");
             }
-            setSuccessMessage("Votre flexibilité a été enregistré avec succès !");
+    
+            setSuccessMessage("Votre flexibilité a été enregistrée avec succès !");
             setErrorMessage("");
+            setHorairesJour1Data(horairesJour1Data.map(h => ({ ...h, liste_stand: [] })));
+            setHorairesJour2Data(horairesJour2Data.map(h => ({ ...h, liste_stand: [] })));
+            setSelectedDate('');
+            setSelectedHeure('');
+            setSelectedStand('');
+            await fetchFlexibleData();
+    
         } catch (error) {
             setErrorMessage("Erreur de connexion au serveur: " + error.message);
             setSuccessMessage("");
         }
     };
+    
     async function fetchStandsData() {
         console.log(selectedDate);
         const url = selectedDate === "both"
@@ -152,25 +176,38 @@ function Flexible() {
         }
     }, [selectedDate]);
 
+    useEffect(() => {
+        // Mettre à jour horairesJour1Data et horairesJour2Data
+        setHorairesJour1Data(horairesJour1Data.map(h => ({ ...h, date: dateDebut })));
+        setHorairesJour2Data(horairesJour2Data.map(h => ({ ...h, date: dateFin })));
+    }, [dateDebut, dateFin]);
     const handleDateChange = (e) => {
         setSelectedDate(e.target.value);
     };
-    const handleAddStand = (date, heure, standId) => {
-        setSelections(prevSelections => {
-            const existingHoraireIndex = prevSelections.findIndex(h => h.date === date && h.heure === heure);
-            if (existingHoraireIndex >= 0) {
-                // Horaire existant, ajouter le stand à la liste
-                const newSelections = [...prevSelections];
-                newSelections[existingHoraireIndex].liste_stand.push({ id_stand: standId });
-                return newSelections;
-            } else {
-                // Nouvel horaire
-                return [...prevSelections, { date, heure, liste_stand: [{ id_stand: standId }] }];
-            }
-        });
-    };
-    
 
+    const handleAddStand = (heure, standId) => {
+        const updateHoraires = (horaires) => {
+            return horaires.map(horaire => {
+                if (horaire.heure === heure) {
+                    const updatedListeStand = horaire.liste_stand.includes(standId)
+                        ? horaire.liste_stand
+                        : [...horaire.liste_stand, standId];
+                    
+                    return { ...horaire, liste_stand: updatedListeStand };
+                }
+                return horaire;
+            });
+        };
+    
+        if (selectedDate === "both") {
+            setHorairesJour1Data(updateHoraires(horairesJour1Data));
+            setHorairesJour2Data(updateHoraires(horairesJour2Data));
+        } else {
+            const horairesToUpdate = selectedDate === dateDebut ? horairesJour1Data : horairesJour2Data;
+            const updatedHoraires = updateHoraires(horairesToUpdate);
+            selectedDate === dateDebut ? setHorairesJour1Data(updatedHoraires) : setHorairesJour2Data(updatedHoraires);
+        }
+    };
     async function fetchFlexibleData() {
         try {
             const response = await fetch(`http://localhost:3500/flexible/benevole/${userId}`, {
@@ -221,6 +258,7 @@ function Flexible() {
                             <p>Vous n'êtes inscrit à aucun stand.</p>
                         )}
                     </div>
+
                     <div>
                         {selections.map((sel, index) => (
                             <div key={index}>
@@ -231,26 +269,67 @@ function Flexible() {
                             </div>
                         ))}
                     </div>
-
+                    
                     <RadioButton
                         options={radioOptions}
                         name="dateSelection"
                         selectedValue={selectedDate}
                         onChange={handleDateChange}
                     />
-                    <Champ>
+                    <div>
+                    <h3>Vos sélections d'horaires et de stands pour {formatDate(selectedDate === "both" ? dateDebut : selectedDate)}:</h3>
+                    {(selectedDate === dateDebut || selectedDate === "both") && horairesJour1Data.map((horaire, index) => {
+                        if (horaire.liste_stand.length > 0) {
+                            return (
+                                <div key={index}>
+                                    <p>Date: {formatDate(horaire.date)}, Horaire: {formatHoraire(horaire.heure)}</p>
+                                    <ul>
+                                        {horaire.liste_stand.map((standId, idx) => {
+                                            const stand = stands.find(s => s._id === standId);
+                                            return <li key={idx}>{stand ? stand.nom_stand : "Stand non trouvé"}</li>;
+                                        })}
+                                    </ul>
+                                </div>
+                            );
+                        }
+                        return null;
+                    })}
+
+                    {selectedDate === "both" && <h3>Vos sélections d'horaires et de stands pour {formatDate(dateFin)}:</h3>}
+                    {(selectedDate === dateFin || selectedDate === "both") && horairesJour2Data.map((horaire, index) => {
+                        if (horaire.liste_stand.length > 0) {
+                            return (
+                                <div key={index}>
+                                    <p>Date: {formatDate(horaire.date)}, Horaire: {formatHoraire(horaire.heure)}</p>
+                                    <ul>
+                                        {horaire.liste_stand.map((standId, idx) => {
+                                            const stand = stands.find(s => s._id === standId);
+                                            return <li key={idx}>{stand ? stand.nom_stand : "Stand non trouvé"}</li>;
+                                        })}
+                                    </ul>
+                                </div>
+                            );
+                        }
+                        return null;
+                    })}
+                </div>
+                    {heureData && heureData.length > 0 && heureData.map((heureData, index) => (
+                        <div className="horaire-row" key={index}>
+                        <Champ label="Horaires :">
                         <input
+                            className="input"
                             type="text"
-                            value={selectedHeure}
-                            onChange={(e) => setSelectedHeure(e.target.value)}
-                            placeholder="Heure (ex: 9-11)"
+                            value={formatHoraire(heureData.heure)}
+                            readOnly
                         />
-                    </Champ>
-                    <form onSubmit={handleSubmit}>
-                        <p className="inscription">{successMessage || errorMessage}</p>
+                        </Champ>
                         <Champ>
                             <select
-                                onChange={(e) => setSelectedStand(e.target.value)}
+                                onChange={(e) =>{
+                                    const standId = e.target.value;
+                                    const heure = heureData.heure;
+                                    handleAddStand(heure, standId);
+                                }}
                                 defaultValue=""
                                 className="input"
                             >
@@ -264,6 +343,11 @@ function Flexible() {
                                 ))}
                             </select>
                         </Champ>
+                        </div>
+                    ))}
+                    <form onSubmit={handleSubmit}>
+                        <p className="inscription">{successMessage || errorMessage}</p>
+                        <br />
                         <Button type="submit">Soumettre</Button>
                     </form>
                 </Modal>
