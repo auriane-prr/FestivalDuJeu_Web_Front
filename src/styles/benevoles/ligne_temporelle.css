@@ -1,0 +1,4 @@
+.jauges-container {
+    display: flex;
+    justify-content: space-around; /* ou 'flex-start' pour les coller à gauche */
+  }
