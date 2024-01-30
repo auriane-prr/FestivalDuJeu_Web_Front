@@ -27,6 +27,7 @@ function Display_stand() {
   const [dateDebut, setDateDebut] = useState(null);
   const [dateFin, setDateFin] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [referentsLoaded, setReferentsLoaded] = useState(false);
 
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -41,12 +42,79 @@ function Display_stand() {
   };
 
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true); // Start loading
+    const fetchFestivalAndStands = async () => {
+      setLoading(true);
+      try {
+        const festivalData = await fetchFestivalData();
+        setDateRange(festivalData.date_debut, festivalData.date_fin);
+        await fetchStandsForFestival(
+          festivalData.date_debut,
+          festivalData.date_fin
+        );
+      } catch (error) {
+        console.error("Error loading data:", error);
+        setErrorMessage("Error loading data");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFestivalAndStands();
+  }, []);
+  
+
+  const fetchFestivalData = async () => {
+    const response = await fetch(`http://localhost:3500/festival/latest`);
+    if (!response.ok) throw new Error("Failed to fetch festival data");
+    return response.json();
+  };
+
+  const setDateRange = (startDate, endDate) => {
+    setDateDebut(startDate);
+    setDateFin(endDate);
+  };
+
+  const fetchStandsForFestival = async (startDate, endDate) => {
+    const standsForStart = await fetchStandsByDate(startDate);
+    const standsForEnd = await fetchStandsByDate(endDate);
+    setStands([...standsForStart, ...standsForEnd].sort(compareStandDates));
+  };
+
+  const fetchStandsByDate = async (date) => {
+    const response = await fetch(`http://localhost:3500/stands/date/${date}`);
+    if (!response.ok) throw new Error("Failed to fetch stands by date");
+    return response.json();
+  };
+
+  const fetchStandDetails = async (standId) => {
+    const response = await fetch(`http://localhost:3500/stands/${standId}`);
+    if (!response.ok) throw new Error("Failed to fetch stand details");
+    setCurrentStandDetails(await response.json());
+    setReferentsLoaded(true); // Indique que les données des référents sont chargées
+  };
+
+  useEffect(() => {
+    if (currentStandIndex >= 0 && currentStandIndex < stands.length) {
+      // Fetch stand details only if the currentStandIndex is valid
+      fetchStandDetails(stands[currentStandIndex]._id);
+    }
+  }, [currentStandIndex, stands]);
+  
+
+  const handleEditModeToggle = () => {
+    setEditMode(!editMode);
+    setCurrentStandDetails(null); // Réinitialiser les détails du stand lorsque le mode édition est activé
+  };
+
+  useEffect(() => {
+    const fetchFestivalAndStands = async () => {
+      setLoading(true);
       try {
         // Fetch festival dates first
         const festivalData = await fetchFestivalData();
         if (festivalData.date_debut && festivalData.date_fin) {
+          // Set festival dates in state
+          setDateDebut(festivalData.date_debut);
+          setDateFin(festivalData.date_fin);
           // Once we have the dates, fetch stands for those dates
           await fetchStandsByDate(
             festivalData.date_debut,
@@ -57,20 +125,12 @@ function Display_stand() {
         console.error("Erreur lors du chargement des données:", error);
         setErrorMessage("Erreur lors du chargement des données");
       } finally {
-        setLoading(false); // End loading
+        setLoading(false);
       }
     };
 
-    loadData();
+    fetchFestivalAndStands();
   }, []);
-
-  const fetchFestivalData = async () => {
-    const result = await fetch(`http://localhost:3500/festival/latest`);
-    const body = await result.json();
-    setDateDebut(body.date_debut);
-    setDateFin(body.date_fin);
-    return body;
-  };
 
   useEffect(() => {
     if (dateDebut && dateFin) {
@@ -110,18 +170,6 @@ function Display_stand() {
     }
   };
 
-  useEffect(() => {
-    fetchStandsData();
-  }, []);
-
-  useEffect(
-    () => {
-      fetchStandsData();
-    },
-    [editMode],
-    selectedStand
-  );
-
   const fetchNonReferentBenevoles = async () => {
     try {
       const response = await fetch(
@@ -138,32 +186,6 @@ function Display_stand() {
         "Erreur lors de la récupération des bénévoles non référents:",
         error
       );
-    }
-  };
-
-  const fetchStandDetails = async (standId) => {
-    try {
-      const response = await fetch(`http://localhost:3500/stands/${standId}`);
-      if (response.ok) {
-        const standDetails = await response.json();
-        if (standDetails._id === standId) {
-          // Vérifiez si les détails correspondent au stand attendu
-          setCurrentStandDetails(standDetails);
-        } else {
-          console.error(
-            "Les détails chargés ne correspondent pas au stand attendu"
-          );
-          setCurrentStandDetails(null); // Ou gérer autrement si les détails ne correspondent pas
-        }
-      } else {
-        throw new Error("Échec de la récupération des détails du stand");
-      }
-    } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des détails du stand :",
-        error
-      );
-      setCurrentStandDetails(null);
     }
   };
 
@@ -259,28 +281,6 @@ function Display_stand() {
       fetchStandsData();
     }
   }, [selectedDate]);
-
-  const fetchStandsByDate = async (dateDebut, dateFin) => {
-    let url = "http://localhost:3500/stands";
-    const response = await fetch(url);
-    if (response.ok) {
-      let standsData = await response.json();
-      // Filter based on festival dates if necessary
-      standsData = standsData.filter(
-        (stand) =>
-          new Date(stand.date).getTime() === new Date(dateDebut).getTime() ||
-          new Date(stand.date).getTime() === new Date(dateFin).getTime()
-      );
-      standsData.sort(compareStandDates);
-      setStands(standsData);
-      // Fetch details of the first stand
-      if (standsData.length > 0) {
-        await fetchStandDetails(standsData[0]._id);
-      }
-    } else {
-      throw new Error("Erreur lors de la récupération des stands");
-    }
-  };
 
   const handleRemoveReferent = async (referentId) => {
     try {
@@ -388,9 +388,10 @@ function Display_stand() {
         return prevIndex - 1;
       }
     });
-    console.log("stand : " + currentStandIndex);
+  
+    console.log("stand : " + (currentStandIndex === 0 ? stands.length - 1 : currentStandIndex - 1) + " " + stands[currentStandIndex === 0 ? stands.length - 1 : currentStandIndex - 1].nom_stand);
   };
-
+  
   const showNextStand = () => {
     setCurrentStandIndex((prevIndex) => {
       if (prevIndex === stands.length - 1) {
@@ -399,8 +400,10 @@ function Display_stand() {
         return prevIndex + 1;
       }
     });
-    console.log("stand : " + currentStandIndex);
+  
+    console.log("stand : " + (currentStandIndex === stands.length - 1 ? 0 : currentStandIndex + 1) + " " + stands[currentStandIndex === stands.length - 1 ? 0 : currentStandIndex + 1].nom_stand);
   };
+  
 
   const openModal = () => {
     setShowModal(true);
@@ -458,6 +461,7 @@ function Display_stand() {
     setStands(updatedStands);
     // Ne pas réinitialiser l'index ici
     toggleEditMode();
+    console.log("stand modifiable : " + currentStandIndex + " " + stands[currentStandIndex].nom_stand);
   };
 
   return (
@@ -476,12 +480,12 @@ function Display_stand() {
         <div key={currentStandIndex}>
           <div className="header-stand">
             {/* RadioButton pour la sélection de la date */}
-            <RadioButton
+            {/* <RadioButton
               options={radioOptions}
               name="dateSelection"
               selectedValue={selectedDate}
               onChange={handleRadioDateChange}
-            />
+            /> */}
             {/* Filtre les stands dans le select en fonction de la date sélectionnée */}
             <Champ customStyle={{ marginLeft: "0" }}>
               <select
@@ -497,6 +501,7 @@ function Display_stand() {
                   ) => (
                     <option key={index} value={stand._id}>
                       {stand.nom_stand} ({formatDate(stand.date)})
+                      {console.log("Stand :", stand)}
                     </option>
                   )
                 )}
@@ -563,35 +568,40 @@ function Display_stand() {
                         </option>
                       ))}
                     </select>
-                  ) : currentStandDetails?.referents &&
+                  ) : referentsLoaded || !loading ? ( // Utilisation de !loading pour vérifier le chargement initial
+                    currentStandDetails?.referents &&
                     currentStandDetails.referents.length > 0 ? (
-                    currentStandDetails.referents.map((referent) => (
-                      <div key={referent._id} className="referent-input">
-                        <input
-                          type="text"
-                          className="input"
-                          value={referent.pseudo || ""} // Utilisation directe du pseudo
-                          readOnly
-                        />
-                        {editMode && (
-                          <button
-                            onClick={() => handleRemoveReferent(referent._id)}
-                            className="supp-button"
-                          >
-                            X
-                          </button>
-                        )}
-                      </div>
-                    ))
+                      currentStandDetails.referents.map((referent) => (
+                        <div key={referent._id} className="referent-input">
+                          <input
+                            type="text"
+                            className="input"
+                            value={referent.pseudo || ""}
+                            readOnly
+                          />
+                          {editMode && (
+                            <button
+                              onClick={() => handleRemoveReferent(referent._id)}
+                              className="supp-button"
+                            >
+                              X
+                            </button>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <input
+                        type="text"
+                        className="input"
+                        value="Pas de référents"
+                        readOnly
+                      />
+                    )
                   ) : (
-                    <input
-                      type="text"
-                      className="input"
-                      value="Pas de référents"
-                      readOnly
-                    />
+                    "Chargement..."
                   )}
                 </Champ>
+
                 {editMode && (
                   <div className="add-btn-container">
                     {showSelector ? (
