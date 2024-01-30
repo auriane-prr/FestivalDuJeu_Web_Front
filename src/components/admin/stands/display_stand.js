@@ -26,6 +26,7 @@ function Display_stand() {
   const [selectedDate, setSelectedDate] = useState("both");
   const [dateDebut, setDateDebut] = useState(null);
   const [dateFin, setDateFin] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -41,21 +42,34 @@ function Display_stand() {
 
   useEffect(() => {
     const loadData = async () => {
-      await fetchFestivalData(); // Assurez-vous que cette fonction définit correctement dateDebut et dateFin
-      await fetchStandsData(); // Charge tous les stands et les trie
+      setLoading(true); // Start loading
+      try {
+        // Fetch festival dates first
+        const festivalData = await fetchFestivalData();
+        if (festivalData.date_debut && festivalData.date_fin) {
+          // Once we have the dates, fetch stands for those dates
+          await fetchStandsByDate(
+            festivalData.date_debut,
+            festivalData.date_fin
+          );
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des données:", error);
+        setErrorMessage("Erreur lors du chargement des données");
+      } finally {
+        setLoading(false); // End loading
+      }
     };
 
     loadData();
-  }, [dateDebut, dateFin]);
+  }, []);
 
   const fetchFestivalData = async () => {
     const result = await fetch(`http://localhost:3500/festival/latest`);
     const body = await result.json();
     setDateDebut(body.date_debut);
-    // setDateD(body.date_debut);
     setDateFin(body.date_fin);
-    // setDateF(body.date_fin);
-    console.log(dateDebut, dateFin);
+    return body;
   };
 
   useEffect(() => {
@@ -65,43 +79,36 @@ function Display_stand() {
     }
   }, [dateDebut, dateFin]);
 
-  async function fetchStandsData() {
+  const fetchStandsData = async () => {
     try {
-      // Pas besoin de token ou pseudo ici, sauf si l'API exige une authentification
-      const response = await fetch("http://localhost:3500/stands", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
+      let url = "http://localhost:3500/stands";
+      const response = await fetch(url);
       if (response.ok) {
         let standsData = await response.json();
+
+        // Filtre basé sur les dates du festival si nécessaire
+        if (selectedDate === "both" && dateDebut && dateFin) {
+          standsData = standsData.filter(
+            (stand) =>
+              new Date(stand.date).getTime() ===
+                new Date(dateDebut).getTime() ||
+              new Date(stand.date).getTime() === new Date(dateFin).getTime()
+          );
+        }
+
         standsData.sort(compareStandDates);
-        setStands(
-          standsData.map((stand) => ({
-            ...stand,
-            nom_stand: stand.nom_stand || "",
-            description: stand.description || "",
-            date: stand.date || "",
-            referents: stand.referents || "",
-            horaireCota: stand.horaireCota.map((horaire) => ({
-              ...horaire,
-              heure: horaire.heure || "",
-              nb_benevole: horaire.nb_benevole || "",
-              liste_benevole: horaire.liste_benevole || [],
-            })),
-          }))
-        );
+        setStands(standsData);
+
+        if (standsData.length > 0) {
+          await fetchStandDetails(standsData[0]._id); // Make sure to await this call
+        }
       }
     } catch (error) {
-      console.error(
-        "Une erreur s'est produite lors de la récupération des stands",
-        error
-      );
-      // Gérer l'erreur, par exemple afficher un message d'erreur à l'utilisateur
+      console.error("Erreur lors de la récupération des stands", error);
+    } finally {
+      setLoading(false); // Set loading to false once everything is loaded
     }
-  }
+  };
 
   useEffect(() => {
     fetchStandsData();
@@ -134,26 +141,36 @@ function Display_stand() {
     }
   };
 
-  async function fetchStandDetails(standId) {
+  const fetchStandDetails = async (standId) => {
     try {
       const response = await fetch(`http://localhost:3500/stands/${standId}`);
       if (response.ok) {
         const standDetails = await response.json();
-        setCurrentStandDetails(standDetails); // Mise à jour avec les détails récupérés
+        if (standDetails._id === standId) {
+          // Vérifiez si les détails correspondent au stand attendu
+          setCurrentStandDetails(standDetails);
+        } else {
+          console.error(
+            "Les détails chargés ne correspondent pas au stand attendu"
+          );
+          setCurrentStandDetails(null); // Ou gérer autrement si les détails ne correspondent pas
+        }
       } else {
-        throw new Error("Failed to fetch stand details");
+        throw new Error("Échec de la récupération des détails du stand");
       }
     } catch (error) {
-      console.error("Error fetching stand details:", error);
+      console.error(
+        "Erreur lors de la récupération des détails du stand :",
+        error
+      );
+      setCurrentStandDetails(null);
     }
-  }
+  };
 
   useEffect(() => {
-    if (stands.length > 0) {
+    if (stands.length > 0 && currentStandIndex >= 0) {
       const standId = stands[currentStandIndex]._id;
-      if (standId) {
-        fetchStandDetails(standId);
-      }
+      fetchStandDetails(standId);
     }
   }, [currentStandIndex, stands]);
 
@@ -184,7 +201,7 @@ function Display_stand() {
     }));
   };
 
-  const handleDateChange = (e) => {
+  const handleRadioDateChange = (e) => {
     const newDate = e.target.value;
     setSelectedDate(newDate);
     if (newDate === "both") {
@@ -197,7 +214,7 @@ function Display_stand() {
 
   useEffect(() => {
     if (dateDebut && dateFin) {
-      handleDateChange({ target: { value: "both" } });
+      handleRadioDateChange({ target: { value: "both" } });
     }
   }, [dateDebut, dateFin]);
 
@@ -237,24 +254,31 @@ function Display_stand() {
     });
   }
 
-  const fetchStandsByDate = async (date) => {
-    try {
-      let url = "http://localhost:3500/stands";
-      if (date !== "both") {
-        url += `/date/${date}`;
+  useEffect(() => {
+    if (selectedDate === "both") {
+      fetchStandsData();
+    }
+  }, [selectedDate]);
+
+  const fetchStandsByDate = async (dateDebut, dateFin) => {
+    let url = "http://localhost:3500/stands";
+    const response = await fetch(url);
+    if (response.ok) {
+      let standsData = await response.json();
+      // Filter based on festival dates if necessary
+      standsData = standsData.filter(
+        (stand) =>
+          new Date(stand.date).getTime() === new Date(dateDebut).getTime() ||
+          new Date(stand.date).getTime() === new Date(dateFin).getTime()
+      );
+      standsData.sort(compareStandDates);
+      setStands(standsData);
+      // Fetch details of the first stand
+      if (standsData.length > 0) {
+        await fetchStandDetails(standsData[0]._id);
       }
-      const response = await fetch(url, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (response.ok) {
-        const standsData = await response.json();
-        setStands(standsData);
-      } else {
-        throw new Error("Erreur lors de la récupération des stands");
-      }
-    } catch (error) {
-      console.error("Erreur: ", error);
+    } else {
+      throw new Error("Erreur lors de la récupération des stands");
     }
   };
 
@@ -438,7 +462,10 @@ function Display_stand() {
 
   return (
     <>
-      {stands.length === 0 ? (
+      {loading ? (
+        <div>Loading...</div>
+      ) : stands.length === 0 ? (
+        // If there are no stands
         <div className="form-display">
           <p>Aucun stand d'ajouté pour l'instant.</p>
           <Bouton type="button" onClick={openModal}>
@@ -446,14 +473,14 @@ function Display_stand() {
           </Bouton>
         </div>
       ) : (
-        <>
+        <div key={currentStandIndex}>
           <div className="header-stand">
             {/* RadioButton pour la sélection de la date */}
             <RadioButton
               options={radioOptions}
               name="dateSelection"
               selectedValue={selectedDate}
-              onChange={handleDateChange}
+              onChange={handleRadioDateChange}
             />
             {/* Filtre les stands dans le select en fonction de la date sélectionnée */}
             <Champ customStyle={{ marginLeft: "0" }}>
@@ -505,9 +532,8 @@ function Display_stand() {
                 <input
                   type="text"
                   value={formatDate(currentStand?.date || "")}
-                  onChange={handleDateChange}
                   className="input"
-                  readOnly={!editMode}
+                  readOnly
                 />
               </Champ>
 
@@ -588,71 +614,76 @@ function Display_stand() {
                 )}
               </div>
 
-              <div className="horaire-container">
-                <Champ label="Horaire :">
-                  <select
-                    className="input"
-                    value={selectedHoraireIndex}
-                    onChange={(e) => setSelectedHoraireIndex(e.target.value)}
-                  >
-                    {currentStand?.horaireCota &&
-                    currentStand.horaireCota.length > 0 ? (
-                      currentStand.horaireCota.map((horaire, index) => (
-                        <option key={index} value={index}>
-                          {horaire.heure}
-                        </option>
-                      ))
-                    ) : (
-                      <option>Aucun horaire disponible</option> // Cette option s'affiche s'il n'y a pas d'horaires
-                    )}
-                  </select>
-                </Champ>
-                <Champ label="Capacité :">
-                  <input
-                    type="number"
-                    min="1"
-                    value={
-                      currentStand &&
-                      currentStand.horaireCota &&
-                      currentStand.horaireCota[selectedHoraireIndex]
-                        ? currentStand.horaireCota[selectedHoraireIndex]
-                            .nb_benevole || ""
-                        : ""
-                    }
-                    onChange={(e) =>
-                      handleNbBenevoleChange(
-                        selectedHoraireIndex,
-                        e.target.value
-                      )
-                    }
-                    className="input"
-                    readOnly={!editMode}
-                  />
-                </Champ>
-                <Champ label="Liste de bénévoles :">
-                  {currentStandDetails?.horaireCota[selectedHoraireIndex]
-                    .liste_benevole.length === 0 ? (
-                    <input
-                      type="text"
+              {currentStand.nom_stand === "Animation jeu" ? (
+                <p>Pour plus de détail aller sur l'onglet Zones</p>
+              ) : (
+                <div className="horaire-container">
+                  <Champ label="Horaire :">
+                    <select
                       className="input"
-                      value="0 bénévole inscrits"
-                      readOnly
+                      value={selectedHoraireIndex}
+                      onChange={(e) => setSelectedHoraireIndex(e.target.value)}
+                    >
+                      {currentStand?.horaireCota &&
+                      currentStand.horaireCota.length > 0 ? (
+                        currentStand.horaireCota.map((horaire, index) => (
+                          <option key={index} value={index}>
+                            {horaire.heure}
+                          </option>
+                        ))
+                      ) : (
+                        <option>Aucun horaire disponible</option> // Cette option s'affiche s'il n'y a pas d'horaires
+                      )}
+                    </select>
+                  </Champ>
+                  <Champ label="Capacité :">
+                    <input
+                      type="number"
+                      min="1"
+                      value={
+                        currentStand &&
+                        currentStand.horaireCota &&
+                        currentStand.horaireCota[selectedHoraireIndex]
+                          ? currentStand.horaireCota[selectedHoraireIndex]
+                              .nb_benevole || ""
+                          : ""
+                      }
+                      onChange={(e) =>
+                        handleNbBenevoleChange(
+                          selectedHoraireIndex,
+                          e.target.value
+                        )
+                      }
+                      className="input"
+                      readOnly={!editMode}
                     />
-                  ) : (
-                    currentStandDetails?.horaireCota[
-                      selectedHoraireIndex
-                    ].liste_benevole.map((benevole, index) => (
+                  </Champ>
+                  <Champ label="Liste de bénévoles :">
+                    {/* Utilisez ?. pour accéder en toute sécurité à liste_benevole */}
+                    {currentStandDetails?.horaireCota[selectedHoraireIndex]
+                      ?.liste_benevole.length === 0 ? (
                       <input
-                        key={benevole._id}
                         type="text"
                         className="input"
-                        value={benevole.pseudo || ""}
+                        value="0 bénévole inscrits"
                         readOnly
                       />
-                    ))
-                  )}
-                </Champ>
-              </div>
+                    ) : (
+                      currentStandDetails?.horaireCota[
+                        selectedHoraireIndex
+                      ]?.liste_benevole.map((benevole, index) => (
+                        <input
+                          key={benevole._id}
+                          type="text"
+                          className="input"
+                          value={benevole.pseudo || ""}
+                          readOnly
+                        />
+                      ))
+                    )}
+                  </Champ>
+                </div>
+              )}
             </div>
           ) : (
             <p>Aucun stand trouvé.</p>
@@ -688,9 +719,8 @@ function Display_stand() {
               </>
             )}
           </div>
-        </>
+        </div>
       )}
-
       {showModal && (
         <Modal onClose={closeModal}>
           <Titre valeurDuTitre="Ajouter un stand" />
@@ -700,7 +730,6 @@ function Display_stand() {
       {errorMessage && isPopupVisible && (
         <FenetrePopup message={errorMessage} type="error" onClose={hidePopup} />
       )}
-
       {successMessage && isPopupVisible && (
         <FenetrePopup
           message={successMessage}

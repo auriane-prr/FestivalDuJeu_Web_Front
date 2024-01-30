@@ -9,7 +9,7 @@ function PageFestival() {
   return (
     <div className="pageStand">
       <BandeauAdmin />
-      <BoiteOnglet nomOnglet1="Stand" nomOnglet2="Jeux">
+      <BoiteOnglet nomOnglet1="Stands" nomOnglet2="Zones">
         <div className="Onglet1">
           <DisplayStand />
         </div>
