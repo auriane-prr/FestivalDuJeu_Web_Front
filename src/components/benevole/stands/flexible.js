@@ -216,7 +216,7 @@ function Flexible() {
             });
             if (response.ok) {
                 const flexibles = await response.json();
-                const horaires = flexibles.flatMap((flexible) => flexible.horaire);
+                const horaires = flexibles.map((flexible) => flexible.horaire).flat();
                 const stands = horaires.flatMap((horaire) => horaire.liste_stand.map(stand => ({
                     id: stand._id, 
                     nom_stand: stand.nom_stand, 

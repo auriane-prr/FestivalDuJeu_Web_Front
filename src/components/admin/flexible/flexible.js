@@ -55,10 +55,7 @@ function Flexible({ date }) {
   
       // Calculer le nombre de places restantes
       const placesRestantes = horaireCota.nb_benevole - horaireCota.liste_benevole.length;
-  
-      console.log(`Nombre de places restantes pour le stand ${standData.nom_stand} à l'horaire ${horaire}: ${placesRestantes}`);
-  
-      // Mettre à jour l'état avec les informations du stand, incluant le nombre de places restantes
+      
       setSelectedStands(prevStands => ({
         ...prevStands,
         [horaire]: {
@@ -84,7 +81,6 @@ function Flexible({ date }) {
         const { [horaire]: _, ...rest } = prevStands;
         return rest;
       } else {
-        // Ajoute ou met à jour le stand sélectionné pour cet horaire
         return {
           ...prevStands,
           [horaire]: {
@@ -94,7 +90,6 @@ function Flexible({ date }) {
         };
       }
     });
-    console.log("Stand sélectionné ou désélectionné: ", standId, "Horaire: ", horaire);
     fetchStandDetails(standId, horaire);
   };
   
@@ -109,16 +104,15 @@ function Flexible({ date }) {
     }
   
     // Créez un tableau des stands sélectionnés
-    const selectedStandArray = Object.entries(selectedStands).map(([horaire, standId]) => ({
+    const selectedStandArray = Object.entries(selectedStands).map(([horaire, standInfo]) => ({
       horaire,
-      standId,
+      standId: standInfo.standId,
       idBenevole: selectedFlexibleId,
     }));
   
     try {
       for (const standInfo of selectedStandArray) {
-        console.log("standInfo :", standInfo.standId, standInfo.horaire, standInfo.idBenevole)
-        console.log("Types - standId:", typeof standInfo.standId, ", horaire:", typeof standInfo.horaire, ", idBenevole:", typeof standInfo.idBenevole);
+        console.log("standId :", standInfo.standId,"horaire: ", standInfo.horaire,"benevoleId: ", standInfo.idBenevole)
         const response = await fetch(`http://localhost:3500/stands/inscrire/${standInfo.standId}/${standInfo.horaire}/${standInfo.idBenevole}`, 
         {
             method: "PUT",
@@ -135,9 +129,8 @@ function Flexible({ date }) {
   
       console.log("Inscription réussie.");
       setIsSubmitting(true);
-  
-      // Suppression du flexible après l'inscription réussie à tous les stands
-      const deleteResponse = await fetch(`http://localhost:3500/flexible/${selectedFlexibleId}`, {
+      console.log("selectedFlexibleId", selectedFlexibleId, "date", date)
+      const deleteResponse = await fetch(`http://localhost:3500/flexible/${selectedFlexible._id}/${date}`, {
         method: 'DELETE',
       });
   
