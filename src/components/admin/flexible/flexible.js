@@ -42,40 +42,64 @@ function Flexible({ date }) {
       setSelectedFlexibleId(flexibleId);
     
   };
+
   const fetchStandDetails = async (standId, horaire) => {
     try {
       const response = await fetch(`http://localhost:3500/stands/${standId}`);
       const standData = await response.json();
       if (!response.ok) throw new Error(standData.message || "Erreur lors de la récupération des détails du stand");
-
-      // Trouver les informations de cota pour l'horaire spécifique
+  
+      // Trouver les informations de quota pour l'horaire spécifique
       const horaireCota = standData.horaireCota.find(h => h.heure === horaire);
       if (!horaireCota) throw new Error("Horaire spécifique non trouvé dans le stand");
-
-      console.log(`Nombre de bénévoles pour le stand ${standId} à l'horaire ${horaire}: ${horaireCota.nb_benevole}`);
-      // Vous pouvez ici mettre à jour l'état pour afficher cette information dans l'UI si nécessaire
+  
+      // Calculer le nombre de places restantes
+      const placesRestantes = horaireCota.nb_benevole - horaireCota.liste_benevole.length;
+  
+      console.log(`Nombre de places restantes pour le stand ${standData.nom_stand} à l'horaire ${horaire}: ${placesRestantes}`);
+  
+      // Mettre à jour l'état avec les informations du stand, incluant le nombre de places restantes
+      setSelectedStands(prevStands => ({
+        ...prevStands,
+        [horaire]: {
+          ...prevStands[horaire],
+          standId,
+          nb_benevole: horaireCota.nb_benevole,
+          nom_stand: standData.nom_stand,
+          placesRestantes // Ajouter le nombre de places restantes à l'objet
+        }
+      }));
     } catch (error) {
       console.error("Erreur lors de la récupération des détails du stand: ", error.message);
     }
   };
-
-
+  
   const horaires = ["9-11", "11-14", "14-17", "17-20", "20-22"];
 
-  // Gestionnaire de clic pour les boutons de stand
   const handleStandClick = (horaire, standId) => {
-    if (!selectedStands[horaire]) {
-      // Si aucun bouton n'a été sélectionné dans cet horaire, ajoutez le bouton
-      setSelectedStands({
-        ...selectedStands,
-        [horaire]: standId
-      });
-    } else {
-      // Si un bouton a déjà été sélectionné dans cet horaire, affichez un message d'erreur ou ne faites rien
-      console.log("Vous ne pouvez sélectionner qu'un stand par horaire.");
-    }
-    console.log("Stand sélectionné: ", standId, "Horaire: ", horaire);
+    setSelectedStands(prevStands => {
+      const isStandSelected = prevStands[horaire]?.standId === standId;
+      if (isStandSelected) {
+        console.log('Désélection du stand:', standId, 'à l\'horaire:', horaire);
+        const { [horaire]: _, ...rest } = prevStands;
+        return rest;
+      } else {
+        // Ajoute ou met à jour le stand sélectionné pour cet horaire
+        return {
+          ...prevStands,
+          [horaire]: {
+            standId,
+            // Vous pouvez inclure d'autres détails ici si nécessaire
+          }
+        };
+      }
+    });
+    console.log("Stand sélectionné ou désélectionné: ", standId, "Horaire: ", horaire);
     fetchStandDetails(standId, horaire);
+  };
+  
+  const handleCancel = () => {
+    setSelectedStands({});
   };
 
   const handleSubmit = async () => {
@@ -130,8 +154,9 @@ function Flexible({ date }) {
       console.error(error.message);
     }
   };
-  
-  
+  useEffect(() => {
+    console.log('selectedStands updated:', selectedStands);
+  }, [selectedStands]);
 
   return (
     <div>
@@ -168,13 +193,15 @@ function Flexible({ date }) {
                       <div key={horaireData._id}>
                         {horaireData.liste_stand && horaireData.liste_stand.length > 0 ? (
                           horaireData.liste_stand.map((stand) => (
-                            <button className='button-stand'
-                              key={stand._id}
-                              onClick={() => handleStandClick(horaire, stand._id)} // Utilisez le gestionnaire de clic mis à jour
-                              style={{ borderColor: selectedStands[horaire] === stand._id ? '#454C8B' : 'rgba(170, 173, 191, 0.5)' }}
-                            >
-                              {stand.nom_stand}
+                            <button
+                                className={`button-stand ${selectedStands[horaire]?.standId === stand._id ? 'selected-stand' : ''}`}
+                                key={stand._id}
+                                onClick={() => handleStandClick(horaire, stand._id)}
+                                >
+                                {stand.nom_stand}
                             </button>
+
+
                           ))
                         ) : (
                           <div>Aucun stand disponible</div>
@@ -187,20 +214,25 @@ function Flexible({ date }) {
               </div>
             </div>
           ))}
-          {Object.keys(selectedStands).length > 0 && (
+        {Object.keys(selectedStands).length > 0 && (
         <div>
             <h3>Informations des stands sélectionnés</h3>
             <ul>
-                {Object.keys(selectedStands).map((horaire, index) => (
-                    <li key={index}>
-                    Horaire: {horaire}, Stand: {selectedStands[horaire]}
-                    </li>
-                ))}
+            {Object.entries(selectedStands).map(([horaire, standInfo]) => (
+                <li key={horaire}>
+                Horaire: {horaire}, Stand: {standInfo.nom_stand}, Capacité: {standInfo.nb_benevole}, Places restantes: {standInfo.placesRestantes}
+                </li>
+            ))}
             </ul>
         </div>
-    )}
+        )}
+
+
     {!isSubmitting && (
-        <Bouton onClick={handleSubmit}>Soumettre</Bouton>
+        <div className='boutons'>
+            <Bouton onClick={handleSubmit} className='bouton-soumettre' >Soumettre</Bouton>
+            <Bouton onClick={handleCancel}>Annuler</Bouton>
+        </div>
     )}
     {isSubmitting && (
         <p>En cours de soumission...</p>
