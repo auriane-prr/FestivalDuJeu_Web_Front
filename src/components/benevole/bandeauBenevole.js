@@ -20,6 +20,10 @@ function BandeauLogo() {
     navigate("/profil");
   };
 
+  const redirectToPlanning = () => {
+    navigate("/planning");
+  }
+
   const handleLogout = () => {
     logout();
     navigate("/"); // Redirige vers la page de connexion
@@ -29,7 +33,7 @@ function BandeauLogo() {
     <div className="Bandeau-logo">
       <img className="LogoApp" src={Logo} alt="Logo" onClick={redirectToAccueil} />
       <img className="Profile Logo-BL" src={ProfileImage} alt="Profile" onClick={redirectToProfil} />
-      <img className="Calendrier Logo-BL" src={CalendrierImage} alt="Calandrier" />
+      <img className="Calendrier Logo-BL" src={CalendrierImage} alt="Calandrier" onClick={redirectToPlanning}/>
       <img className="Alerte Logo-BL" src={AlerteImage} alt="Alerte"  />
       <img className="Deconnexion Logo-BL" src={DeconnexionImage} alt="Profile" onClick={handleLogout} />
     </div>

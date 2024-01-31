@@ -241,7 +241,7 @@ function Flexible() {
     
     return (
         <div className="button-flexible">
-            <button onClick={handleOpenModal}> Devenir flexible</button>
+            <Button onClick={handleOpenModal}>Devenir flexible</Button>
             {modalOpen && (
                 <Modal onClose={() => setModalOpen(false)} valeurDuTitre={"Choisissez vos stands flexibles"}>
                     <div>
