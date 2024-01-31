@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import "../../styles/Pages/pageAccueil.css";
 import BandeauLogo from '../../components/benevole/bandeauBenevole';
 import BoiteOnglet from '../../components/general/boiteOnglet';

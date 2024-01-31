@@ -1,0 +1,63 @@
+.jauge-container {
+  border: 1px solid #ccc;
+  width: 20%;
+  height: 30px;
+  cursor: pointer;
+  margin-bottom: 3%;
+  position: relative; /* La position relative permet de positionner absolument les enfants par rapport à ce conteneur */
+  border-radius: 10px;
+  display: flex;
+}
+
+.jauge-filling {
+  height: 100%;
+  transition: width 0.5s ease-in-out;
+  position: absolute; /* Ajouté pour superposer la jauge de remplissage */
+  top: 0; /* Ajouté pour aligner au haut du conteneur */
+  left: 0; /* Ajouté pour aligner à gauche du conteneur */
+  border-radius: 10px;
+}
+
+.jauge-filling--empty {
+  background-color: transparent; /* Jauge vide */
+  border-radius: 10px;
+}
+
+.jauge-filling--partial {
+  background-color: rgb(170, 173, 191, 0.8); /* Jauge partiellement remplie */
+  border-radius: 10px;
+}
+
+.jauge-filling--full {
+  background-color: #1d244b; /* Jauge pleine */
+  border-radius: 10px;
+}
+
+.jauge-text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  line-height: 30px; /* Assurez-vous que cela correspond à la hauteur de .jauge-container */
+  color: #000; /* Ajoutez la couleur de texte souhaitée ici */
+  justify-content: center;
+}
+
+.jauge-text--full {
+  color: #fff; /* Définit la couleur du texte en blanc */
+}
+
+.jauge-text-extremite {
+  position: absolute;
+  top: -40%;
+  transform: translateY(-50%); /* Centrer verticalement */
+  white-space: nowrap; /* Empêche le texte de passer à la ligne */
+  font-size: 12px;
+}
+
+.jauge-text-extremite.debut {
+  left: -12px; /* Décaler vers la gauche en dehors de la jauge */
+}
+
+.jauge-text-extremite.fin {
+  right: -11px; /* Décaler vers la droite en dehors de la jauge */
+}

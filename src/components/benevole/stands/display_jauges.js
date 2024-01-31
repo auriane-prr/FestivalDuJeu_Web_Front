@@ -5,6 +5,7 @@ import Champ from "../../general/champ";
 import { useState, useEffect } from "react";
 import LigneTemporelle from "./ligne_temporelle";
 import Modale from "../../general/fenetre_modale";
+import Participer from "./fiche_participer";
 
 function DisplayJauges() {
   const [standsByHour, setStandsByHour] = useState({});
@@ -18,37 +19,6 @@ function DisplayJauges() {
   const [selectedStand, setSelectedStand] = useState(null); // État pour stocker le stand sélectionné
   const [showModal, setShowModal] = useState(false); // État pour afficher ou masquer la fenêtre modale
   const [stands, setStands] = useState([]);
-
-  const fetchUserId = async () => {
-    try {
-      const token = localStorage.getItem("authToken");
-      const pseudo = localStorage.getItem("pseudo");
-      const response = await fetch(
-        `http://localhost:3500/benevole/pseudo/${pseudo}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.ok) {
-        const { benevole } = await response.json();
-        console.log("benevoleId", benevole._id);
-        setUserId(benevole._id);
-      } else {
-        throw new Error(
-          "Erreur lors de la récupération des informations utilisateur"
-        );
-      }
-    } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des informations utilisateur :",
-        error
-      );
-    }
-  };
 
   useEffect(() => {
     // Fonction pour récupérer les stands par la date sélectionnée
@@ -112,11 +82,6 @@ function DisplayJauges() {
   //     }
   //   }, [dateDebut, dateFin]);
 
-  useEffect(() => {
-    if (selectedStand && userId) {
-      handleParticiperClick();
-    }
-  }, [userId]);
   //   const groupStandsByHourAndColumn = (standsData) => {
   //     const standsByHour = {};
   //     standsData.forEach((stand) => {
@@ -131,55 +96,13 @@ function DisplayJauges() {
   //     return standsByHour;
   //   };
 
-  const handleJaugeClick = (stand) => {
-    setSelectedStand(stand); // Mettre à jour l'état du stand sélectionné
-    setShowModal(true); // Afficher la fenêtre modale
+  const handleJaugeClick = (creneau, stand) => {
+    setSelectedStand({ ...stand, selectedCreneau: creneau });
+    setShowModal(true);
   };
 
   const closeModal = () => {
-    setShowModal(false); // Cacher la fenêtre modale
-  };
-
-  const handleParticiperClick = async () => {
-    await fetchUserId();
-    if (selectedStand && userId) {
-      try {
-        const { _id: idStand, horaireCota } = selectedStand;
-        const idHoraire = horaireCota[0]._id;
-        const idBenevole = userId;
-        const token = localStorage.getItem("authToken");
-        const response = await fetch(
-          `http://localhost:3500/stands/participer/${idHoraire}/${idBenevole}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          console.log("Participation enregistrée");
-          const updatedResponse = await fetch(
-            `http://localhost:3500/stands/${idStand}`
-          );
-          if (updatedResponse.ok) {
-            const updatedStand = await updatedResponse.json();
-            console.log("updatedStand", updatedStand);
-
-            // Mettre à jour selectedStand avec la nouvelle liste de bénévoles inscrits
-            setSelectedStand(updatedStand);
-          }
-        } else {
-          throw new Error(
-            "Erreur lors de l enregistrement de la participation"
-          );
-        }
-      } catch (error) {
-        console.error("Erreur lors de la participation :", error);
-      }
-    }
+    setShowModal(false);
   };
 
   function formatDate(date) {
@@ -213,41 +136,38 @@ function DisplayJauges() {
           <option value="" disabled={selectedDate !== ""}>
             Choisissez une date
           </option>
-          {dateDebut && <option value={dateDebut}>{formatDate(dateDebut)}</option>}
+          {dateDebut && (
+            <option value={dateDebut}>{formatDate(dateDebut)}</option>
+          )}
           {dateFin && <option value={dateFin}>{formatDate(dateFin)}</option>}
         </select>
       </Champ>
       <hr className="separator-benevole" />
       {selectedDate === "" && <p>Veuillez sélectionner une date</p>}
       {stands
-        .filter(stand => stand.nom_stand !== "Animation jeu") // Exclure le stand "Animation Jeu"
+        .filter((stand) => stand.nom_stand !== "Animation jeu")
         .map((stand) => (
-          <div key={stand._id} onClick={() => handleJaugeClick(stand)}> 
-            <h2>{stand.nom_stand}</h2>
-            <LigneTemporelle date={selectedDate} standId={stand._id} />
+          <div key={stand._id}>
+            <div className="nom-stand">{stand.nom_stand}</div>
+            <LigneTemporelle
+              date={selectedDate}
+              standId={stand._id}
+              handleJaugeClick={handleJaugeClick}
+            />
           </div>
-      ))}
-      {showModal && selectedStand && ( // Affichage conditionnel de la fenêtre modale
-        <Modale type="success" onClose={closeModal} onParticipateClick={handleParticiperClick}>
-          <p>Nom du stand: {selectedStand.nom_stand}</p>
-          <p>Description: {selectedStand.description}</p>
-          <p>Heure: {selectedStand.heure}</p>
-          <p>Nombre de bénévoles maximum: {selectedStand.nb_benevole}</p>
-          <p>Liste de bénévoles inscrits:
-            {selectedStand && selectedStand.liste_benevole && selectedStand.liste_benevole.length > 0 ? (
-              selectedStand.liste_benevole.map((benevole, index) => (
-                <span key={index}>{benevole.pseudo} </span>
-              ))
-            ) : (
-              <span>0 bénévole inscrits</span>
-            )}
-          </p>
-          <button onClick={() => handleParticiperClick()}>Participer</button>
+        ))}
+      {showModal && selectedStand && (
+        <Modale onClose={closeModal} valeurDuTitre={selectedStand.nom_stand}>
+          <Participer
+            stand={selectedStand}
+            creneau={selectedStand.selectedCreneau} // Passez le créneau horaire spécifique
+            setSelectedStand={setSelectedStand}
+            closeModal={closeModal}
+          />
         </Modale>
       )}
     </>
   );
-  
 }
 
 export default DisplayJauges;

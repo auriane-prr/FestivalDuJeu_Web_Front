@@ -1,4 +1,6 @@
-.jauges-container {
+.ligne-container {
     display: flex;
     justify-content: space-around; /* ou 'flex-start' pour les coller à gauche */
+    margin-left : 3%;
+    margin-right : 3%;
   }

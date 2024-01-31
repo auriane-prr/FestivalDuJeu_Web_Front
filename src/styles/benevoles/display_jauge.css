@@ -4,4 +4,17 @@
     margin: 0 5%; /* Espace au-dessus et en dessous du séparateur */
     margin-bottom: 2%;
   }
-  
+
+  .nom-stand {
+    font-size: 1.3em;
+    color: #1D244B;
+    margin-left: 3%;
+    margin-bottom: 3%;
+    font-family: 'Police';
+    color: #5E8D38;
+  }
+
+  @font-face {
+    font-family: 'Police';
+    src: url('../../Police/OlivessansPimiento.ttf') format('truetype');
+  }
