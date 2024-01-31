@@ -1,0 +1,41 @@
+  .planning-header {
+    display: flex;
+    justify-content: space-around;
+    background-color: #f5f5f5;
+  }
+  
+  .planning-body {
+    padding: 16px;
+  }
+  
+  .planning-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(170, 173, 191, 0.5);
+  }
+  .planning-row:last-child {
+    border-bottom: none;
+  }
+  
+  .planning-time {
+    min-width: 50px;
+    font-weight: bold;
+    margin-left: 15px;
+  }
+  
+  .planning-stands {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .planning-stand {
+    background-color:rgba(170, 173, 191, 0.5);
+    padding: 4px 8px;
+    flex-grow: 1;
+    margin : 2%;
+    border-radius: 4px;
+    text-align: center; 
+  }
+  
