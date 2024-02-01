@@ -5,6 +5,8 @@ import PageProfil from "./pages/benevole/PageProfil";
 import AdminAccueil from "./pages/admin/AdminAccueil";
 import AdminPageFestival from "./pages/admin/pageFestival";
 import AdminParametre from "./pages/admin/AdminParametre";
+import AdminFlexible from "./pages/admin/AdminFlexible";
+import PagePlanning from "./pages/benevole/PagePlanning";
 
 
 // isMenu : true si on peut voir la page dans le menu sans être connecté
@@ -14,8 +16,10 @@ export const nav = [
     { path : "/accueil", name : "PageAccueil", element: <PageAccueil />, isMenu: false, isPrivate: true},
     { path : "/register", name : "PageRegister", element: <PageRegister />, isMenu: false, isPrivate: false},
     { path : "/profil", name : "PageProfil", element: <PageProfil />, isMenu: false, isPrivate: true},
-    { path: "/admin", name: "AdminAccueil", element: <AdminAccueil />, isMenu: false, isPrivate: true, adminOnly: true },
-    { path: "/admin/festival", name: "AdminPageFestival", element: <AdminPageFestival />, isMenu: false, isPrivate: true, adminOnly: true },
-    { path: "/admin/parametre", name: "AdminParametre", element: <AdminParametre />, isMenu: false, isPrivate: true, adminOnly: true },
+    { path : "/planning", name : "PagePlanning", element: <PagePlanning />, isMenu: false, isPrivate: true},
+    { path : "/admin", name: "AdminAccueil", element: <AdminAccueil />, isMenu: false, isPrivate: true, adminOnly: true },
+    { path : "/admin/festival", name: "AdminPageFestival", element: <AdminPageFestival />, isMenu: false, isPrivate: true, adminOnly: true },
+    { path : "/admin/parametre", name: "AdminParametre", element: <AdminParametre />, isMenu: false, isPrivate: true, adminOnly: true },
+    { path : "/admin/flexible", name: "AdminFlexible", element: <AdminFlexible />, isMenu: false, isPrivate: true, adminOnly: true },
 ]
 

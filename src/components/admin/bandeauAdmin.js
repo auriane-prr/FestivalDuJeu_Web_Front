@@ -21,6 +21,10 @@ function BandeauAdmin() {
     navigate("/admin");
   };
 
+  const redirectToFlexible = () => {
+    navigate("/admin/flexible");
+  }
+
   const handleLogout = () => {
     logout();
     navigate("/"); // Redirige vers la page de connexion
@@ -29,7 +33,7 @@ function BandeauAdmin() {
   return (
     <div className="Bandeau-admin">
         <img className="LogoApp" src={Logo} alt="Logo" onClick={redirectToAccueil} />
-        <img className="Flexible Logo-AD" src={LogoFlexible} alt="Logo" />
+        <img className="Flexible Logo-AD" src={LogoFlexible} alt="Logo" onClick={redirectToFlexible} />
         <img className="Parametre Logo-AD" src={LogoAdmin} alt="Logo" onClick={redirectToParametre} />
         <img className='Deconnexion Logo-AD' src={DeconnexionImage} alt='Deconnexion' onClick={handleLogout}/>
     </div>
