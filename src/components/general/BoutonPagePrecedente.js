@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/boutonPagePrecedente.css';
+import "../../styles/boutonPagePrecedente.css";
 
 const BoutonPagePrecedente = () => {
   return (
@@ -24,4 +24,5 @@ const ArrowIcon = () => {
       </svg>
     );
   };
+  
 export default BoutonPagePrecedente;
