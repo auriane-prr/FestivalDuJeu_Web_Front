@@ -3,7 +3,7 @@ import FenetrePopup from "../../general/fenetre_popup";
 import Champ from "../../general/champ";
 import Bouton from "../../general/bouton";
 
-const ModaleParticiper = ({ stand, creneau, setSelectedStand, closeModal }) => {
+const ModaleParticiper = ({ stand, creneau, closeModal }) => {
   const [userId, setUserId] = useState("");
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -145,54 +145,54 @@ const ModaleParticiper = ({ stand, creneau, setSelectedStand, closeModal }) => {
   return (
     <>
       <Champ label="Description">
-        <input
-          type="text"
-          value={stand.description}
-          className="input"
-          readOnly
-        />
-      </Champ>
+  <input
+    type="text"
+    value={stand.description}
+    className="input"
+    readOnly
+  />
+</Champ>
 
-      <Champ label="Horaire">
-        <input
-          type="text"
-          value={creneau.heure} // Accédez à l'heure du créneau
-          className="input"
-          readOnly
-        />
-      </Champ>
+<Champ label="Horaire">
+  <input
+    type="text"
+    value={creneau.heure} // Accédez à l'heure du créneau
+    className="input"
+    readOnly
+  />
+</Champ>
 
-      <Champ label="Capacité">
-        <input
-          type="text"
-          value={creneau.nb_benevole} // Accédez à la capacité du créneau
-          className="input"
-          readOnly
-        />
-      </Champ>
+<Champ label="Capacité">
+  <input
+    type="text"
+    value={creneau.nb_benevole} // Accédez à la capacité du créneau
+    className="input"
+    readOnly
+  />
+</Champ>
 
-      <Champ label="Liste des bénévoles inscrits au créneau :">
-        {creneau &&
-        creneau.liste_benevole &&
-        creneau.liste_benevole.length === 0 ? (
-          <input
-            type="text"
-            className="input"
-            value="0 bénévole inscrits"
-            readOnly
-          />
-        ) : (
-          creneau?.liste_benevole?.map((benevole, index) => (
-            <input
-              key={index}
-              type="text"
-              className="input"
-              readOnly
-              value={benevole.pseudo || ""}
-            />
-          ))
-        )}
-      </Champ>
+
+      <Champ label="Liste des bénévoles inscrits:">
+  {stand && stand.liste_benevole && stand.liste_benevole.length === 0 ? (
+    <input
+      type="text"
+      className="input"
+      value="0 bénévole inscrits"
+      readOnly
+    />
+  ) : (
+    stand?.liste_benevole?.map((benevole, index) => (
+      <input
+        key={index}
+        type="text"
+        className="input"
+        readOnly
+        value={benevole.pseudo || ""}
+      />
+    ))
+  )}
+</Champ>
+
 
       <div className="button_container">
         <Bouton type="button" onClick={handleParticiperClick}>
