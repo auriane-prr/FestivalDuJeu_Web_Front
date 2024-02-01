@@ -3,7 +3,7 @@ import "../../styles/Pages/pageAccueil.css";
 import BandeauLogo from '../../components/benevole/bandeauBenevole';
 import BoiteOnglet from '../../components/general/boiteOnglet';
 import Flexible from '../../components/benevole/stands/flexible';
-import FlexibleAnimation from '../../components/benevole/stands/flexible_animation';
+import FlexibleAnimation from '../../components/benevole/stands/flexible_zone';
 import DisplayJauges from '../../components/benevole/stands/display_jauges';
 
 function PageAccueil() {
