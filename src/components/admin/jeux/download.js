@@ -60,12 +60,12 @@ function Download() {
 
     try {
       await uploadZonesBenevole(file, dateDebut, dateFin);
-      await uploadZonesPlan(file, dateDebut, dateFin);
+      //await uploadZonesPlan(file, dateDebut, dateFin);
       await uploadHoraireToZoneBenevole(horairesData);
-      await uploadHoraireToZonePlan(horairesData);
+      //await uploadHoraireToZonePlan(horairesData);
       await uploadJeux(file);
       await uploadZonesBenevoleJeux(file);
-      await uploadZonesPlanJeux(file);
+      //await uploadZonesPlanJeux(file);
       setIsLoading(false);
       setSuccessMessage(
         "Importation réussie, les zones et les jeux ont bien été créés"
