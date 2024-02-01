@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import BandeauAdmin from '../../components/admin/bandeauAdmin';
 import BoiteOnglet from '../../components/general/boiteOnglet';
 import Flexible from '../../components/admin/flexible/flexible';
+import FlexibleZone from '../../components/admin/flexible/flexibleZone';
+import Champ from '../../components/general/champ';
 
 function AdminFlexible() {
     console.log("je suis dans admin flexible")
-    const [dateDebutDisplay, setDateDebutDisplay] = useState("");
-    const [dateFinDisplay, setDateFinDisplay] = useState("");
+    const [dateDebut, setDateDebut] = useState("");
+    const [dateFin, setDateFin] = useState("");
+    const [selectedDate, setSelectedDate] = useState("");
 
     useEffect(() => {
         // Exemple d'appel API pour récupérer les données du festival
         const fetchData = async () => {
             const result = await fetch("http://localhost:3500/festival/latest");
             const body = await result.json();
-            setDateDebutDisplay(body.date_debut);
-            setDateFinDisplay(body.date_fin);
+            setDateDebut(body.date_debut);
+            setDateFin(body.date_fin);
         };
         fetchData();
     }, []);
@@ -32,16 +35,53 @@ function AdminFlexible() {
           year: 'numeric',
         });
       }
+
+      const handleDateChange = (e) => {
+        const selectedValue = e.target.value;
+        setSelectedDate(selectedValue);
+      };
+    
     
     return (
       <div>
         <BandeauAdmin />
-        <BoiteOnglet nomOnglet1={formatDate(dateDebutDisplay)} nomOnglet2={formatDate(dateFinDisplay)}>
+        <BoiteOnglet nomOnglet1={"Stands"} nomOnglet2={"Zones"}>
           <div className='nomOnglet1'>
-            <Flexible date={dateDebutDisplay} />
+          <Champ>
+        <select
+          className="input"
+          value={selectedDate}
+          onChange={handleDateChange}
+        >
+          <option value="" disabled={selectedDate !== ""}>
+            Choisissez une date
+          </option>
+          {dateDebut && (
+            <option value={dateDebut}>{formatDate(dateDebut)}</option>
+          )}
+          {dateFin && <option value={dateFin}>{formatDate(dateFin)}</option>}
+        </select>
+      </Champ>
+            <Flexible date={selectedDate} />
           </div>
-          <div>
-            <Flexible date={dateFinDisplay} />
+          <div className='nomOnglet2'>
+            <p>Zone</p>
+            <Champ>
+        <select
+          className="input"
+          value={selectedDate}
+          onChange={handleDateChange}
+        >
+          <option value="" disabled={selectedDate !== ""}>
+            Choisissez une date
+          </option>
+          {dateDebut && (
+            <option value={dateDebut}>{formatDate(dateDebut)}</option>
+          )}
+          {dateFin && <option value={dateFin}>{formatDate(dateFin)}</option>}
+        </select>
+      </Champ>
+            <FlexibleZone date={selectedDate} />
           </div>
         </BoiteOnglet>
       </div>

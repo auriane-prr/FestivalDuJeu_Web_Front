@@ -112,9 +112,9 @@ function Flexible({ date }) {
   
     try {
       for (const standInfo of selectedStandArray) {
-        console.log("standId :", standInfo.standId,"horaire: ", standInfo.horaire,"benevoleId: ", standInfo.idBenevole)
-        const response = await fetch(`http://localhost:3500/stands/inscrire/${standInfo.standId}/${standInfo.horaire}/${standInfo.idBenevole}`, 
-        {
+        console.log("standId :", standInfo.standId, "horaire: ", standInfo.horaire, "benevoleId: ", standInfo.idBenevole)
+        const response = await fetch(`http://localhost:3500/stands/inscrire/${standInfo.standId}/${standInfo.horaire}/${standInfo.idBenevole}`,
+          {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -126,27 +126,28 @@ function Flexible({ date }) {
           throw new Error("Erreur lors de l'inscription à un stand.");
         }
       }
-  
       console.log("Inscription réussie.");
       setIsSubmitting(true);
-      console.log("selectedFlexibleId", selectedFlexibleId, "date", date)
-      const deleteResponse = await fetch(`http://localhost:3500/flexible/${selectedFlexible._id}/${date}`, {
-        method: 'DELETE',
-      });
-  
-      if (!deleteResponse.ok) {
-        throw new Error("Erreur lors de la suppression du flexible.");
-      }
-  
-      console.log("Flexible supprimé avec succès.");
-      setFlexibles(flexibles.filter(flexible => flexible.benevole_id[0]._id !== selectedFlexibleId));
-      setSelectedFlexibleId(null);
-      setSelectedFlexible(null);
-  
+        console.log("Tous les horaires ont été attribués, suppression du flexible...");
+        const reponse = await fetch(`http://localhost:3500/flexible/${selectedFlexible._id}/${date}`, {
+          method: 'DELETE',
+        });
+        if (!reponse.ok) {
+          throw new Error("Erreur lors de la suppression du flexible.");
+        } else {
+          console.log("Flexible supprimé avec succès.");
+          setFlexibles(flexibles.filter(flexible => flexible.benevole_id[0]._id !== selectedFlexibleId));
+          setSelectedFlexibleId(null);
+          setSelectedFlexible(null);
+          setIsSubmitting(false); // Réinitialiser isSubmitting
+          handleCancel(); // Réinitialiser le formulaire
+          window.location.reload(); // Rafraîchir la page
+        }
     } catch (error) {
       console.error(error.message);
     }
   };
+  
   useEffect(() => {
     console.log('selectedStands updated:', selectedStands);
   }, [selectedStands]);
