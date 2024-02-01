@@ -41,25 +41,7 @@ function DisplayJauges() {
     };
 
     fetchStandsBySelectedDate();
-  }, [selectedDate]); // Dépendance au state selectedDate pour déclencher l'effet
-
-  //   const fetchStandByDate = async (date) => {
-  //     try {
-  //       const response = await fetch(`http://localhost:3500/stands/date/${date}`);
-  //       if (response.ok) {
-  //         const stands = await response.json();
-  //         console.log("liste de stands", stands);
-  //         setStandsByDate((prevStands) => ({
-  //           ...prevStands,
-  //           [date]: groupStandsByHourAndColumn(stands),
-  //         }));
-  //       } else {
-  //         throw new Error("Erreur lors de la récupération des stands");
-  //       }
-  //     } catch (error) {
-  //       console.error("Erreur lors de la récupération des stands :", error);
-  //     }
-  //   };
+  }, [selectedDate]); 
 
   useEffect(() => {
     // Exemple d'appel API pour récupérer les dates du festival
@@ -74,27 +56,6 @@ function DisplayJauges() {
     };
     fetchFestivalData();
   }, []);
-
-  //   useEffect(() => {
-  //     if (dateDebut && dateFin) {
-  //       fetchStandByDate(dateDebut); // Appel pour les stands du samedi
-  //       fetchStandByDate(dateFin); // Appel pour les stands du dimanche
-  //     }
-  //   }, [dateDebut, dateFin]);
-
-  //   const groupStandsByHourAndColumn = (standsData) => {
-  //     const standsByHour = {};
-  //     standsData.forEach((stand) => {
-  //       stand.horaireCota.forEach((horaire) => {
-  //         const { heure, nb_benevole } = horaire;
-  //         if (!standsByHour[heure]) {
-  //           standsByHour[heure] = [];
-  //         }
-  //         standsByHour[heure].push({ ...stand, heure, nb_benevole }); // Ajout de toutes les informations du stand dans standsByHour
-  //       });
-  //     });
-  //     return standsByHour;
-  //   };
 
   const handleJaugeClick = (creneau, stand) => {
     setSelectedStand({ ...stand, selectedCreneau: creneau });
@@ -126,7 +87,7 @@ function DisplayJauges() {
 
   return (
     <>
-      <Titre valeurDuTitre={"Vue Générale"} />
+      <Titre valeurDuTitre={"Planning Général des Stands"} />
       <Champ>
         <select
           className="input"
@@ -143,6 +104,7 @@ function DisplayJauges() {
         </select>
       </Champ>
       <hr className="separator-benevole" />
+  
       {selectedDate === "" && <p>Veuillez sélectionner une date</p>}
       {stands
         .filter((stand) => stand.nom_stand !== "Animation jeu")
@@ -151,7 +113,8 @@ function DisplayJauges() {
             <div className="nom-stand">{stand.nom_stand}</div>
             <LigneTemporelle
               date={selectedDate}
-              standId={stand._id}
+              id={stand._id} // Utilisez id au lieu de standId
+              type="stand" // Ajoutez le type "stand"
               handleJaugeClick={handleJaugeClick}
             />
           </div>
@@ -168,6 +131,7 @@ function DisplayJauges() {
       )}
     </>
   );
+  
 }
 
 export default DisplayJauges;
