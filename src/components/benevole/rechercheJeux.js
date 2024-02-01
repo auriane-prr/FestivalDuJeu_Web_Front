@@ -119,14 +119,8 @@ return (
                             ))}
                         </ul>
                     </form>
-            <Champ>
-                <input 
-                className="input"
-                type="text"
-                value={searchResult && <p>{searchResult}
+                {searchResult && <p>{searchResult}
                 </p>}
-                />
-            </Champ>
     </div>
 );
 
