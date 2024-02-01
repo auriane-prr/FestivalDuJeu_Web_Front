@@ -8,6 +8,8 @@ import BoutonPageSuivante from "../../general/BoutonPageSuivante";
 import Titre from "../../general/titre";
 import Modal from "../../general/fenetre_modale";
 import DisplayJeux from "./display_jeux";
+import Bouton from "../../general/bouton";
+import FenetrePopup from "../../general/fenetre_popup";
 
 function DisplayZone() {
   const [showModal, setShowModal] = useState(false);
@@ -20,6 +22,17 @@ function DisplayZone() {
   const selectedZone = zones[selectedZoneIndex]; // Déclarer selectedZone ici, après avoir déclaré les états
   const [jeux, setJeux] = useState([]);
   const [jeuDetails, setJeuDetails] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [zoneCapacity, setZoneCapacity] = useState(0); // Initialisation avec 0
+  const [pendingChanges, setPendingChanges] = useState([]);
+
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const hidePopup = () => {
+    setPopupVisible(false);
+  };
 
   const openModal = () => {
     setShowModal(true);
@@ -27,6 +40,10 @@ function DisplayZone() {
 
   const closeModal = () => {
     setShowModal(false);
+  };
+
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
   };
 
   useEffect(() => {
@@ -97,8 +114,59 @@ function DisplayZone() {
   useEffect(() => {
     if (selectedZone) {
       fetchJeuxByZone(selectedZone._id);
+      // Utilisez la valeur en attente si elle existe, sinon utilisez la valeur du créneau horaire actuel
+      const currentCapacity =
+        pendingChanges[selectedHoraireIndex] !== undefined
+          ? pendingChanges[selectedHoraireIndex]
+          : selectedZone.horaireCota[selectedHoraireIndex]?.nb_benevole || 0;
+      setZoneCapacity(currentCapacity);
     }
-  }, [selectedZone]);
+  }, [selectedZone, selectedHoraireIndex, pendingChanges]);
+
+  const handleSaveChanges = async () => {
+    // Mettre à jour la capacité de la zone avec la nouvelle valeur
+    const updatedZone = { ...selectedZone };
+    updatedZone.horaireCota[selectedHoraireIndex].nb_benevole = zoneCapacity;
+
+    try {
+      const response = await fetch(
+        `http://localhost:3500/zoneBenevole/${selectedZone._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedZone), // Utilisez la zone mise à jour
+        }
+      );
+
+      if (response.ok) {
+        const updatedZones = [...zones];
+        updatedZones[selectedZoneIndex] = updatedZone; // Mettez à jour avec la zone mise à jour
+        setZones(updatedZones);
+        console.log("Zones mises à jour :", updatedZones);
+
+        // Mettre à jour la capacité avec la nouvelle valeur de la zone
+        setZoneCapacity(
+          updatedZone.horaireCota[selectedHoraireIndex]?.nb_benevole || 0
+        );
+        console.log("Capacité mise à jour :", zoneCapacity);
+
+        // Désactive le mode édition
+        toggleEditMode();
+        setSuccessMessage("Modifications enregistrées avec succès");
+        setErrorMessage(null);
+      } else {
+        throw new Error("Échec de l'enregistrement des modifications");
+      }
+    } catch (error) {
+      setErrorMessage(
+        "Erreur lors de l'enregistrement des modifications: " + error.message
+      );
+    } finally {
+      setPopupVisible(true);
+    }
+  };
 
   const handleZoneChange = (event) => {
     setSelectedZoneIndex(Number(event.target.value));
@@ -115,6 +183,15 @@ function DisplayZone() {
     openModal();
   };
 
+  const handleCapacityChange = (newValue, horaireIndex) => {
+    if (editMode) {
+      // Mettre à jour la valeur de la capacité en attente
+      const updatedPendingChanges = [...pendingChanges];
+      updatedPendingChanges[horaireIndex] = newValue;
+      setPendingChanges(updatedPendingChanges);
+    }
+  };
+
   const radioOptions = [
     { label: `${formatDate(dateDebut)}`, value: "debut" },
     { label: `${formatDate(dateFin)}`, value: "fin" },
@@ -128,6 +205,21 @@ function DisplayZone() {
   const showPreviousZone = () => {
     setSelectedZoneIndex(
       (prevIndex) => (prevIndex - 1 + zones.length) % zones.length
+    );
+  };
+
+  const handleEditZone = (zoneIndex) => () => {
+    // Active le mode édition uniquement pour la zone spécifiée
+    const updatedZones = [...zones];
+    updatedZones[zoneIndex].editMode = true;
+    setZones(updatedZones);
+    // Ne pas réinitialiser l'index ici
+    toggleEditMode();
+    console.log(
+      "zone modifiable : " +
+        zoneIndex +
+        " " +
+        zones[zoneIndex].nom_zone_benevole
     );
   };
 
@@ -210,16 +302,18 @@ function DisplayZone() {
               <input
                 type="number"
                 min="1"
-                value={
-                  selectedZone &&
-                  selectedZone.horaireCota &&
-                  selectedZone.horaireCota[selectedHoraireIndex]
-                    ? selectedZone.horaireCota[selectedHoraireIndex]
-                        .nb_benevole || ""
-                    : ""
-                }
+                value={zoneCapacity}
                 className="input"
-                readOnly
+                readOnly={!editMode}
+                onChange={(e) => {
+                  if (editMode) {
+                    // Utilisez handleCapacityChange ici pour mettre à jour la capacité en attente
+                    handleCapacityChange(
+                      Number(e.target.value),
+                      selectedHoraireIndex
+                    );
+                  }
+                }}
               />
             </Champ>
             <Champ label="Liste de bénévoles :">
@@ -260,12 +354,36 @@ function DisplayZone() {
               ))}
             </select>
           </Champ>
+          <div className="modif-button">
+            {editMode ? (
+              <Bouton
+                type="button"
+                onClick={() => handleSaveChanges(selectedZone)}
+              >
+                Enregistrer
+              </Bouton>
+            ) : (
+              <Bouton type="button" onClick={handleEditZone(selectedZoneIndex)}>
+                Modifier
+              </Bouton>
+            )}
+          </div>
         </div>
       )}
       {showModal && jeuDetails && (
         <Modal onClose={closeModal} titre={jeuDetails.nom_jeu || "Jeu"}>
           <DisplayJeux jeu={jeuDetails} />
         </Modal>
+      )}
+      {errorMessage && isPopupVisible && (
+        <FenetrePopup message={errorMessage} type="error" onClose={hidePopup} />
+      )}
+      {successMessage && isPopupVisible && (
+        <FenetrePopup
+          message={successMessage}
+          type="success"
+          onClose={hidePopup}
+        />
       )}
     </div>
   );
