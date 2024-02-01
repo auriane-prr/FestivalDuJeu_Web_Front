@@ -5,7 +5,7 @@ import BoiteOnglet from "../../components/general/boiteOnglet";
 import Flexible from "../../components/benevole/stands/flexible";
 import DisplayStand from "../../components/benevole/stands/display_jauges";
 import DisplayZone from "../../components/benevole/zones/accueil_zone";
-import FlexibleAnimation from '../../components/benevole/stands/flexible_animation';
+import FlexibleAnimation from '../../components/benevole/stands/flexible_zone';
 
 function PageAccueil() {
   return (
