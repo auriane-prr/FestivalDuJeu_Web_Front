@@ -50,11 +50,12 @@ const AuthWrapper = ({ children }) => {
         ...data.userInfo,
         isAuthenticated: true,
         admin: data.admin,
+        referent: data.referent,
       };
       setUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
       console.log("user", user);
-      return { token: data.token, admin: data.admin };
+      return { token: data.token, admin: data.admin, referent: data.referent };
     } catch (error) {
       console.error("Erreur lors de l'authentification: ", error.message);
       throw error;
