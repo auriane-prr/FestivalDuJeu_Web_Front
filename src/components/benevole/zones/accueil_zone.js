@@ -4,6 +4,7 @@ import Champ from "../../general/champ";
 import LigneTemporelle from "../stands/ligne_temporelle";
 import Modale from "../../general/fenetre_modale";
 import Participer from "./participer_zone";
+import RechercheJeux from "../rechercheJeux";
 
 function AccueilZone() {
   const [dateDebut, setDateDebut] = useState(null);
@@ -112,6 +113,7 @@ function AccueilZone() {
   return (
     <>
       <Titre valeurDuTitre={"Planning Général des Zones"} />
+      <RechercheJeux />
       <Champ>
         <select
           className="input"
