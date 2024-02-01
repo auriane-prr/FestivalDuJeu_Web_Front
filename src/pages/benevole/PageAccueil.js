@@ -17,7 +17,7 @@ function PageAccueil() {
           <DisplayJauges/>
         </div>
         <div>
-        <Flexible/>
+        <FlexibleAnimation/>
         {/* truc pour animation jeux */}
         </div>
       </BoiteOnglet>

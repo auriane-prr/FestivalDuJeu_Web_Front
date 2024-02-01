@@ -215,15 +215,21 @@ function Flexible() {
                 headers: { "Content-Type": "application/json" },
             });
             if (response.ok) {
-                const flexibles = await response.json();
-                const horaires = flexibles.map((flexible) => flexible.horaire).flat();
-                const stands = horaires.flatMap((horaire) => horaire.liste_stand.map(stand => ({
-                    id: stand._id, 
-                    nom_stand: stand.nom_stand, 
-                    date: formatDate(horaire.date), 
-                    heure: horaire.heure
-                })));
-                setFlexibleInfo(stands);
+                const flexible = await response.json(); // Remarquez que c'est maintenant 'flexible', pas 'flexibles'
+                
+                // Vérifiez si 'flexible' est non null et a une propriété 'horaire'
+                if (flexible && flexible.horaire) {
+                    const horaires = flexible.horaire; // Pas besoin d'utiliser .map() et .flat()
+                    const stands = horaires.flatMap((horaire) => horaire.liste_stand.map(stand => ({
+                        id: stand._id, 
+                        nom_stand: stand.nom_stand, 
+                        date: formatDate(horaire.date), 
+                        heure: horaire.heure
+                    })));
+                    setFlexibleInfo(stands);
+                } else {
+                    console.error("Aucun flexible trouvé pour cet utilisateur");
+                }
             } else {
                 console.error("Erreur lors de la récupération des stands");
             }
@@ -231,6 +237,7 @@ function Flexible() {
             console.error("Erreur de connexion au serveur", error);
         }
     }
+    
     useEffect(() => {
         if (userId) {
             fetchFlexibleData();
