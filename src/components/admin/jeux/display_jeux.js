@@ -28,7 +28,7 @@ function Display_jeux({ jeu }) {
                 readOnly
               />
             </Champ>
-            <Champ label="Editeur" customStyle={{ flex: 1 }}>
+            <Champ label="Editeur" customStyle={{ flex: 1, marginRight: "60px" }}>
               <input
                 type="text"
                 value={jeu.editeur}

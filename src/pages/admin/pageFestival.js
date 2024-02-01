@@ -2,7 +2,7 @@ import React from "react";
 import BandeauAdmin from "../../components/admin/bandeauAdmin";
 import BoiteOnglet from "../../components/general/boiteOnglet";
 import DisplayStand from "../../components/admin/stands/display_stand";
-import DisplayZone from "../../components/admin/jeux/display_zone";
+import DisplayZone from "../../components/admin/jeux/zonesAdmin";
 import "../../styles/Pages/admin/pageFestival.css";
 
 function PageFestival() {

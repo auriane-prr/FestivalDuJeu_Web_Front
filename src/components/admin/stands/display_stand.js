@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Champ from "../../general/champ";
 import "../../../styles/Admin/stands/display_stand.css";
-import BoutonPageSuivante from "../../BoutonPageSuivante";
-import BoutonPagePrecedente from "../../BoutonPagePrecedente";
+import BoutonPageSuivante from "../../general/BoutonPageSuivante";
+import BoutonPagePrecedente from "../../general/BoutonPagePrecedente";
 import Modal from "../../general/fenetre_modale";
 import StandForm from "./form_ajouter_stand";
 import Titre from "../../general/titre";
