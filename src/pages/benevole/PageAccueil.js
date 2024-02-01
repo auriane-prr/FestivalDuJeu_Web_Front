@@ -5,7 +5,6 @@ import BoiteOnglet from "../../components/general/boiteOnglet";
 import Flexible from "../../components/benevole/stands/flexible";
 import DisplayStand from "../../components/benevole/stands/display_jauges";
 import DisplayZone from "../../components/benevole/zones/accueil_zone";
-import Flexible from '../../components/benevole/stands/flexible';
 import FlexibleAnimation from '../../components/benevole/stands/flexible_animation';
 
 function PageAccueil() {
@@ -15,7 +14,7 @@ function PageAccueil() {
       <BoiteOnglet nomOnglet1="Stands" nomOnglet2="Animation Jeux">
         <div className="Onglet1">
           <Flexible/>
-          <DisplayJauges/>
+          <DisplayStand/>
         </div>
         <div>
         <FlexibleAnimation/>
