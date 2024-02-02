@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import BandeauReferent from "../../components/referent/bandeauReferent";
 import Boite from "../../components/general/boite";
 import Champ from "../../components/general/champ";
+import ReferentDisplayZone from "../../components/referent/ReferentDisplayZone";
 
 function PageAccueil() {
     const [userData, setUserData] = useState("");
@@ -144,7 +145,6 @@ function PageAccueil() {
                     />
                   </Champ>
                   <Champ label="Liste de bénévoles :">
-                    {/* Utilisez ?. pour accéder en toute sécurité à liste_benevole */}
                     {currentStand?.horaireCota[selectedHoraireIndex]
                       ?.liste_benevole.length === 0 ? (
                       <input
@@ -174,7 +174,7 @@ function PageAccueil() {
     const renderAnimationJeuContent = () => {
         return (
             <div>
-                <p>Contenu spécifique pour le stand d'animation de jeux.</p>
+                <ReferentDisplayZone />
             </div>
         );
     };
