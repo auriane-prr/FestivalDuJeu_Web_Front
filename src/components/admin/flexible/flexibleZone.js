@@ -49,27 +49,26 @@ function FlexibleZone({ date }) {
       const zoneBenevoleData = await response.json();
       if (!response.ok) throw new Error(zoneBenevoleData.message || "Erreur lors de la récupération des détails du zoneBenevole");
   
-      // Trouver les informations de quota pour l'horaire spécifique
       const horaireCota = zoneBenevoleData.horaireCota.find(h => h.heure === horaire);
       if (!horaireCota) throw new Error("Horaire spécifique non trouvé dans le zoneBenevole");
   
-      // Calculer le nombre de places restantes
       const placesRestantes = horaireCota.nb_benevole - horaireCota.liste_benevole.length;
-      
+  
       setSelectedStands(prevStands => ({
         ...prevStands,
         [horaire]: {
           ...prevStands[horaire],
           zoneBenevoleId,
           nb_benevole: horaireCota.nb_benevole,
-          nom_zoneBenevole: zoneBenevoleData.zone_benevole,
-          placesRestantes // Ajouter le nombre de places restantes à l'objet
+          nom_zoneBenevole: zoneBenevoleData.nom_zone_benevole,
+          placesRestantes
         }
       }));
     } catch (error) {
       console.error("Erreur lors de la récupération des détails du zoneBenevole: ", error.message);
     }
   };
+  
   
   const horaires = ["9-11", "11-14", "14-17", "17-20", "20-22"];
 
@@ -112,7 +111,7 @@ function FlexibleZone({ date }) {
   
     try {
       for (const zoneBenevoleInfo of selectedStandArray) {
-        console.log("zoneBenevoleId :", zoneBenevoleInfo.zoneBenevoleId, "horaire: ", zoneBenevoleInfo.horaire, "benevoleId: ", zoneBenevoleInfo.idBenevole)
+        console.log("zoneBenevoleId:", zoneBenevoleInfo.zoneBenevoleId, "horaire: ", zoneBenevoleInfo.horaire, "benevoleId: ", zoneBenevoleInfo.idBenevole)
         const response = await fetch(`http://localhost:3500/zoneBenevole/inscrire/${zoneBenevoleInfo.zoneBenevoleId}/${zoneBenevoleInfo.horaire}/${zoneBenevoleInfo.idBenevole}`,
           {
             method: "PUT",
@@ -186,17 +185,19 @@ function FlexibleZone({ date }) {
                     .map((horaireData) => (
                       <div key={horaireData._id}>
                         {horaireData.liste_zoneBenevole && horaireData.liste_zoneBenevole.length > 0 ? (
-                          horaireData.liste_zoneBenevole.map((zoneBenevole) => (
+                          horaireData.liste_zoneBenevole.map((zoneBenevole) => {
+                            const placesRestantes = selectedStands[horaire]?.zoneBenevoleId === zoneBenevole._id ? selectedStands[horaire].placesRestantes : undefined;
+                            return (
                             <button
-                                className={`button-stand ${selectedStands[horaire]?.zoneBenevoleId === zoneBenevole._id ? 'selected-zoneBenevole' : ''}`}
+                                className={`button-stand ${selectedStands[horaire]?.zoneBenevoleId === zoneBenevole._id ? 'selected-zoneBenevole' : ''} ${placesRestantes === 0 ? 'red-button' : ''}`}
                                 key={zoneBenevole._id}
                                 onClick={() => handleStandClick(horaire, zoneBenevole._id)}
                                 >
                                 {zoneBenevole.nom_zone_benevole}
                             </button>
-
-
-                          ))
+                            );
+                          }
+                          )
                         ) : (
                           <div>Aucun zoneBenevole disponible</div>
                         )}
@@ -214,7 +215,7 @@ function FlexibleZone({ date }) {
             <ul>
             {Object.entries(selectedStands).map(([horaire, zoneBenevoleInfo]) => (
                 <li key={horaire}>
-                Horaire: {horaire}, Stand: {zoneBenevoleInfo.nom_zone_benevole}, Capacité: {zoneBenevoleInfo.nb_benevole}, Places restantes: {zoneBenevoleInfo.placesRestantes}
+                Horaire: {horaire}, zone: {zoneBenevoleInfo.nom_zoneBenevole}, Capacité: {zoneBenevoleInfo.nb_benevole}, Places restantes: {zoneBenevoleInfo.placesRestantes}
                 </li>
             ))}
             </ul>

@@ -139,6 +139,7 @@ function Flexible({ date }) {
           setFlexibles(flexibles.filter(flexible => flexible.benevole_id[0]._id !== selectedFlexibleId));
           setSelectedFlexibleId(null);
           setSelectedFlexible(null);
+          await checkAndDeleteFlexible();
           setIsSubmitting(false); // Réinitialiser isSubmitting
           handleCancel(); // Réinitialiser le formulaire
           window.location.reload(); // Rafraîchir la page
@@ -151,6 +152,21 @@ function Flexible({ date }) {
   useEffect(() => {
     console.log('selectedStands updated:', selectedStands);
   }, [selectedStands]);
+
+  const checkAndDeleteFlexible = async () => {
+    try {
+        const response = await fetch('http://localhost:3500/flexible/check', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!response.ok) throw new Error('Erreur lors de la vérification des flexibles.');
+        const result = await response.json();
+        console.log('Flexibles nettoyés:', result.deletedFlexibles);
+    } catch (error) {
+        console.error('Erreur lors du nettoyage des flexibles:', error);
+    }
+};
 
   return (
     <div>
