@@ -51,98 +51,50 @@ const ParticiperZone = ({ zone, creneau, closeModal }) => {
   const handleParticiperClick = async () => {
     if (!userId) {
       await fetchUserId();
-      console.log("Je n'ai pas d'userId");
       return;
     }
-
+  
     if (zone && creneau && userId) {
       const idHoraire = creneau._id;
       try {
-        const { _id: idZone, horaireCota } = zone;
-        const idBenevole = userId;
         const token = localStorage.getItem("authToken");
-
-        // Vérifier si le bénévole est déjà inscrit ailleurs ou à ce créneau
-        const isAlreadyRegisteredElsewhere = horaireCota.some((horaire) => {
-          return (
-            horaire.liste_benevole.includes(idBenevole) &&
-            horaire._id !== idHoraire
-          );
+        const response = await fetch(`http://localhost:3500/zoneBenevole/participer/${idHoraire}/${userId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
         });
-
-        const isAlreadyRegisteredHere = horaireCota.some((horaire) => {
-          return (
-            horaire.liste_benevole.includes(idBenevole) &&
-            horaire._id === idHoraire
-          );
-        });
-
-        if (isAlreadyRegisteredElsewhere) {
-          setErrorMessage("Vous êtes déjà inscrit ailleurs");
-          throw new Error("Vous êtes déjà inscrit ailleurs");
-        } else if (isAlreadyRegisteredHere) {
-          setErrorMessage("Vous êtes déjà inscrit à ce créneau");
-          throw new Error("Vous êtes déjà inscrit à ce créneau");
-        }
-        console.log("Horaire : ", idHoraire + "    Benevole : ", idBenevole);
-
-        const response = await fetch(
-          `http://localhost:3500/zoneBenevole/participer/${idHoraire}/${idBenevole}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          // Vérifier le message d'erreur renvoyé par votre API et ajuster le message d'erreur en fonction
+          if (errorData.message.includes("déjà inscrit")) {
+            setErrorMessage("Vous ne pouvez pas vous inscrire à ce créneau car vous êtes déjà inscrit à un autre stand ou une autre zone à ce même horaire.");
+          } else {
+            setErrorMessage("Une erreur est survenue lors de votre inscription.");
           }
-        );
-
-        if (response.ok) {
-          // Cas 4: La participation a bien été enregistrée
-          console.log("Participation enregistrée");
-          const updatedResponse = await fetch(
-            `http://localhost:3500/zoneBenevole/${idZone}`
-          );
-          if (updatedResponse.ok) {
-            const updatedZone = await updatedResponse.json();
-
-            setSuccessMessage(
-              "Votre participation a été enregistrée avec succès"
-            );
-            setErrorMessage(null);
-
-            // Afficher la pop-up
-            setPopupVisible(true);
-
-            // Fermer la modale après un certain délai (par exemple, 2 secondes)
-            setTimeout(() => {
-              closeModal(); // Fermer la modale
-            }, 2000);
-          }
+          setPopupVisible(true);
         } else {
-          // Cas 3: Une autre erreur s'est produite
-          setErrorMessage(
-            "Une erreur est survenue lors de votre participation"
-          );
-          setSuccessMessage(null);
-
-          // Afficher la pop-up d'erreur (si nécessaire)
-          if (errorMessage) {
-            setPopupVisible(true);
-          }
+          // Le bénévole a été inscrit avec succès à la zone
+          const updatedZone = await response.json();
+          setSuccessMessage("Votre participation à la zone a été enregistrée avec succès !");
+          setPopupVisible(true);
+  
+          // Fermer la modale après un certain délai
+          setTimeout(() => {
+            closeModal(); // Fermer la modale
+            window.location.reload(); // Optionnel : recharger la page pour mettre à jour l'affichage
+          }, 2000);
         }
       } catch (error) {
-        // Cas 3: Une autre erreur s'est produite
-        setErrorMessage("Erreur lors de la participation : " + error.message);
-        setSuccessMessage(null);
-
-        // Afficher la pop-up d'erreur (si nécessaire)
-        if (errorMessage) {
-          setPopupVisible(true);
-        }
+        console.error("Erreur lors de la participation à la zone : ", error);
+        setErrorMessage("Erreur lors de la participation à la zone : " + error.message);
+        setPopupVisible(true);
       }
     }
   };
+  
 
   return (
     <>

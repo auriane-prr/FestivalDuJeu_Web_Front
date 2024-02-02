@@ -77,3 +77,8 @@
   .bouton-soumettre{
     margin-right: 10px;
   }
+
+  .red-button {
+    background-color: red;
+    color: white;
+  }

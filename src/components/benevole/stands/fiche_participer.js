@@ -54,95 +54,50 @@ const ModaleParticiper = ({ stand, creneau, closeModal }) => {
       console.log("Je n'ai pas d'userId");
       return;
     }
-
+  
     if (stand && creneau && userId) {
       const idHoraire = creneau._id;
       try {
-        const { _id: idStand, horaireCota } = stand;
-        const idBenevole = userId;
         const token = localStorage.getItem("authToken");
-
-        // Vérifier si le bénévole est déjà inscrit ailleurs
-        const isAlreadyRegisteredElsewhere = horaireCota.some((horaire) => {
-          return (
-            horaire.liste_benevole.includes(idBenevole) &&
-            horaire._id !== idHoraire
-          );
+        const response = await fetch(`http://localhost:3500/stands/participer/${idHoraire}/${userId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
         });
-
-        // Vérifier si le bénévole est déjà inscrit à ce stand
-        const isAlreadyRegisteredHere = horaireCota.some((horaire) => {
-          return (
-            horaire.liste_benevole.includes(idBenevole) &&
-            horaire._id === idHoraire
-          );
-        });
-
-        if (isAlreadyRegisteredElsewhere) {
-          // Cas 1: Le bénévole est déjà inscrit ailleurs
-          setErrorMessage("Vous êtes déjà inscrit ailleurs");
-          throw new Error("Vous êtes déjà inscrit ailleurs");
-        } else if (isAlreadyRegisteredHere) {
-          // Cas 2: Le bénévole est déjà inscrit à ce stand
-          setErrorMessage("Vous êtes déjà inscrit à ce stand");
-          throw new Error("Vous êtes déjà inscrit à ce créneau");
-        } else {
-          // Le bénévole n'est pas déjà inscrit ailleurs ni à ce stand
-
-          const response = await fetch(
-            `http://localhost:3500/stands/participer/${idHoraire}/${idBenevole}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-
-          if (response.ok) {
-            // Cas 4: La participation a bien été enregistrée
-            console.log("Participation enregistrée");
-            const updatedResponse = await fetch(
-              `http://localhost:3500/stands/${idStand}`
-            );
-            if (updatedResponse.ok) {
-              const updatedStand = await updatedResponse.json();
-              console.log("updatedStand", updatedStand);
-
-              setSuccessMessage(
-                "Votre participation a été enregistrée avec succès"
-              );
-              setErrorMessage(null);
-
-              // Afficher la pop-up
-              setPopupVisible(true);
-
-              // Fermer la modale après un certain délai (par exemple, 2 secondes)
-              setTimeout(() => {
-                closeModal(); // Fermer la modale
-              }, 2000);
-            }
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          // Ici, vous devriez vérifier le message d'erreur renvoyé par votre API
+          // et ajuster le message d'erreur en fonction
+          if (errorData.message.includes("déjà inscrit")) {
+            setErrorMessage("Vous ne pouvez pas vous inscrire à ce créneau car vous êtes déjà inscrit à un autre stand ou une autre zone à ce même horaire.");
           } else {
-            // Cas 3: Une autre erreur s'est produite
-            setErrorMessage(
-              "Une erreur est survenue lors de votre participation"
-            );
-            setSuccessMessage(null);
+            setErrorMessage("Une erreur est survenue lors de votre inscription.");
           }
-        }
-
-        // Afficher la pop-up d'erreur (si nécessaire)
-        if (errorMessage) {
           setPopupVisible(true);
+        } else {
+          // Le bénévole a été inscrit avec succès
+          const updatedStand = await response.json();
+          console.log("updatedStand", updatedStand);
+          setSuccessMessage("Votre participation a été enregistrée avec succès !");
+          setPopupVisible(true);
+  
+          // Fermer la modale après un certain délai
+          setTimeout(() => {
+            closeModal(); // Fermer la modale
+            window.location.reload(); // Optionnel : recharger la page pour mettre à jour l'affichage
+          }, 2000);
         }
       } catch (error) {
-        // Cas 3: Une autre erreur s'est produite
+        console.error("Erreur lors de la participation : ", error);
         setErrorMessage("Erreur lors de la participation : " + error.message);
-        setSuccessMessage(null);
+        setPopupVisible(true);
       }
     }
   };
+  
 
   return (
     <>
