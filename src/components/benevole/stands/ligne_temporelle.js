@@ -4,20 +4,17 @@ import "../../../styles/benevoles/ligne_temporelle.css";
 
 const LigneTemporelle = ({ date, id, type, handleJaugeClick }) => {
   const [creneaux, setCreneaux] = useState([]);
-  const [stand, setStand] = useState(null); // Ajout pour stocker les infos du stand
+  const [elementInfo, setElementInfo] = useState(null); // Stocker les infos du stand ou de la zone
   const heures = ["9h", "11h", "14h", "17h", "20h", "22h"];
 
   useEffect(() => {
     const fetchData = async () => {
       let url;
       switch (type) {
-        case 'stand':
+        case "stand":
           url = `http://localhost:3500/stands/date/${date}`;
           break;
-        case 'zonePlan':
-          url = `http://localhost:3500/zonePlan/date/${date}`;
-          break;
-        case 'zoneBenevole':
+        case "zone":
           url = `http://localhost:3500/zoneBenevole/date/${date}`;
           break;
         default:
@@ -32,7 +29,7 @@ const LigneTemporelle = ({ date, id, type, handleJaugeClick }) => {
         // Utilisez id pour trouver l'élément spécifique si nécessaire, ou ajustez en fonction de la structure de données de l'API
         const item = data.find((item) => item._id === id);
         setCreneaux(item ? item.horaireCota : []);
-        setStand(item); // Stocker les infos de l'élément (peut être un stand ou une zone)
+        setElementInfo(item); // Stocker les infos de l'élément (peut être un stand ou une zone)
       } catch (error) {
         console.error("Erreur lors de la récupération des créneaux", error);
       }
@@ -56,8 +53,10 @@ const LigneTemporelle = ({ date, id, type, handleJaugeClick }) => {
           <Jauge
             key={index}
             capaciteTotale={creneau.nb_benevole}
-            nombreInscrits={creneau.liste_benevole ? creneau.liste_benevole.length : 0}
-            onClick={() => handleJaugeClick(creneau, stand)}
+            nombreInscrits={
+              creneau.liste_benevole ? creneau.liste_benevole.length : 0
+            }
+            onClick={() => handleJaugeClick(creneau, elementInfo)}
             heureDebut={heureDebut}
             heureFin={heureFin}
           />

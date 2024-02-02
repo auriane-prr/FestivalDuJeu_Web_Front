@@ -234,7 +234,7 @@ function Flexible() {
                 console.error("Erreur lors de la récupération des stands");
             }
         } catch (error) {
-            console.error("Erreur de connexion au serveur", error);
+            console.error("Erreur de connexion au serveur", error); // ligne 231
         }
     }
     

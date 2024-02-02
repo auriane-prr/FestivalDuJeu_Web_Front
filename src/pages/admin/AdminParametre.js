@@ -47,6 +47,21 @@ function AdminParametre() {
     openModal();
   };
 
+  const fetchFestivalData = async () => {
+    try {
+      const response = await fetch("http://localhost:3500/festival/latest");
+      if (response.ok) {
+        const data = await response.json();
+        return data; // Retourne les données du dernier festival
+      } else {
+        throw new Error("Non-OK response from server");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données du festival", error);
+      return null; // En cas d'erreur, retournez null ou gérez l'erreur comme nécessaire
+    }
+  };  
+
   const fetchNonReferentBenevoles = async () => {
     try {
       const response = await fetch(
@@ -85,22 +100,40 @@ function AdminParametre() {
   };
 
   const fetchStands = async () => {
-    try {
-      const response = await fetch("http://localhost:3500/stands/");
-      if (response.ok) {
-        const data = await response.json();
-        setStands(data);
-      } else {
-        throw new Error("Non-OK response from server");
+    const festivalData = await fetchFestivalData(); // Récupérez les dates du dernier festival
+    if (festivalData) {
+      const { date_debut, date_fin } = festivalData;
+      try {
+        // Effectuez la requête pour obtenir les stands avec date_debut
+        const responseDebut = await fetch(`http://localhost:3500/stands/date/${date_debut}`);
+        if (responseDebut.ok) {
+          const dataDebut = await responseDebut.json();
+  
+          // Effectuez la deuxième requête pour obtenir les stands avec date_fin
+          const responseFin = await fetch(`http://localhost:3500/stands/date/${date_fin}`);
+          if (responseFin.ok) {
+            const dataFin = await responseFin.json();
+  
+            // Fusionnez les résultats des deux requêtes
+            const mergedData = [...dataDebut, ...dataFin];
+            // Utilisez les stands récupérés (mergedData) comme nécessaire
+            console.log(mergedData);
+            setStands(mergedData); // Mettez à jour l'état des stands avec les données récupérées
+          } else {
+            throw new Error("Non-OK response from server (date_fin)");
+          }
+        } else {
+          throw new Error("Non-OK response from server (date_debut)");
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des stands par date", error);
       }
-    } catch (error) {
-      console.error("Erreur lors de la récupération des stands", error);
     }
   };
-
+  
   const fetchZones = async () => {
     try {
-      const response = await fetch("http://localhost:3500/zone/");
+      const response = await fetch("http://localhost:3500/zoneBenevole/");
       if (response.ok) {
         const data = await response.json();
         setZones(data);
@@ -156,9 +189,9 @@ function AdminParametre() {
         <Champ label={"Liste des zones :"}>
           <select className="input">
             <option value="">Voir les zones</option>
-            {zones.map((zone, index) => (
-              <option key={index} value={zone._id}>
-                {zone.zone}
+            {zones.map((zoneBenevole, index) => (
+              <option key={index} value={zoneBenevole._id}>
+                {zoneBenevole.nom_zone_benevole}
               </option>
             ))}
           </select>

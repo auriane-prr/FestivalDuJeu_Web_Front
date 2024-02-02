@@ -8,14 +8,10 @@ import Modale from "../../general/fenetre_modale";
 import Participer from "./fiche_participer";
 
 function DisplayJauges() {
-  const [standsByHour, setStandsByHour] = useState({});
-  const [standsByDate, setStandsByDate] = useState({});
   const [dateDebut, setDateDebut] = useState(null);
   const [dateFin, setDateFin] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
-  const [dateD, setDateD] = useState(null); // pour le titre sinon ca casse tout
-  const [dateF, setDateF] = useState(null);
-  const [userId, setUserId] = useState("");
+
   const [selectedStand, setSelectedStand] = useState(null); // État pour stocker le stand sélectionné
   const [showModal, setShowModal] = useState(false); // État pour afficher ou masquer la fenêtre modale
   const [stands, setStands] = useState([]);
@@ -49,9 +45,7 @@ function DisplayJauges() {
       const result = await fetch(`http://localhost:3500/festival/latest`);
       const body = await result.json();
       setDateDebut(body.date_debut);
-      setDateD(body.date_debut);
       setDateFin(body.date_fin);
-      setDateF(body.date_fin);
       console.log(dateDebut, dateFin);
     };
     fetchFestivalData();
