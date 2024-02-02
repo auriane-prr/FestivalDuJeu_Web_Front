@@ -77,6 +77,10 @@ function AccueilZone() {
     setSelectedDate(selectedValue);
   };
 
+  const sortedZones = zones
+    .slice()
+    .sort((a, b) => a.nom_zone_benevole.localeCompare(b.nom_zone_benevole));
+
   return (
     <>
       <Titre valeurDuTitre={"Planning Général des Zones"} />
@@ -98,18 +102,17 @@ function AccueilZone() {
       </Champ>
       <hr className="separator-benevole" />
       {selectedDate === "" && <p>Veuillez sélectionner une date</p>}
-      {zones
-        .map((zone) => (
-          <div key={zone._id}>
-            <div className="nom-stand">{zone.nom_zone_benevole}</div>
-            <LigneTemporelle
-              date={selectedDate}
-              id={zone._id} // Utilisez id au lieu de standId
-              type="zone" // Ajoutez le type "stand"
-              handleJaugeClick={handleJaugeClick}
-            />
-          </div>
-        ))}
+      {sortedZones.map((zone) => (
+        <div key={zone._id}>
+          <div className="nom-stand">{zone.nom_zone_benevole}</div>
+          <LigneTemporelle
+            date={selectedDate}
+            id={zone._id} // Utilisez id au lieu de standId
+            type="zone" // Ajoutez le type "stand"
+            handleJaugeClick={handleJaugeClick}
+          />
+        </div>
+      ))}
 
       {showModal && selectedZone && (
         <Modale
