@@ -1,0 +1,33 @@
+
+.game-list {
+    list-style-type: none; /* Supprimer les puces de la liste */
+    padding: 0;
+    margin: 0 auto;
+    width: 80%;
+
+  }
+  
+  /* Style des éléments de jeu */
+  .game-item {
+    margin: 1% 0;
+    padding: 10px;
+    border: 1px solid rgba(170, 173, 191, 1);
+    background-color: rgba(170, 173, 191, 0.5);
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Style du nom du jeu */
+  .game-name {
+    font-weight: bold;
+    font-size: 13px;
+  }
+  
+  /* Style du nom de la zone */
+  .zone-name {
+    color: #555;
+    font-size: 12px;
+  }
+  

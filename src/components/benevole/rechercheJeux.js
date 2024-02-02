@@ -1,128 +1,85 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Champ from "../general/champ";
+import "../../styles/rechercheJeu.css"; // Importer votre fichier CSS pour les styles
 
 const RechercheJeux = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [suggestions, setSuggestions] = useState([]);
-    const [searchResult, setSearchResult] = useState("");
-    const [selectedGame, setSelectedGame] = useState("");
-const handleSearchSubmit = async (e) => {
-    e.preventDefault(); // Empêcher le rechargement de la page
+  const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
 
-    try {
-        const response = await fetch(`http://localhost:3500/jeux/nom/${searchTerm}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        });
+  useEffect(() => {
+    // Requête pour obtenir la liste des jeux correspondants au terme de recherche
+    const fetchGameSuggestions = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3500/jeux/search?search=${searchTerm}`
+        );
         if (response.ok) {
-            const data = await response.json();
-            setSearchResult(`Le jeu ${searchTerm} est situé dans la zone : ${data.nom_zone}`);
-        } else {
-            setSearchResult(`Aucun jeu trouvé pour le terme de recherche "${searchTerm}"`);
-        }
-    } catch (error) {
-        console.error("Erreur de connexion au serveur", error);
-        setSearchResult("Erreur lors de la recherche du jeu");
-    }
-    setSuggestions([]);
-    setSearchTerm('');
-};
-const fetchGameSuggestions = async (searchTerm) => {
-    try {
-        const response = await fetch(`http://localhost:3500/jeux/search?search=${searchTerm}`);
-        const gameNames = await response.json();
-        setSuggestions(gameNames);
-    } catch (error) {
-        console.error("Erreur lors de la récupération des suggestions de jeux", error);
-    }
-};
+          const games = await response.json();
 
+          // Récupérer les noms de zone pour chaque jeu
+          const gameSuggestions = await Promise.all(
+            games.map(async (game) => {
+              const zoneResponse = await fetch(
+                `http://localhost:3500/jeux/nom/${game}`,
+                {
+                  method: "GET",
+                  headers: { "Content-Type": "application/json" },
+                }
+              );
+              if (zoneResponse.ok) {
+                const zoneData = await zoneResponse.json();
+                return (
+                  <li key={game} className="game-item">
+                    <span className="game-name">{game}</span>
+                    <span className="zone-name">
+                      situé dans la zone : {zoneData.nom_zone}
+                    </span>
+                  </li>
+                );
+              }
+              return (
+                <li key={game} className="game-item">
+                  {game}
+                </li>
+              );
+            })
+          );
 
-const fetchSuggestions = async (text) => {
-    try {
-        const response = await fetch(`http://localhost:3500/jeux/search?search=${text}`);
-        if (response.ok) {
-            const data = await response.json();
-            setSuggestions(data);
+          setSuggestions(gameSuggestions);
         } else {
-            console.error("Erreur lors de la récupération des suggestions");
-            setSuggestions([]);
+          console.error("Erreur lors de la récupération des suggestions");
+          setSuggestions([]);
         }
-    } catch (error) {
+      } catch (error) {
         console.error("Erreur de connexion au serveur", error);
         setSuggestions([]);
-    }
-};
+      }
+    };
 
-const handleInputChange = (event) => {
-    const value = event.target.value;
-    setSearchTerm(value); // Mettez à jour l'état searchTerm avec la valeur actuelle de l'input
-    if (value.length > 1) { // Déclencher la recherche seulement si au moins 2 caractères sont saisis
-        fetchGameSuggestions(value);
+    if (searchTerm.length > 1) {
+      // Déclencher la recherche seulement si au moins 2 caractères sont saisis
+      fetchGameSuggestions();
     } else {
-        setSuggestions([]); // Efface les suggestions si la saisie est trop courte
+      setSuggestions([]); // Efface les suggestions si la saisie est trop courte
     }
-};
-    
+  }, [searchTerm]);
 
-const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-    if (value.length > 1) { // Déclencher la recherche seulement si au moins 2 caractères sont saisis
-        fetchSuggestions(value);
-    } else {
-        setSuggestions([]);
-    }
-};
-
-const handleSuggestionClick = async (gameName) => {
-    setSearchTerm(gameName); // Mettre à jour le terme de recherche avec le jeu sélectionné
-    setSuggestions([]); // Effacer les suggestions
-
-    try {
-        const response = await fetch(`http://localhost:3500/jeux/nom/${gameName}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        });
-        if (response.ok) {
-            const data = await response.json();
-            setSearchResult(`Le jeu ${gameName} est situé dans la zone : ${data.nom_zone}`);
-        } else {
-            setSearchResult(`Aucun jeu trouvé pour le terme de recherche "${gameName}"`);
-        }
-    } catch (error) {
-        console.error("Erreur de connexion au serveur", error);
-        setSearchResult("Erreur lors de la recherche du jeu");
-    }
-};
-
-return (
+  return (
     <div>
-        <form onSubmit={handleSearchSubmit}>
-                        <Champ label="Rechercher un jeu :">
-                            <input
-                            className="input"
-                            type="text"
-                            value={searchTerm}
-                            onChange={handleInputChange}
-                            placeholder="Rechercher un jeu"
-                            />
-                        </Champ>
-                        <ul>
-                            {suggestions.map((gameName, index) => (
-                                <li
-                                    key={index}
-                                    onClick={() => handleSuggestionClick(gameName)}
-                                >
-                                    {gameName}
-                                </li>
-                            ))}
-                        </ul>
-                    </form>
-                {searchResult && <p>{searchResult}
-                </p>}
+      <form>
+        <Champ label="Rechercher un jeu :">
+          <input
+            className="input"
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Rechercher un jeu"
+          />
+        </Champ>
+        <ul className="game-list">{suggestions}</ul>
+      </form>
     </div>
-);
+  );
+};
 
-}
 export default RechercheJeux;

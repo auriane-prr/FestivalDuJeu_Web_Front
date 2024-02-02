@@ -81,9 +81,11 @@ const ModaleParticiper = ({ stand, creneau, closeModal }) => {
         if (isAlreadyRegisteredElsewhere) {
           // Cas 1: Le bénévole est déjà inscrit ailleurs
           setErrorMessage("Vous êtes déjà inscrit ailleurs");
+          throw new Error("Vous êtes déjà inscrit ailleurs");
         } else if (isAlreadyRegisteredHere) {
           // Cas 2: Le bénévole est déjà inscrit à ce stand
           setErrorMessage("Vous êtes déjà inscrit à ce stand");
+          throw new Error("Vous êtes déjà inscrit à ce créneau");
         } else {
           // Le bénévole n'est pas déjà inscrit ailleurs ni à ce stand
 
