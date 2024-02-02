@@ -8,6 +8,8 @@ import AdminParametre from "./pages/admin/AdminParametre";
 import AdminFlexible from "./pages/admin/AdminFlexible";
 import PagePlanning from "./pages/benevole/PagePlanning";
 import ReferentAccueil from "./pages/referent/ReferentAccueil";
+import ReferentProfil from "./pages/referent/ReferentProfil";
+import ReferentPlanning from "./pages/referent/ReferentPlanning";
 
 
 // isMenu : true si on peut voir la page dans le menu sans être connecté
@@ -23,5 +25,7 @@ export const nav = [
     { path : "/admin/parametre", name: "AdminParametre", element: <AdminParametre />, isMenu: false, isPrivate: true, adminOnly: true },
     { path : "/admin/flexible", name: "AdminFlexible", element: <AdminFlexible />, isMenu: false, isPrivate: true, adminOnly: true },
     { path : "/referent", name : "ReferentAccueil", element: <ReferentAccueil />, isMenu: false, isPrivate: true},
+    { path : "/referent/profil", name : "ReferentProfil", element: <ReferentProfil />, isMenu: false, isPrivate: true},
+    { path : "/referent/planning", name : "ReferentPlanning", element: <ReferentPlanning />, isMenu: false, isPrivate: true},
 ]
 
