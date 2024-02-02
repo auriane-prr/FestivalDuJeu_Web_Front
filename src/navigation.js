@@ -7,6 +7,7 @@ import AdminPageFestival from "./pages/admin/pageFestival";
 import AdminParametre from "./pages/admin/AdminParametre";
 import AdminFlexible from "./pages/admin/AdminFlexible";
 import PagePlanning from "./pages/benevole/PagePlanning";
+import ReferentAccueil from "./pages/referent/ReferentAccueil";
 
 
 // isMenu : true si on peut voir la page dans le menu sans être connecté
@@ -21,5 +22,6 @@ export const nav = [
     { path : "/admin/festival", name: "AdminPageFestival", element: <AdminPageFestival />, isMenu: false, isPrivate: true, adminOnly: true },
     { path : "/admin/parametre", name: "AdminParametre", element: <AdminParametre />, isMenu: false, isPrivate: true, adminOnly: true },
     { path : "/admin/flexible", name: "AdminFlexible", element: <AdminFlexible />, isMenu: false, isPrivate: true, adminOnly: true },
+    { path : "/referent", name : "ReferentAccueil", element: <ReferentAccueil />, isMenu: false, isPrivate: true},
 ]
 

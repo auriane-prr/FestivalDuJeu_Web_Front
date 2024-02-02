@@ -26,11 +26,13 @@ const Login = () => {
   const doLogin = async () => {
     try {
       const response = await login(formData.pseudo, formData.password);
-      const { token, admin } = response; // Assurez-vous que l'attribut admin est retourné par la fonction login.
+      const { token, admin, referent } = response; // Assurez-vous que l'attribut admin est retourné par la fonction login.
       localStorage.setItem("authToken", token);
       localStorage.setItem("pseudo", formData.pseudo);
   
-      if (admin) {
+      if (referent) {
+        navigate("/referent");
+      } else if(admin) {
         navigate("/admin");
       } else {
         navigate("/accueil");
