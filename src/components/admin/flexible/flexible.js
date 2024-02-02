@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../../../styles/Admin/flexible/flexible.css';
 import Bouton from '../../general/bouton';
 import Titre from '../../general/titre';
+import FenetrePopup from '../../general/fenetre_popup';
 
 function Flexible({ date }) {
     const [flexibles, setFlexibles] = useState([]);
@@ -9,7 +10,12 @@ function Flexible({ date }) {
     const [selectedFlexible, setSelectedFlexible] = useState(null);
     const [selectedStands, setSelectedStands] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isPopupVisible, setPopupVisible] = useState(false);
 
+    const hidePopup = () => {
+      setPopupVisible(false);
+    };
   // Récupérez la liste des bénévoles flexibles au chargement du composant
   useEffect(() => {
     fetch("http://localhost:3500/flexible")
@@ -123,8 +129,14 @@ function Flexible({ date }) {
         );
   
         if (!response.ok) {
-          throw new Error("Erreur lors de l'inscription à un stand.");
-        }
+          const errorData = await response.json();
+                if (errorData.message.includes("déjà inscrit")) {
+                    setErrorMessage("Vous ne pouvez pas vous inscrire à ce stand car vous êtes déjà inscrit à un autre stand ou zone à ce même horaire.");
+                } else {
+                    setErrorMessage("Une erreur est survenue lors de votre inscription.");
+                }
+                throw new Error(errorData.message || "Erreur lors de l'inscription à un stand.");
+            }
       }
       console.log("Inscription réussie.");
       setIsSubmitting(true);
@@ -249,7 +261,9 @@ function Flexible({ date }) {
     )}
         </div>
       )}
-
+      {errorMessage && isPopupVisible && (
+        <FenetrePopup message={errorMessage} type="error" onClose={hidePopup} />
+      )}
     
     </div>
   );
