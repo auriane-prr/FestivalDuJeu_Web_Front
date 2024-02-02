@@ -589,81 +589,88 @@ function DisplayStand() {
               </Champ>
 
               <div className="referent-container">
-  <Champ label="Référents :">
-    {editMode && (
-      <div className="add-btn-container">
-        {currentStandDetails?.referents?.length > 0 && (
-          <button
-            onClick={() => setShowSelector(!showSelector)}
-            className="add-button"
-          >
-            {showSelector ? "-" : "+"}
-          </button>
-        )}
-        {currentStandDetails?.referents?.length === 0 && (
-          <button
-            onClick={() => setShowSelector(true)}
-            className="add-button"
-          >
-            +
-          </button>
-        )}
-      </div>
-    )}
+                <Champ label="Référents :">
+                  {editMode && (
+                    <div className="add-btn-container">
+                      {currentStandDetails?.referents?.length > 0 && (
+                        <button
+                          onClick={() => setShowSelector(!showSelector)}
+                          className="add-button"
+                        >
+                          {showSelector ? "-" : "+"}
+                        </button>
+                      )}
+                      {currentStandDetails?.referents?.length === 0 && (
+                        <button
+                          onClick={() => setShowSelector(true)}
+                          className="add-button"
+                        >
+                          +
+                        </button>
+                      )}
+                    </div>
+                  )}
 
-    {editMode && showSelector && (
-      <select className="input" onChange={handleSelectBenevole} style={{ marginBottom: "3%" }} >
-        <option value="">Sélectionner un bénévole</option>
-        {nonReferentBenevoles.map((benevole, index) => (
-          <option key={index} value={benevole._id}>
-            {benevole.pseudo}
-          </option>
-        ))}
-      </select>
-    )}
+                  {editMode && showSelector && (
+                    <select
+                      className="input"
+                      onChange={handleSelectBenevole}
+                      style={{ marginBottom: "3%" }}
+                    >
+                      <option value="">Sélectionner un bénévole</option>
+                      {nonReferentBenevoles.map((benevole, index) => (
+                        <option key={index} value={benevole._id}>
+                          {benevole.pseudo}
+                        </option>
+                      ))}
+                    </select>
+                  )}
 
-    {currentStandDetails?.referents?.map((referent, index) => (
-      <div key={referent._id} className="referent-input">
-        <input
-          type="text"
-          className="input"
-          value={referent.pseudo || ""}
-          readOnly
-        />
-        {editMode && (
-          <button
-            onClick={(event) => handleRemoveReferent(referent._id, event)}
-            className="supp-button"
-          >
-            X
-          </button>
-        )}
-      </div>
-    ))}
+                  {currentStandDetails?.referents?.map((referent, index) => (
+                    <div key={referent._id} className="referent-input">
+                      <input
+                        type="text"
+                        className="input"
+                        value={referent.pseudo || ""}
+                        readOnly
+                      />
+                      {editMode && (
+                        <button
+                          onClick={(event) =>
+                            handleRemoveReferent(referent._id, event)
+                          }
+                          className="supp-button"
+                        >
+                          X
+                        </button>
+                      )}
+                    </div>
+                  ))}
 
-    {editMode && currentStandDetails?.referents?.length === 0 && !showSelector && (
-      <select className="input" onChange={handleSelectBenevole}>
-        <option value="">Sélectionner un bénévole</option>
-        {nonReferentBenevoles.map((benevole, index) => (
-          <option key={index} value={benevole._id}>
-            {benevole.pseudo}
-          </option>
-        ))}
-      </select>
-    )}
+                  {editMode &&
+                    currentStandDetails?.referents?.length === 0 &&
+                    !showSelector && (
+                      <select className="input" onChange={handleSelectBenevole}>
+                        <option value="">Sélectionner un bénévole</option>
+                        {nonReferentBenevoles.map((benevole, index) => (
+                          <option key={index} value={benevole._id}>
+                            {benevole.pseudo}
+                          </option>
+                        ))}
+                      </select>
+                    )}
 
-    {!editMode && currentStandDetails?.referents?.length === 0 && (
-      <input
-        type="text"
-        className="input"
-        value="Pas de référents"
-        readOnly
-      />
-    )}
-  </Champ>
-</div>
-
-
+                  {!editMode &&
+                    currentStandDetails?.referents?.length === 0 && (
+                      <input
+                        type="text"
+                        className="input"
+                        value="Pas de référents"
+                        readOnly
+                      />
+                    )}
+                </Champ>
+              </div>
 
               {currentStand.nom_stand === "Animation jeu" ? (
                 <p>Pour plus de détail aller sur l'onglet Zones</p>

@@ -1,9 +1,40 @@
 .button-flexible {
-    margin: 10px;
-    
+  margin: 10px;
 }
 
-.inscription{
-    margin-bottom: 0px;
-    padding-bottom: 0px;
+.inscription {
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+}
+
+.planning-row {
+  display: flex; /* Ceci aligne horaire et la selection-container horizontalement */
+  align-items: center; /* Ceci centre les éléments verticalement */
+  margin-bottom: 15px; /* Ajoutez un peu d'espace entre chaque planning-row */
+}
+
+.selection-container {
+  display: flex; /* Pour que Champ et ul soient dans un conteneur flexible */
+  flex-direction: column; /* Range les éléments en colonne */
+  margin-left: 10px; /* Ajustez selon votre besoin pour espacer du planning-time */
+  width: 100%;
+}
+
+.selected-zones-list {
+  list-style-type: none; /* Retire les puces */
+}
+
+.selected-zone-item {
+  /* Styles pour les éléments de la liste */
+  font-family: "Arial", sans-serif;
+  font-size: 16px;
+    justify-content: center; /* Pour aligner le nom de la zone et le bouton de suppression */
+  
+}
+
+.remove-zone-button {
+  /* Styles pour les boutons de suppression */
+  margin-left: 10px;
+  font-size: 18px;
+  font-weight: bold;
 }
