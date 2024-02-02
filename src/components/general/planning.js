@@ -83,5 +83,4 @@ function Planning({ date }) {
   );
 };
 
-
 export default Planning;
