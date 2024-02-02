@@ -3,7 +3,7 @@ import FenetrePopup from "../../general/fenetre_popup";
 import Champ from "../../general/champ";
 import Bouton from "../../general/bouton";
 
-const ParticiperZone = ({ zone, creneau, closeModal, typeZone }) => {
+const ParticiperZone = ({ zone, creneau, closeModal }) => {
   const [userId, setUserId] = useState("");
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -58,21 +58,24 @@ const ParticiperZone = ({ zone, creneau, closeModal, typeZone }) => {
     if (zone && creneau && userId) {
       const idHoraire = creneau._id;
       try {
-        const idZone = zone._id; // L'ID de la zone
+        const { _id: idZone, horaireCota } = zone;
         const idBenevole = userId;
         const token = localStorage.getItem("authToken");
 
         // Vérifier si le bénévole est déjà inscrit ailleurs ou à ce créneau
-        const isAlreadyRegisteredElsewhere = zone.horaireCota.some(
-          (horaire) =>
+        const isAlreadyRegisteredElsewhere = horaireCota.some((horaire) => {
+          return (
             horaire.liste_benevole.includes(idBenevole) &&
             horaire._id !== idHoraire
-        );
-        const isAlreadyRegisteredHere = zone.horaireCota.some(
-          (horaire) =>
+          );
+        });
+
+        const isAlreadyRegisteredHere = horaireCota.some((horaire) => {
+          return (
             horaire.liste_benevole.includes(idBenevole) &&
             horaire._id === idHoraire
-        );
+          );
+        });
 
         if (isAlreadyRegisteredElsewhere) {
           setErrorMessage("Vous êtes déjà inscrit ailleurs");
@@ -81,41 +84,62 @@ const ParticiperZone = ({ zone, creneau, closeModal, typeZone }) => {
           setErrorMessage("Vous êtes déjà inscrit à ce créneau");
           throw new Error("Vous êtes déjà inscrit à ce créneau");
         }
+        console.log("Horaire : ", idHoraire + "    Benevole : ", idBenevole);
 
-        // Construisez l'URL de l'API en fonction du type de zone
-        const apiUrl =
-          typeZone === "zonePlan"
-            ? `http://localhost:3500/zonePlan/participer/${idHoraire}/${idBenevole}`
-            : `http://localhost:3500/zoneBenevole/participer/${idHoraire}/${idBenevole}`;
-
-        // Effectuez la requête API
-        const response = await fetch(apiUrl, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `http://localhost:3500/zoneBenevole/participer/${idHoraire}/${idBenevole}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.ok) {
+          // Cas 4: La participation a bien été enregistrée
           console.log("Participation enregistrée");
-          setSuccessMessage(
-            "Votre participation a été enregistrée avec succès"
+          const updatedResponse = await fetch(
+            `http://localhost:3500/zoneBenevole/${idZone}`
           );
-          setPopupVisible(true);
-          setTimeout(() => {
-            closeModal();
-          }, 2000);
+          if (updatedResponse.ok) {
+            const updatedZone = await updatedResponse.json();
+
+            setSuccessMessage(
+              "Votre participation a été enregistrée avec succès"
+            );
+            setErrorMessage(null);
+
+            // Afficher la pop-up
+            setPopupVisible(true);
+
+            // Fermer la modale après un certain délai (par exemple, 2 secondes)
+            setTimeout(() => {
+              closeModal(); // Fermer la modale
+            }, 2000);
+          }
         } else {
-          throw new Error(
+          // Cas 3: Une autre erreur s'est produite
+          setErrorMessage(
             "Une erreur est survenue lors de votre participation"
           );
+          setSuccessMessage(null);
+
+          // Afficher la pop-up d'erreur (si nécessaire)
+          if (errorMessage) {
+            setPopupVisible(true);
+          }
         }
       } catch (error) {
-        console.error("Erreur lors de la participation :", error);
-        setErrorMessage(error.message);
+        // Cas 3: Une autre erreur s'est produite
+        setErrorMessage("Erreur lors de la participation : " + error.message);
         setSuccessMessage(null);
-        setPopupVisible(true);
+
+        // Afficher la pop-up d'erreur (si nécessaire)
+        if (errorMessage) {
+          setPopupVisible(true);
+        }
       }
     }
   };

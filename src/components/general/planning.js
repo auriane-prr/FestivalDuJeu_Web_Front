@@ -58,7 +58,7 @@ function Planning({ date }) {
     } else {
       setLoading(false);
     }
-  }, [date]);
+  }, [date, userid]);
 
   if (loading) {
     return <div>Chargement...</div>;

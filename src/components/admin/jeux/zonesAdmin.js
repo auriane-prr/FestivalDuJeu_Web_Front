@@ -124,9 +124,14 @@ function DisplayZone() {
   }, [selectedZone, selectedHoraireIndex, pendingChanges]);
 
   const handleSaveChanges = async () => {
-    // Mettre à jour la capacité de la zone avec la nouvelle valeur
+    // Appliquer toutes les modifications en attente à la zone sélectionnée
     const updatedZone = { ...selectedZone };
-    updatedZone.horaireCota[selectedHoraireIndex].nb_benevole = zoneCapacity;
+    for (const [index, capacity] of pendingChanges.entries()) {
+      if (capacity !== undefined) {
+        // Vérifie si une modification est en attente pour ce créneau
+        updatedZone.horaireCota[index].nb_benevole = capacity;
+      }
+    }
 
     try {
       const response = await fetch(
@@ -136,24 +141,23 @@ function DisplayZone() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(updatedZone), // Utilisez la zone mise à jour
+          body: JSON.stringify(updatedZone), // Utilisez la zone mise à jour avec toutes les modifications
         }
       );
 
       if (response.ok) {
+        // Mettre à jour l'état local avec la zone mise à jour
         const updatedZones = [...zones];
-        updatedZones[selectedZoneIndex] = updatedZone; // Mettez à jour avec la zone mise à jour
+        updatedZones[selectedZoneIndex] = updatedZone;
         setZones(updatedZones);
-        console.log("Zones mises à jour :", updatedZones);
 
-        // Mettre à jour la capacité avec la nouvelle valeur de la zone
-        setZoneCapacity(
-          updatedZone.horaireCota[selectedHoraireIndex]?.nb_benevole || 0
-        );
-        console.log("Capacité mise à jour :", zoneCapacity);
+        // Réinitialiser les modifications en attente
+        setPendingChanges([]);
 
         // Désactive le mode édition
         toggleEditMode();
+
+        // Afficher le message de succès
         setSuccessMessage("Modifications enregistrées avec succès");
         setErrorMessage(null);
       } else {

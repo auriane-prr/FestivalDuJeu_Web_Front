@@ -100,11 +100,6 @@ function Display_stand() {
   }, [currentStandIndex, stands]);
   
 
-  const handleEditModeToggle = () => {
-    setEditMode(!editMode);
-    setCurrentStandDetails(null); // Réinitialiser les détails du stand lorsque le mode édition est activé
-  };
-
   useEffect(() => {
     const fetchFestivalAndStands = async () => {
       setLoading(true);
