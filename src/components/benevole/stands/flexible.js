@@ -228,7 +228,7 @@ function Flexible() {
                     })));
                     setFlexibleInfo(stands);
                 } else {
-                    console.error("Aucun flexible trouvé pour cet utilisateur");
+                    console.log("Aucun flexible trouvé pour cet utilisateur");
                 }
             } else {
                 console.error("Erreur lors de la récupération des stands");

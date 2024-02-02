@@ -219,15 +219,21 @@ function FlexibleAnimation() {
                 headers: { "Content-Type": "application/json" },
             });
             if (response.ok) {
-                const flexibles = await response.json();
-                const horaires = flexibles.horaire;
-                const zones = horaires.flatMap((horaire) => horaire.liste_zoneBenevole.map(zone => ({
-                    id: zone._id, 
-                    nom_zone_benevole: zone.nom_zone_benevole, 
-                    date: formatDate(horaire.date), 
-                    heure: horaire.heure
-                })));
-                setFlexibleZoneInfo(zones);
+                const flexible = await response.json(); // Remarquez que c'est maintenant 'flexible', pas 'flexibles'
+                
+                // Vérifiez si 'flexible' est non null et a une propriété 'horaire'
+                if (flexible && flexible.horaire) {
+                    const horaires = flexible.horaire; // Pas besoin d'utiliser .map() et .flat()
+                    const zones = horaires.flatMap((horaire) => horaire.liste_zoneBenevole.map(zoneBenevole => ({
+                        id: zoneBenevole._id, 
+                        nom_stand: zoneBenevole.nom_zone_benevole, 
+                        date: formatDate(horaire.date), 
+                        heure: horaire.heure
+                    })));
+                    setFlexibleZoneInfo(zones);
+                } else {
+                    console.log("Aucun flexible trouvé pour cet utilisateur");
+                }
             } else {
                 console.error("Erreur lors de la récupération des zones");
             }
