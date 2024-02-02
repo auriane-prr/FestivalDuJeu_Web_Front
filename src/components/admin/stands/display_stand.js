@@ -8,9 +8,10 @@ import StandForm from "./form_ajouter_stand";
 import Titre from "../../general/titre";
 import Bouton from "../../general/bouton";
 import FenetrePopup from "../../general/fenetre_popup";
-import RadioButton from "../../general/radioButton";
+import { func } from "prop-types";
+// import RadioButton from "../../general/radioButton";
 
-function Display_stand() {
+function DisplayStand() {
   const [showModal, setShowModal] = useState(false);
   const [stands, setStands] = useState([]);
   const [currentStandIndex, setCurrentStandIndex] = useState(0);
@@ -37,10 +38,6 @@ function Display_stand() {
     setPopupVisible(false);
   };
 
-  const toggleEditMode = () => {
-    setEditMode(!editMode);
-  };
-
   useEffect(() => {
     const fetchFestivalAndStands = async () => {
       setLoading(true);
@@ -60,7 +57,6 @@ function Display_stand() {
     };
     fetchFestivalAndStands();
   }, []);
-  
 
   const fetchFestivalData = async () => {
     const response = await fetch(`http://localhost:3500/festival/latest`);
@@ -98,7 +94,6 @@ function Display_stand() {
       fetchStandDetails(stands[currentStandIndex]._id);
     }
   }, [currentStandIndex, stands]);
-  
 
   useEffect(() => {
     const fetchFestivalAndStands = async () => {
@@ -235,11 +230,11 @@ function Display_stand() {
     }
   }, [dateDebut, dateFin]);
 
-  const radioOptions = [
-    { label: formatDate(dateDebut), value: "date_debut" },
-    { label: formatDate(dateFin), value: "date_fin" },
-    { label: "Tous les stands", value: "both" },
-  ];
+  // const radioOptions = [
+  //   { label: formatDate(dateDebut), value: "date_debut" },
+  //   { label: formatDate(dateFin), value: "date_fin" },
+  //   { label: "Tous les stands", value: "both" },
+  // ];
 
   // Fonction pour comparer les dates
   const compareStandDates = (a, b) => {
@@ -248,8 +243,8 @@ function Display_stand() {
     return dateA - dateB; // Tri croissant par date
   };
 
-  // Utilisation de la fonction de tri
-  const sortedStands = [...stands].sort(compareStandDates);
+  // // Utilisation de la fonction de tri
+  // const sortedStands = [...stands].sort(compareStandDates);
 
   const handleNbBenevoleChange = (index, value) => {
     const updatedStands = [...stands];
@@ -277,7 +272,8 @@ function Display_stand() {
     }
   }, [selectedDate]);
 
-  const handleRemoveReferent = async (referentId) => {
+  const handleRemoveReferent = async (referentId, event) => {
+    event.stopPropagation();
     try {
       if (!currentStand._id || !referentId) {
         console.error("ID du stand ou du référent manquant.");
@@ -296,8 +292,8 @@ function Display_stand() {
 
       if (response.ok) {
         console.log("Référent supprimé avec succès !");
-        // Mettez à jour l'état des stands après la suppression du référent
-        fetchStandsData();
+        // Réactualisez uniquement les référents du stand actuel
+        fetchStandDetails(currentStand._id);
       } else {
         throw new Error("Erreur lors de la suppression du référent");
       }
@@ -307,39 +303,79 @@ function Display_stand() {
   };
 
   const handleSaveChanges = async () => {
-    console.log("ID du stand à mettre à jour :", currentStand._id);
+    // Vérifiez d'abord si le mode de sélection du référent est actif
+    if (showSelector) {
+      // Si oui, affichez une erreur et ne continuez pas avec l'enregistrement
+      setErrorMessage(
+        "Veuillez valider votre sélection de référent avant d'enregistrer."
+      );
+      setSuccessMessage(null); // Réinitialisez le message de succès
+      setPopupVisible(true); // Afficher la pop-up d'erreur
+      return; // Interrompre la fonction ici pour éviter d'aller plus loin
+    }
 
     try {
-      const response = await fetch(
-        `http://localhost:3500/stands/${currentStand._id}`,
-        {
-          method: "PUT",
+      // Mettez à jour l'état avec les modifications
+      const updatedStands = [...stands];
+      updatedStands[currentStandIndex] = currentStand;
+      setStands(updatedStands);
+
+      // Mettez à jour l'état des détails du stand
+      setCurrentStandDetails(currentStand);
+
+      if (currentStand._id) {
+        // Si le stand a un ID, il s'agit d'une mise à jour
+        // Effectuez la mise à jour sur le serveur avec les données mises à jour
+        const response = await fetch(
+          `http://localhost:3500/stands/${currentStand._id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(currentStand),
+          }
+        );
+
+        if (response.ok) {
+          // Mise à jour réussie, afficher la pop-up de succès
+          setEditMode(false); // Désactiver le mode édition
+          setSuccessMessage("Modifications enregistrées avec succès");
+          setErrorMessage(null); // Réinitialiser le message d'erreur
+          setPopupVisible(true); // Afficher la pop-up de succès
+        } else {
+          // La requête a échoué, afficher une erreur
+          throw new Error("Échec de l'enregistrement des modifications");
+        }
+      } else {
+        // Si le stand n'a pas d'ID, il s'agit d'une création
+        // Effectuez l'ajout du stand sur le serveur avec les données actuelles
+        const response = await fetch(`http://localhost:3500/stands`, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(currentStand),
+        });
+
+        if (response.ok) {
+          // Ajout réussi, afficher la pop-up de succès
+          setEditMode(false); // Désactiver le mode édition
+          setSuccessMessage("Stand ajouté avec succès");
+          setErrorMessage(null); // Réinitialiser le message d'erreur
+          setPopupVisible(true); // Afficher la pop-up de succès
+        } else {
+          // La requête a échoué, afficher une erreur
+          throw new Error("Échec de l'ajout du stand");
         }
-      );
-      console.log("Données à envoyer :", JSON.stringify(currentStand));
-
-      if (response.ok) {
-        const updatedStands = [...stands];
-        updatedStands[currentStandIndex] = currentStand;
-        setStands(updatedStands);
-
-        // Désactive le mode édition
-        toggleEditMode();
-        setSuccessMessage("Modifications enregistrées avec succès");
-        setErrorMessage(null);
-      } else {
-        throw new Error("Échec de l'enregistrement des modifications");
       }
     } catch (error) {
+      // Gérer les erreurs de la requête ou les erreurs lancées manuellement
+      setSuccessMessage(null); // Réinitialiser le message de succès
       setErrorMessage(
-        "Erreur lors de l'enregistrement des modifications: " + error.message
+        `Erreur lors de l'enregistrement des modifications: ${error.message}`
       );
-    } finally {
-      setPopupVisible(true);
+      setPopupVisible(true); // Afficher la pop-up d'erreur
     }
   };
 
@@ -383,10 +419,8 @@ function Display_stand() {
         return prevIndex - 1;
       }
     });
-  
-    console.log("stand : " + (currentStandIndex === 0 ? stands.length - 1 : currentStandIndex - 1) + " " + stands[currentStandIndex === 0 ? stands.length - 1 : currentStandIndex - 1].nom_stand);
   };
-  
+
   const showNextStand = () => {
     setCurrentStandIndex((prevIndex) => {
       if (prevIndex === stands.length - 1) {
@@ -395,10 +429,7 @@ function Display_stand() {
         return prevIndex + 1;
       }
     });
-  
-    console.log("stand : " + (currentStandIndex === stands.length - 1 ? 0 : currentStandIndex + 1) + " " + stands[currentStandIndex === stands.length - 1 ? 0 : currentStandIndex + 1].nom_stand);
   };
-  
 
   const openModal = () => {
     setShowModal(true);
@@ -420,7 +451,13 @@ function Display_stand() {
 
   const handleAddReferent = async () => {
     // Vérifier si un bénévole est sélectionné
-    if (selectedBenevole && selectedBenevole.value) {
+    if (!selectedBenevole || !selectedBenevole.value) {
+      console.error("Aucun bénévole sélectionné.");
+      return;
+    }
+    console.log("benevoleref", selectedBenevole.value);
+
+    try {
       const response = await fetch(
         `http://localhost:3500/stands/referent/${currentStand._id}/${selectedBenevole.value}`,
         {
@@ -429,34 +466,34 @@ function Display_stand() {
           // Pas besoin de body car l'ID du bénévole est dans l'URL
         }
       );
+
       if (response.ok) {
-        fetchStandsData(); // Cette fonction devrait également mettre à jour les référents dans l'état du composant
+        console.log("Référent ajouté avec succès !");
+        // Réactualisez uniquement les référents du stand actuel
+        fetchStandDetails(currentStand._id);
+
+        // Réinitialiser le sélecteur de bénévoles et l'état de sélection
+        setShowSelector(false);
+        setSelectedBenevole(null);
       } else {
-        // Gérer les réponses non-OK, comme l'erreur 404
+        // Gérer les réponses non-OK
         console.error(
           "Erreur lors de l'ajout d'un référent",
           await response.text()
         );
       }
-    } else {
-      // Si aucun bénévole n'est sélectionné ou l'identifiant du bénévole est manquant
-      console.warn(
-        "Aucun bénévole sélectionné ou l'identifiant du bénévole est manquant."
-      );
+    } catch (error) {
+      // Gérer les erreurs de la requête ou les erreurs lancées manuellement
+      console.error("Erreur lors de l'ajout d'un référent :", error);
     }
-    // Réinitialiser le sélecteur de bénévoles et l'état de sélection, que l'ajout soit réussi ou non
-    setShowSelector(false);
-    setSelectedBenevole(null);
   };
 
   const handleEditStand = (standIndex) => () => {
-    // Active le mode édition uniquement pour le stand spécifié
-    const updatedStands = [...stands];
-    updatedStands[standIndex].editMode = true;
-    setStands(updatedStands);
-    // Ne pas réinitialiser l'index ici
-    toggleEditMode();
-    console.log("stand modifiable : " + currentStandIndex + " " + stands[currentStandIndex].nom_stand);
+    // Mettre à jour l'index du stand actuel avant d'activer le mode édition
+    setCurrentStandIndex(standIndex);
+
+    // Activer le mode édition
+    setEditMode(true);
   };
 
   return (
@@ -496,7 +533,6 @@ function Display_stand() {
                   ) => (
                     <option key={index} value={stand._id}>
                       {stand.nom_stand} ({formatDate(stand.date)})
-                      {console.log("Stand :", stand)}
                     </option>
                   )
                 )}
@@ -553,71 +589,81 @@ function Display_stand() {
               </Champ>
 
               <div className="referent-container">
-                <Champ label="Référents :">
-                  {showSelector ? (
-                    <select className="input" onChange={handleSelectBenevole}>
-                      <option value="">Sélectionner un bénévole</option>
-                      {nonReferentBenevoles.map((benevole, index) => (
-                        <option key={index} value={benevole._id}>
-                          {benevole.pseudo}
-                        </option>
-                      ))}
-                    </select>
-                  ) : referentsLoaded || !loading ? ( // Utilisation de !loading pour vérifier le chargement initial
-                    currentStandDetails?.referents &&
-                    currentStandDetails.referents.length > 0 ? (
-                      currentStandDetails.referents.map((referent) => (
-                        <div key={referent._id} className="referent-input">
-                          <input
-                            type="text"
-                            className="input"
-                            value={referent.pseudo || ""}
-                            readOnly
-                          />
-                          {editMode && (
-                            <button
-                              onClick={() => handleRemoveReferent(referent._id)}
-                              className="supp-button"
-                            >
-                              X
-                            </button>
-                          )}
-                        </div>
-                      ))
-                    ) : (
-                      <input
-                        type="text"
-                        className="input"
-                        value="Pas de référents"
-                        readOnly
-                      />
-                    )
-                  ) : (
-                    "Chargement..."
-                  )}
-                </Champ>
+  <Champ label="Référents :">
+    {editMode && (
+      <div className="add-btn-container">
+        {currentStandDetails?.referents?.length > 0 && (
+          <button
+            onClick={() => setShowSelector(!showSelector)}
+            className="add-button"
+          >
+            {showSelector ? "-" : "+"}
+          </button>
+        )}
+        {currentStandDetails?.referents?.length === 0 && (
+          <button
+            onClick={() => setShowSelector(true)}
+            className="add-button"
+          >
+            +
+          </button>
+        )}
+      </div>
+    )}
 
-                {editMode && (
-                  <div className="add-btn-container">
-                    {showSelector ? (
-                      <button
-                        onClick={handleAddReferent}
-                        className="add-button"
-                        style={{ fontSize: "15px" }}
-                      >
-                        OK
-                      </button>
-                    ) : (
-                      <button
-                        onClick={handleAddReferentDisplay}
-                        className="add-button"
-                      >
-                        +
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
+    {editMode && showSelector && (
+      <select className="input" onChange={handleSelectBenevole} style={{ marginBottom: "3%" }} >
+        <option value="">Sélectionner un bénévole</option>
+        {nonReferentBenevoles.map((benevole, index) => (
+          <option key={index} value={benevole._id}>
+            {benevole.pseudo}
+          </option>
+        ))}
+      </select>
+    )}
+
+    {currentStandDetails?.referents?.map((referent, index) => (
+      <div key={referent._id} className="referent-input">
+        <input
+          type="text"
+          className="input"
+          value={referent.pseudo || ""}
+          readOnly
+        />
+        {editMode && (
+          <button
+            onClick={(event) => handleRemoveReferent(referent._id, event)}
+            className="supp-button"
+          >
+            X
+          </button>
+        )}
+      </div>
+    ))}
+
+    {editMode && currentStandDetails?.referents?.length === 0 && !showSelector && (
+      <select className="input" onChange={handleSelectBenevole}>
+        <option value="">Sélectionner un bénévole</option>
+        {nonReferentBenevoles.map((benevole, index) => (
+          <option key={index} value={benevole._id}>
+            {benevole.pseudo}
+          </option>
+        ))}
+      </select>
+    )}
+
+    {!editMode && currentStandDetails?.referents?.length === 0 && (
+      <input
+        type="text"
+        className="input"
+        value="Pas de référents"
+        readOnly
+      />
+    )}
+  </Champ>
+</div>
+
+
 
               {currentStand.nom_stand === "Animation jeu" ? (
                 <p>Pour plus de détail aller sur l'onglet Zones</p>
@@ -746,4 +792,4 @@ function Display_stand() {
   );
 }
 
-export default Display_stand;
+export default DisplayStand;
