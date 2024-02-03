@@ -13,7 +13,8 @@ function AdminParametre() {
   const [referentBenevoles, setReferentBenevoles] = useState([]);
   const [stands, setStands] = useState([]);
   const [zones, setZones] = useState([]);
-  const[selectedBenevole, setSelectedBenevole] = useState(null);
+  const [selectedBenevole, setSelectedBenevole] = useState(null);
+  const [latestFestivalName, setLatestFestivalName] = useState("");
 
   function formatDate(date) {
     if (!date) return "";
@@ -25,10 +26,6 @@ function AdminParametre() {
     });
   }
 
-  const openModal = () => {
-    setShowModal(true);
-  };
-
   const closeModal = () => {
     setShowModal(false);
   };
@@ -37,30 +34,35 @@ function AdminParametre() {
     const selectedId = e.target.value;
     const selected = nonReferentBenevoles.find((b) => b._id === selectedId);
     setSelectedBenevole(selected);
-    openModal();
+    setShowModal(true); // Ouvrir la modale
   };
-
+  
   const handleReferentChange = (e) => {
     const selectedId = e.target.value;
     const selected = referentBenevoles.find((b) => b._id === selectedId);
     setSelectedBenevole(selected);
-    openModal();
+    setShowModal(true); // Ouvrir la modale
   };
+  
 
   const fetchFestivalData = async () => {
     try {
       const response = await fetch("http://localhost:3500/festival/latest");
       if (response.ok) {
         const data = await response.json();
-        return data; // Retourne les données du dernier festival
+        setLatestFestivalName(data.nom); // Supposons que la propriété s'appelle 'nom'
+        return data;
       } else {
         throw new Error("Non-OK response from server");
       }
     } catch (error) {
-      console.error("Erreur lors de la récupération des données du festival", error);
-      return null; // En cas d'erreur, retournez null ou gérez l'erreur comme nécessaire
+      console.error(
+        "Erreur lors de la récupération des données du festival",
+        error
+      );
+      return null;
     }
-  };  
+  };
 
   const fetchNonReferentBenevoles = async () => {
     try {
@@ -82,55 +84,36 @@ function AdminParametre() {
     }
   };
 
-  const fetchReferentBenevoles = async () => {
-    try {
-      const response = await fetch("http://localhost:3500/benevole/referent");
-      if (response.ok) {
-        const data = await response.json();
-        setReferentBenevoles(data);
-      } else {
-        throw new Error("Non-OK response from server");
-      }
-    } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des bénévoles référents:",
-        error
-      );
-    }
-  };
-
-  const fetchStands = async () => {
-    const festivalData = await fetchFestivalData(); // Récupérez les dates du dernier festival
+  const fetchStandsAndReferents = async () => {
+    const festivalData = await fetchFestivalData();
     if (festivalData) {
       const { date_debut, date_fin } = festivalData;
       try {
-        // Effectuez la requête pour obtenir les stands avec date_debut
         const responseDebut = await fetch(`http://localhost:3500/stands/date/${date_debut}`);
-        if (responseDebut.ok) {
-          const dataDebut = await responseDebut.json();
+        const dataDebut = await responseDebut.ok ? await responseDebut.json() : [];
   
-          // Effectuez la deuxième requête pour obtenir les stands avec date_fin
-          const responseFin = await fetch(`http://localhost:3500/stands/date/${date_fin}`);
-          if (responseFin.ok) {
-            const dataFin = await responseFin.json();
+        const responseFin = await fetch(`http://localhost:3500/stands/date/${date_fin}`);
+        const dataFin = await responseFin.ok ? await responseFin.json() : [];
   
-            // Fusionnez les résultats des deux requêtes
-            const mergedData = [...dataDebut, ...dataFin];
-            // Utilisez les stands récupérés (mergedData) comme nécessaire
-            console.log(mergedData);
-            setStands(mergedData); // Mettez à jour l'état des stands avec les données récupérées
-          } else {
-            throw new Error("Non-OK response from server (date_fin)");
-          }
-        } else {
-          throw new Error("Non-OK response from server (date_debut)");
-        }
+        const mergedData = [...dataDebut, ...dataFin];
+        setStands(mergedData);
+  
+        // Extraire les ID uniques des référents des stands
+        const referentsIds = [...new Set(mergedData.flatMap(stand => stand.referents.map(ref => ref._id)))];
+  
+        // Récupérer les informations des référents en parallèle
+        const referentsPromises = referentsIds.map(id =>
+          fetch(`http://localhost:3500/benevole/id/${id}`).then(response => response.json())
+        );
+  
+        const referents = await Promise.all(referentsPromises);
+        setReferentBenevoles(referents.filter(benevole => benevole)); // Filtrer les valeurs non valides
       } catch (error) {
-        console.error("Erreur lors de la récupération des stands par date", error);
+        console.error("Erreur lors de la récupération des stands et des référents", error);
       }
     }
   };
-  
+
   const fetchZones = async () => {
     try {
       const response = await fetch("http://localhost:3500/zoneBenevole/");
@@ -147,15 +130,16 @@ function AdminParametre() {
 
   useEffect(() => {
     fetchNonReferentBenevoles();
-    fetchReferentBenevoles();
-    fetchStands();
+    fetchStandsAndReferents();
     fetchZones();
   }, []);
+  
 
   return (
     <div>
       <BandeauAdmin />
       <Boite>
+        <Titre valeurDuTitre={latestFestivalName || "Chargement..."} />
         <Champ label={"Voir les bénévoles inscrits :"}>
           <select className="input" onChange={handleNonReferentChange}>
             <option value="">Sélectionner un bénévole</option>
@@ -197,12 +181,10 @@ function AdminParametre() {
           </select>
         </Champ>
       </Boite>
-      {showModal && selectedBenevole && (
+      {showModal && selectedBenevole  && (
         <Modal onClose={closeModal}>
           <Titre valeurDuTitre={selectedBenevole.pseudo} />
-          <ModaleInfos
-            benevole={selectedBenevole}
-          />
+          <ModaleInfos benevole={selectedBenevole} />
         </Modal>
       )}
     </div>
