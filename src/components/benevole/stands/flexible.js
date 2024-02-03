@@ -3,365 +3,375 @@ import "../../../styles/benevoles/flexible.css";
 import Modal from "../../general/fenetre_modale";
 import Champ from "../../general/champ";
 import RadioButton from "../../general/radioButton";
-import Button from "../../general/bouton";
+import Bouton from "../../general/bouton";
+import FenetrePopup from "../../general/fenetre_popup";
 
 function Flexible() {
-    const [modalOpen, setModalOpen] = useState(false);
-    const [stands, setStands] = useState([]);
-    const [dateDebut, setDateDebut] = useState("");
-    const [dateDebutDisplay, setDateDebutDisplay] = useState("");
-    const [dateFin, setDateFin] = useState("");
-    const [dateFinDisplay, setDateFinDisplay] = useState("");
-    const [selectedDate, setSelectedDate] = useState("");
-    const [selectedHeure, setSelectedHeure] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const [selectedStand, setSelectedStand] = useState("");
-    const [userId, setUserId] = useState('');
-    const[flexibleInfo, setFlexibleInfo] = useState('');
-    const [selections, setSelections] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [stands, setStands] = useState([]);
+  const [dateDebut, setDateDebut] = useState("");
+  const [dateDebutDisplay, setDateDebutDisplay] = useState("");
+  const [dateFin, setDateFin] = useState("");
+  const [dateFinDisplay, setDateFinDisplay] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedHeure, setSelectedHeure] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [selectedStand, setSelectedStand] = useState("");
+  const [userId, setUserId] = useState("");
+  const [flexibleInfo, setFlexibleInfo] = useState("");
+  const [horaires, setHoraires] = useState([
+    "9-11",
+    "11-14",
+    "14-17",
+    "17-20",
+    "20-22",
+  ]);
+  const [selectValues, setSelectValues] = useState({});
+  const [listeSelectedStands, setListeSelectedStands] = useState({});
 
-    const [heureData, setHeureData] = useState([
-        { heure: "9-11"},
-        { heure: "11-14"},
-        { heure: "14-17"},
-        { heure: "17-20"},
-        { heure: "20-22"},
-    ]);
+  const hidePopup = () => {
+    setPopupVisible(false);
+  };
 
-    const fetchUserId = async () => {
-        try {
-          const token = localStorage.getItem('authToken');
-          const pseudo = localStorage.getItem('pseudo');
-          const response = await fetch(`http://localhost:3500/benevole/pseudo/${pseudo}`, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              }
-            });
-            if (response.ok) {
-              const { benevole } = await response.json();
-              console.log('benevoleId', benevole._id);
-              setUserId(benevole._id);
-            } else {
-              throw new Error('Erreur lors de la récupération des informations utilisateur');
-            }
-        } catch (error) {
-          console.error('Erreur lors de la récupération des informations utilisateur :', error);
+  const fetchUserId = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const pseudo = localStorage.getItem("pseudo");
+      const response = await fetch(
+        `http://localhost:3500/benevole/pseudo/${pseudo}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
-      };
-
-      
-
-    useEffect(() => {
-        // Exemple d'appel API pour récupérer les données du festival
-        const fetchData = async () => {
-            const result = await fetch("http://localhost:3500/festival/latest");
-            const body = await result.json();
-            setDateDebutDisplay(body.date_debut);
-            setDateFinDisplay(body.date_fin);
-            setDateDebut(body.date_debut);
-            setDateFin(body.date_fin);
-        };
-        fetchData();
-        fetchUserId();
-    }, []);
-
-    const [horairesJour1Data, setHorairesJour1Data] = useState([
-        { date:dateDebut, heure: "9-11", liste_stand: []},
-        { date:dateDebut, heure: "11-14", liste_stand: []},
-        { date:dateDebut, heure: "14-17", liste_stand: []},
-        { date:dateDebut, heure: "17-20", liste_stand: []},
-        { date:dateDebut, heure: "20-22", liste_stand: []},
-    ]);
-
-    const [horairesJour2Data, setHorairesJour2Data] = useState([
-        { date:dateFin, heure: "9-11", liste_stand: []},
-        { date:dateFin, heure: "11-14", liste_stand: []},
-        { date:dateFin, heure: "14-17", liste_stand: []},
-        { date:dateFin, heure: "17-20", liste_stand: []},
-        { date:dateFin, heure: "20-22", liste_stand: []},
-    ]);
-
-      const handleOpenModal = () => setModalOpen(true);
-
-      function formatDate(date) {
-        if (!date) return '';
-      
-        // Crée un nouvel objet Date si date n'est pas déjà une instance de Date
-        const dateObj = date instanceof Date ? date : new Date(date);
-        
-        // Formate la date en 'jj/mm/aaaa'
-        return dateObj.toLocaleDateString('fr-FR', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        });
+      );
+      if (response.ok) {
+        const { benevole } = await response.json();
+        console.log("benevoleId", benevole._id);
+        setUserId(benevole._id);
+      } else {
+        throw new Error(
+          "Erreur lors de la récupération des informations utilisateur"
+        );
       }
-      const formatHoraire = (horaire) => {
-        return `de ${horaire.replace("-", "h à ")}h`;
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des informations utilisateur :",
+        error
+      );
+    }
+  };
+
+  useEffect(() => {
+    // Exemple d'appel API pour récupérer les données du festival
+    const fetchData = async () => {
+      const result = await fetch("http://localhost:3500/festival/latest");
+      const body = await result.json();
+      setDateDebutDisplay(body.date_debut);
+      setDateFinDisplay(body.date_fin);
+      setDateDebut(body.date_debut);
+      setDateFin(body.date_fin);
+    };
+    fetchData();
+    fetchUserId();
+  }, []);
+
+  const [horairesJour1Data, setHorairesJour1Data] = useState([
+    { date: dateDebut, heure: "9-11", liste_stand: [] },
+    { date: dateDebut, heure: "11-14", liste_stand: [] },
+    { date: dateDebut, heure: "14-17", liste_stand: [] },
+    { date: dateDebut, heure: "17-20", liste_stand: [] },
+    { date: dateDebut, heure: "20-22", liste_stand: [] },
+  ]);
+
+  const [horairesJour2Data, setHorairesJour2Data] = useState([
+    { date: dateFin, heure: "9-11", liste_stand: [] },
+    { date: dateFin, heure: "11-14", liste_stand: [] },
+    { date: dateFin, heure: "14-17", liste_stand: [] },
+    { date: dateFin, heure: "17-20", liste_stand: [] },
+    { date: dateFin, heure: "20-22", liste_stand: [] },
+  ]);
+
+  const handleOpenModal = () => {
+    // Sélectionner la première option par défaut
+    setSelectedDate(radioOptions[0].value);
+    setModalOpen(true);
+  };
+
+  function formatDate(date) {
+    if (!date) return "";
+
+    // Crée un nouvel objet Date si date n'est pas déjà une instance de Date
+    const dateObj = date instanceof Date ? date : new Date(date);
+
+    // Formate la date en 'jj/mm/aaaa'
+    return dateObj.toLocaleDateString("fr-FR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  }
+
+  const radioOptions = [
+    { label: formatDate(dateDebutDisplay), value: dateDebutDisplay },
+    { label: formatDate(dateFinDisplay), value: dateFinDisplay },
+  ];
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    // Filtrer les horaires avec des stands sélectionnées
+    const horairesToSend = Object.keys(listeSelectedStands).map((heure) => {
+      return {
+        date: selectedDate === dateDebutDisplay ? dateDebut : dateFin,
+        heure: heure,
+        liste_stand: listeSelectedStands[heure].map((stand) => stand._id),
       };
-      const radioOptions = [
-        { label: formatDate(dateDebutDisplay), value: dateDebutDisplay },
-        { label: formatDate(dateFinDisplay), value: dateFinDisplay },
-        { label: "Les deux jours", value: "both" }
-      ];
-
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        const filteredHorairesJour1 = horairesJour1Data.filter(h => h.liste_stand.length > 0);
-        const filteredHorairesJour2 = horairesJour2Data.filter(h => h.liste_stand.length > 0);
-        const horairesToSend = [...filteredHorairesJour1, ...filteredHorairesJour2];
-        const flexibleData = {
-            benevole_id: userId,
-            horaire: horairesToSend
-        };
-        try {
-            console.log("flexibleData envoyer au server: ",flexibleData);
-    
-            // Envoi de la requête
-            const response = await fetch(`http://localhost:3500/flexible`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(flexibleData),
-            });
-    
-            if (!response.ok) {
-                throw new Error("Erreur lors de la création du flexible");
-            }
-    
-            setSuccessMessage("Votre flexibilité a été enregistrée avec succès !");
-            setErrorMessage("");
-            setHorairesJour1Data(horairesJour1Data.map(h => ({ ...h, liste_stand: [] })));
-            setHorairesJour2Data(horairesJour2Data.map(h => ({ ...h, liste_stand: [] })));
-            setSelectedDate('');
-            setSelectedHeure('');
-            setSelectedStand('');
-            await fetchFlexibleData();
-    
-        } catch (error) {
-            setErrorMessage("Erreur de connexion au serveur: " + error.message);
-            setSuccessMessage("");
-        }
-    };
-    
-    async function fetchStandsData() {
-        console.log(selectedDate);
-        const url = selectedDate === "both"
-            ? `http://localhost:3500/stands/date/both`
-            : `http://localhost:3500/stands/date/${selectedDate}`;
-
-        try {
-            const response = await fetch(url, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-            });
-            if (response.ok) {
-                const standsData = await response.json();
-                setStands(standsData);
-            } else {
-                console.error("Erreur lors de la récupération des stands");
-            }
-        } catch (error) {
-            console.error("Erreur de connexion au serveur", error);
-        }
+    });
+  
+    // Vérifier si au moins une zone a été sélectionnée
+    if (horairesToSend.length === 0) {
+      setErrorMessage("Veuillez sélectionner au moins un stand.");
+      setSuccessMessage("");
+      setPopupVisible(true); // Afficher la popup d'erreur
+      return;
     }
-    
-      useEffect(() => {
-        if (selectedDate) {
-            fetchStandsData();
-        }
-    }, [selectedDate]);
-
-    useEffect(() => {
-        // Mettre à jour horairesJour1Data et horairesJour2Data
-        setHorairesJour1Data(horairesJour1Data.map(h => ({ ...h, date: dateDebut })));
-        setHorairesJour2Data(horairesJour2Data.map(h => ({ ...h, date: dateFin })));
-    }, [dateDebut, dateFin]);
-    const handleDateChange = (e) => {
-        setSelectedDate(e.target.value);
+  
+    const flexibleData = {
+      benevole_id: userId,
+      horaire: horairesToSend,
     };
-
-    const handleAddStand = (heure, standId) => {
-        const updateHoraires = (horaires) => {
-            return horaires.map(horaire => {
-                if (horaire.heure === heure) {
-                    const updatedListeStand = horaire.liste_stand.includes(standId)
-                        ? horaire.liste_stand
-                        : [...horaire.liste_stand, standId];
-                    
-                    return { ...horaire, liste_stand: updatedListeStand };
-                }
-                return horaire;
-            });
-        };
-    
-        if (selectedDate === "both") {
-            setHorairesJour1Data(updateHoraires(horairesJour1Data));
-            setHorairesJour2Data(updateHoraires(horairesJour2Data));
-        } else {
-            const horairesToUpdate = selectedDate === dateDebut ? horairesJour1Data : horairesJour2Data;
-            const updatedHoraires = updateHoraires(horairesToUpdate);
-            selectedDate === dateDebut ? setHorairesJour1Data(updatedHoraires) : setHorairesJour2Data(updatedHoraires);
-        }
-    };
-    async function fetchFlexibleData() {
-        try {
-            const response = await fetch(`http://localhost:3500/flexible/benevole/${userId}`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-            });
-            if (response.ok) {
-                const flexible = await response.json(); // Remarquez que c'est maintenant 'flexible', pas 'flexibles'
-                
-                // Vérifiez si 'flexible' est non null et a une propriété 'horaire'
-                if (flexible && flexible.horaire) {
-                    const horaires = flexible.horaire; // Pas besoin d'utiliser .map() et .flat()
-                    const stands = horaires.flatMap((horaire) => horaire.liste_stand.map(stand => ({
-                        id: stand._id, 
-                        nom_stand: stand.nom_stand, 
-                        date: formatDate(horaire.date), 
-                        heure: horaire.heure
-                    })));
-                    setFlexibleInfo(stands);
-                } else {
-                    console.log("Aucun flexible trouvé pour cet utilisateur");
-                }
-            } else {
-                console.error("Erreur lors de la récupération des stands");
-            }
-        } catch (error) {
-            console.error("Erreur de connexion au serveur", error); // ligne 231
-        }
+  
+    try {
+      const response = await fetch(`http://localhost:3500/flexible`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(flexibleData),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Erreur lors de la création du flexible");
+      }
+  
+      // Affichage de la popup de succès
+      setSuccessMessage("Votre flexibilité a été enregistrée avec succès !");
+      setErrorMessage(""); // S'assurer que le message d'erreur est vide
+      setPopupVisible(true); // Afficher la popup
+  
+      // Réinitialisation des états après succès
+      setListeSelectedStands({});
+      setSelectedDate("");
+      setSelectedHeure("");
+      setSelectedStand("");
+      await fetchFlexibleData();
+    } catch (error) {
+      // Affichage de la popup d'erreur
+      setErrorMessage("Erreur de connexion au serveur : " + error.message);
+      setSuccessMessage(""); // S'assurer que le message de succès est vide
+      setPopupVisible(true); // Afficher la popup
     }
-    
-    useEffect(() => {
-        if (userId) {
-            fetchFlexibleData();
-        }
-    }, [userId]);
+  };  
 
+  const handleSelectChange = (heure, standId) => {
+    const stand = stands.find((s) => s._id === standId);
+    if (stand) {
+      setSelectValues({ ...selectValues, [heure]: stand.nom_stand });
+      handleAddStand(heure, stand);
+    }
+  };
 
-    
-    return (
-        <div className="button-flexible">
-            <Button onClick={handleOpenModal}>Devenir flexible</Button>
-            {modalOpen && (
-                <Modal onClose={() => setModalOpen(false)} valeurDuTitre={"Choisissez vos stands flexibles"}>
-                    <div>
-                        <p className="inscription">Voici vos inscriptions :</p>
-                        {flexibleInfo.length > 0 ? (
-                            <ul>
-                                {flexibleInfo.map((stand, index) => (
-                                    <li key={index}>
-                                        Nom du stand: {stand.nom_stand}, Date:{stand.date}, Horaire: {stand.heure}
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p>Vous n'êtes inscrit à aucun stand.</p>
-                        )}
-                    </div>
+  async function fetchStandsData() {
+    console.log(selectedDate);
+    const url =
+      selectedDate === "both"
+        ? `http://localhost:3500/stands/date/both`
+        : `http://localhost:3500/stands/date/${selectedDate}`;
 
-                    <div>
-                        {selections.map((sel, index) => (
-                            <div key={index}>
-                                <p>Date: {sel.date}, Heure: {sel.heure}</p>
-                                <ul>
-                                    {sel.liste_stand.map((stand, idx) => <li key={idx}>{stand.id_stand}</li>)}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
-                    
-                    <RadioButton
-                        options={radioOptions}
-                        name="dateSelection"
-                        selectedValue={selectedDate}
-                        onChange={handleDateChange}
-                    />
-                    <div>
-                    <h3>Vos sélections d'horaires et de stands pour {formatDate(selectedDate === "both" ? dateDebut : selectedDate)}:</h3>
-                    {(selectedDate === dateDebut || selectedDate === "both") && horairesJour1Data.map((horaire, index) => {
-                        if (horaire.liste_stand.length > 0) {
-                            return (
-                                <div key={index}>
-                                    <p>Date: {formatDate(horaire.date)}, Horaire: {formatHoraire(horaire.heure)}</p>
-                                    <ul>
-                                        {horaire.liste_stand.map((standId, idx) => {
-                                            const stand = stands.find(s => s._id === standId);
-                                            return <li key={idx}>{stand ? stand.nom_stand : "Stand non trouvé"}</li>;
-                                        })}
-                                    </ul>
-                                </div>
-                            );
-                        }
-                        return null;
-                    })}
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.ok) {
+        let standsData = await response.json();
+        // Filtrer pour exclure le stand 'Animation Jeu'
+        standsData = standsData.filter(
+          (stand) => stand.nom_stand !== "Animation jeu"
+        );
+        setStands(standsData);
+      } else {
+        console.error("Erreur lors de la récupération des stands");
+      }
+    } catch (error) {
+      console.error("Erreur de connexion au serveur", error);
+    }
+  }
 
-                    {selectedDate === "both" && <h3>Vos sélections d'horaires et de stands pour {formatDate(dateFin)}:</h3>}
-                    {(selectedDate === dateFin || selectedDate === "both") && horairesJour2Data.map((horaire, index) => {
-                        if (horaire.liste_stand.length > 0) {
-                            return (
-                                <div key={index}>
-                                    <p>Date: {formatDate(horaire.date)}, Horaire: {formatHoraire(horaire.heure)}</p>
-                                    <ul>
-                                        {horaire.liste_stand.map((standId, idx) => {
-                                            const stand = stands.find(s => s._id === standId);
-                                            return <li key={idx}>{stand ? stand.nom_stand : "Stand non trouvé"}</li>;
-                                        })}
-                                    </ul>
-                                </div>
-                            );
-                        }
-                        return null;
-                    })}
-                </div>
-                    {heureData && heureData.length > 0 && heureData.map((heureData, index) => (
-                        <div className="horaire-row" key={index}>
-                        <Champ label="Horaires :">
-                        <input
-                            className="input"
-                            type="text"
-                            value={formatHoraire(heureData.heure)}
-                            readOnly
-                        />
-                        </Champ>
-                        <Champ>
-                            <select
-                                onChange={(e) =>{
-                                    const standId = e.target.value;
-                                    const heure = heureData.heure;
-                                    handleAddStand(heure, standId);
-                                }}
-                                defaultValue=""
-                                className="input"
-                            >
-                                <option value="" disabled>
-                                Sélectionnez un stand
-                                </option>
-                                {stands.map((stand, index) => (
-                                <option key={index} value={stand._id}>
-                                    {stand.nom_stand} ({formatDate(stand.date)})
-                                </option>
-                                ))}
-                            </select>
-                        </Champ>
-                        </div>
-                    ))}
-                    <form onSubmit={handleSubmit}>
-                        <p className="inscription">{successMessage || errorMessage}</p>
-                        <br />
-                        <Button type="submit">Soumettre</Button>
-                    </form>
-                </Modal>
-            )}
+  useEffect(() => {
+    if (selectedDate) {
+      fetchStandsData();
+    }
+  }, [selectedDate]);
 
-        </div>
+  useEffect(() => {
+    // Mettre à jour horairesJour1Data et horairesJour2Data
+    setHorairesJour1Data(
+      horairesJour1Data.map((h) => ({ ...h, date: dateDebut }))
     );
+    setHorairesJour2Data(
+      horairesJour2Data.map((h) => ({ ...h, date: dateFin }))
+    );
+  }, [dateDebut, dateFin]);
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value);
+  };
+
+  const handleAddStand = (heure, stand) => {
+    setListeSelectedStands((prevSelectedStand) => {
+      const updatedSelectedStands = { ...prevSelectedStand };
+      if (!updatedSelectedStands[heure]) {
+        updatedSelectedStands[heure] = [];
+      }
+
+      const standIndex = updatedSelectedStands[heure].findIndex(
+        (s) => s._id === stand._id
+      );
+
+      if (standIndex > -1) {
+        // Si la zone est déjà sélectionnée, la retirer
+        updatedSelectedStands[heure].splice(standIndex, 1);
+      } else {
+        // Sinon, l'ajouter à la liste des zones sélectionnées
+        updatedSelectedStands[heure].push(stand);
+      }
+
+      return updatedSelectedStands;
+    });
+  };
+
+  async function fetchFlexibleData() {
+    try {
+      const response = await fetch(
+        `http://localhost:3500/flexible/benevole/${userId}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (response.ok) {
+        const flexible = await response.json(); // Remarquez que c'est maintenant 'flexible', pas 'flexibles'
+
+        // Vérifiez si 'flexible' est non null et a une propriété 'horaire'
+        if (flexible && flexible.horaire) {
+          const horaires = flexible.horaire; // Pas besoin d'utiliser .map() et .flat()
+          const stands = horaires.flatMap((horaire) =>
+            horaire.liste_stand.map((stand) => ({
+              id: stand._id,
+              nom_stand: stand.nom_stand,
+              date: formatDate(horaire.date),
+              heure: horaire.heure,
+            }))
+          );
+          setFlexibleInfo(stands);
+        } else {
+          console.log("Aucun flexible trouvé pour cet utilisateur");
+        }
+      } else {
+        console.error("Erreur lors de la récupération des stands");
+      }
+    } catch (error) {
+      console.error("Erreur de connexion au serveur", error);
+    }
+  }
+
+  useEffect(() => {
+    if (userId) {
+      fetchFlexibleData();
+    }
+  }, [userId]);
+
+  return (
+    <div className="button-flexible">
+      <Bouton onClick={handleOpenModal}>Devenir flexible</Bouton>
+      {modalOpen && (
+        <Modal
+          onClose={() => setModalOpen(false)}
+          valeurDuTitre={"Choisissez vos stands flexibles"}
+        >
+          <RadioButton
+            options={radioOptions}
+            name="dateSelection"
+            selectedValue={selectedDate}
+            onChange={handleDateChange}
+          />
+
+          <div className="planning-container">
+            {horaires.map((horaire, index) => (
+              <div key={index} className="planning-row">
+                <div className="planning-time">{horaire}</div>
+                <div className="selection-container">
+                  <Champ>
+                    <select
+                      value={selectValues[horaire] || ""}
+                      onChange={(e) =>
+                        handleSelectChange(horaire, e.target.value)
+                      }
+                      className="input"
+                    >
+                      <option value="">Sélectionnez</option>
+                      {stands.map((stand) => (
+                        <option key={stand._id} value={stand._id}>
+                          {stand.nom_stand}
+                        </option>
+                      ))}
+                    </select>
+                  </Champ>
+                  <ul className="selected-zones-list">
+                    {listeSelectedStands[horaire]?.map((stand) => (
+                      <li key={stand._id} className="selected-zone-item">
+                        {stand.nom_stand}
+                        <button
+                          type="button"
+                          onClick={() => handleAddStand(horaire, stand)}
+                          className="remove-zone-button"
+                        >
+                          X
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Bouton Soumettre */}
+          <div className="button_container">
+            <Bouton onClick={handleSubmit} type="submit">
+              Soumettre
+            </Bouton>
+          </div>
+        </Modal>
+      )}
+      {errorMessage && isPopupVisible && (
+        <FenetrePopup message={errorMessage} type="error" onClose={hidePopup} />
+      )}
+
+      {successMessage && isPopupVisible && (
+        <FenetrePopup
+          message={successMessage}
+          type="success"
+          onClose={hidePopup}
+        />
+      )}
+    </div>
+  );
 }
 
 export default Flexible;

@@ -1,84 +1,146 @@
+@font-face {
+  font-family: "Toma";
+  src: url("../../../Police/Toma-Regular.ttf") format("truetype");
+}
+
+h2 {
+  font-size: 18px;
+  margin-left: 5%;
+  font-family: "Toma";
+  font-weight: normal;
+  color : #1D244B;
+}
+
 .flexible-header {
-    display: flex;
-    justify-content: space-around;
-  }
-  
-  .flexible-body {
-    padding: 16px;
-  }
-  
-  .flexible-row {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid rgba(170, 173, 191, 0.5);
-  }
-  .flexible-row:last-child {
-    border-bottom: none;
-  }
-  
-  .flexible-time {
-    min-width: 50px;
-    font-weight: bold;
-    margin-left: 15px;
-    margin-top: 15px;
-    margin-bottom: 15px;
-  }
-  
-  .flexible-stands {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  
-  .flexible-stand {
-    padding: 4px 8px;
-    flex-grow: 1;
-    border-radius: 4px;
-    text-align: center; 
-  }
-  
-  .button-stand {
-    background-color: rgba(170, 173, 191, 0.5);
-    margin: 1%;
-    border-radius: 10px;
-    padding: 1%;
-    transition: border-color 0.3s; 
-    border: 2px solid transparent;
+  display: flex;
+  justify-content: space-around;
+}
+
+.flexible-body {
+  padding: 16px;
+}
+
+.flexible-row {
+  display: flex;
+  align-items: center;
+  margin: 2% 5%;
+  border-bottom: 0.5px solid #1d244b;
+  height: 40px;
+}
+.flexible-row:last-child {
+  border-bottom: none;
+}
+
+.flexible-time {
+  min-width: 50px;
+  font-weight: bold;
+  margin-left: 15px;
+}
+
+.flexible-stands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 2%;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Assure que les éléments ne débordent pas de la div */
+}
+
+.flexible-stand-full {
+  background-color: rgba(170, 173, 191, 0.5);
+  flex-grow: 1; /* Prend toute la largeur disponible */
+  border-radius: 10px;
+  padding: 1%;
+  text-align: center;
+}
+
+.flexible-stand {
+  background-color: rgba(170, 173, 191, 0.5);
+  flex: 1; /* Permet à chaque stand de prendre une part égale de l'espace disponible */
+  margin: 1%;
+  border-radius: 10px;
+  padding: 1%;
+  text-align: center;
+  min-width: 0; /* Empêche le texte de déborder */
+}
+
+.button-stand {
+  width: 100%; /* Mettez à jour la largeur ici */
+  height: 30px; /* Ajustez la hauteur pour correspondre à celle des select si nécessaire */
+  border: 2px solid transparent;
+  border-radius: 10px;
+  outline: none;
+  background-color: rgba(170, 173, 191, 0.5);
+  color: #0d0c22;
+  transition: 0.5s ease;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+  margin-left: 5%;
 }
 
 .button-stand.selected-stand {
-    border-color: #454C8B; 
-  }
+  border-color: #454c8b;
+}
 
 .button-stand:focus,
 .button-stand:hover {
-    outline: none;
-    border-color: #454C8B; 
+  outline: none;
+  border-color: #454c8b;
 }
 
-.flexible-details{
-    display: none;
+.flexible-details {
+  display: none;
 }
 
 .flexible-item {
-    cursor: pointer;
-    margin-bottom: 10px; 
-  }
+  cursor: pointer;
+  margin-bottom: 10px;
+}
 
 .flexible-item.selected .flexible-details {
-    display: block;
-  }
+  display: block;
+}
 
-  .boutons{
-    text-align: center;
-    margin: center;
-  }
+.boutons {
+  display: flex; /* Ajoutez cette ligne pour activer Flexbox */
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+}
 
-  .bouton-soumettre{
-    margin-right: 10px;
-  }
+.red-button {
+  background-color: red;
+  color: white;
+}
 
-  .red-button {
-    background-color: red;
-    color: white;
-  }
+.stand-list {
+  padding: 0; /* Supprime la marge intérieure */
+  margin-left: 7%;
+  font-size: 15px;
+  font-family: "Toma";
+}
+
+.stand-flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Cela répartit l'espace également entre les éléments */
+}
+
+.stand-info {
+  flex-basis: 20%; /* Ajustez selon le besoin pour contrôler la largeur du nom du stand */
+  margin-right: 10px; /* Espace entre le nom du stand et la jauge */
+}
+
+.jauge-pointer-cursor {
+  flex-basis: 80%; /* Ajustez selon le besoin pour la largeur de la jauge */
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+
+.zone-info {
+  flex-basis: 30%; /* Ajustez selon le besoin pour contrôler la largeur du nom du stand */
+  margin-right: 10px; /* Espace entre le nom du stand et la jauge */
+}

@@ -117,7 +117,7 @@ const ParticiperZone = ({ zone, creneau, closeModal }) => {
       </Champ>
 
       <Champ label="Liste des bénévoles inscrits:">
-        {zone && zone.liste_benevole && zone.liste_benevole.length === 0 ? (
+        {creneau && creneau.liste_benevole && creneau.liste_benevole.length === 0 ? (
           <input
             type="text"
             className="input"
@@ -125,7 +125,7 @@ const ParticiperZone = ({ zone, creneau, closeModal }) => {
             readOnly
           />
         ) : (
-          zone?.liste_benevole?.map((benevole, index) => (
+          creneau?.liste_benevole?.map((benevole, index) => (
             <input
               key={index}
               type="text"

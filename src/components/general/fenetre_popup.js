@@ -6,7 +6,7 @@ const FenetrePopup = ({ message, type, onClose }) => {
 
   return (
     <div className={popupClasses}>
-      <p>{message}</p>
+      <p className="popup-msg">{message}</p>
       <button className="closeButton" onClick={onClose}>
         X
       </button>
