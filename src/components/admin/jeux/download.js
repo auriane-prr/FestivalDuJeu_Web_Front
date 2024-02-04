@@ -28,7 +28,7 @@ function Download() {
   useEffect(() => {
     // Exemple d'appel API pour récupérer les données du festival
     const fetchFestivalDates = async () => {
-      const result = await fetch(`http://localhost:3500/festival/latest`);
+      const result = await fetch(`https://festivaldujeuback.onrender.com/festival/latest`);
       const body = await result.json();
       setDateDebut(body.date_debut);
       setDateFin(body.date_fin);
@@ -85,7 +85,7 @@ function Download() {
       const formData = new FormData();
       formData.append("file", file);
       // Ensuite, envoyez le fichier Excel au serveur pour créer les jeux
-      const responseJeu = await fetch(`http://localhost:3500/jeux/upload`, {
+      const responseJeu = await fetch(`https://festivaldujeuback.onrender.com/jeux/upload`, {
         method: "POST",
         body: formData,
       });
@@ -108,7 +108,7 @@ function Download() {
       const horaire = {
         horaireCota: horairesData,
       };
-      const response = await fetch("http://localhost:3500/zoneBenevole/addHoraires", {
+      const response = await fetch("https://festivaldujeuback.onrender.com/zoneBenevole/addHoraires", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -131,7 +131,7 @@ function Download() {
       const horaire = {
         horaireCota: horairesData,
       };
-      const response = await fetch("http://localhost:3500/zonePlan/addHoraires", {
+      const response = await fetch("https://festivaldujeuback.onrender.com/zonePlan/addHoraires", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -154,7 +154,7 @@ function Download() {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const responseAddJeu = await fetch(`http://localhost:3500/zoneBenevole/addJeux`, {
+      const responseAddJeu = await fetch(`https://festivaldujeuback.onrender.com/zoneBenevole/addJeux`, {
         method: "POST",
         body: formData,
       });
@@ -170,7 +170,7 @@ function Download() {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const responseAddJeu = await fetch(`http://localhost:3500/zonePlan/addJeux`, {
+      const responseAddJeu = await fetch(`https://festivaldujeuback.onrender.com/zonePlan/addJeux`, {
         method: "POST",
         body: formData,
       });
@@ -190,7 +190,7 @@ function Download() {
       formDataZone1.append("date", dateDebut);
 
       // Envoie les deux instances au serveur
-      const response1 = await fetch(`http://localhost:3500/zoneBenevole/jour1`, {
+      const response1 = await fetch(`https://festivaldujeuback.onrender.com/zoneBenevole/jour1`, {
         method: "POST",
         body: formDataZone1,
       });
@@ -199,7 +199,7 @@ function Download() {
       formDataZone2.append("file", file);
       formDataZone2.append("date", dateFin);
 
-      const response2 = await fetch(`http://localhost:3500/zoneBenevole/jour2`, {
+      const response2 = await fetch(`https://festivaldujeuback.onrender.com/zoneBenevole/jour2`, {
         method: "POST",
         body: formDataZone2,
       });
@@ -241,7 +241,7 @@ function Download() {
       formDataZone1.append("date", dateDebut);
 
       // Envoie les deux instances au serveur
-      const response1 = await fetch(`http://localhost:3500/zonePlan/jour1`, {
+      const response1 = await fetch(`https://festivaldujeuback.onrender.com/zonePlan/jour1`, {
         method: "POST",
         body: formDataZone1,
       });
@@ -250,7 +250,7 @@ function Download() {
       formDataZone2.append("file", file);
       formDataZone2.append("date", dateFin);
 
-      const response2 = await fetch(`http://localhost:3500/zonePlan/jour2`, {
+      const response2 = await fetch(`https://festivaldujeuback.onrender.com/zonePlan/jour2`, {
         method: "POST",
         body: formDataZone2,
       });

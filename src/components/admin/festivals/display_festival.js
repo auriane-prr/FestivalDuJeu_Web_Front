@@ -18,7 +18,7 @@ function DisplayFestival() {
   useEffect(() => {
     const fetchFestivals = async () => {
       try {
-        const response = await fetch("http://localhost:3500/festival");
+        const response = await fetch("https://festivaldujeuback.onrender.com/festival");
         if (response.ok) {
           const fetchedFestivals = await response.json();
           fetchedFestivals.sort(
@@ -35,7 +35,7 @@ function DisplayFestival() {
 
     const fetchLatestFestival = async () => {
       try {
-        const response = await fetch("http://localhost:3500/festival/latest");
+        const response = await fetch("https://festivaldujeuback.onrender.com/festival/latest");
         if (response.ok) {
           const latestFestival = await response.json();
           console.log(latestFestival);

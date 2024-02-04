@@ -30,6 +30,7 @@ function DisplayStand() {
   const [loading, setLoading] = useState(true);
   const [referentsLoaded, setReferentsLoaded] = useState(false);
   const [addingReferent, setAddingReferent] = useState(false);
+  const [hasStandDataChanged, setHasStandDataChanged] = useState(false);
 
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -60,7 +61,9 @@ function DisplayStand() {
   }, []);
 
   const fetchFestivalData = async () => {
-    const response = await fetch(`http://localhost:3500/festival/latest`);
+    const response = await fetch(
+      `https://festivaldujeuback.onrender.com/festival/latest`
+    );
     if (!response.ok) throw new Error("Failed to fetch festival data");
     return response.json();
   };
@@ -77,13 +80,17 @@ function DisplayStand() {
   };
 
   const fetchStandsByDate = async (date) => {
-    const response = await fetch(`http://localhost:3500/stands/date/${date}`);
+    const response = await fetch(
+      `https://festivaldujeuback.onrender.com/stands/date/${date}`
+    );
     if (!response.ok) throw new Error("Failed to fetch stands by date");
     return response.json();
   };
 
   const fetchStandDetails = async (standId) => {
-    const response = await fetch(`http://localhost:3500/stands/${standId}`);
+    const response = await fetch(
+      `https://festivaldujeuback.onrender.com/stands/${standId}`
+    );
     if (!response.ok) throw new Error("Failed to fetch stand details");
     setCurrentStandDetails(await response.json());
     setReferentsLoaded(true); // Indique que les données des référents sont chargées
@@ -132,7 +139,7 @@ function DisplayStand() {
 
   const fetchStandsData = async () => {
     try {
-      let url = "http://localhost:3500/stands";
+      let url = "https://festivaldujeuback.onrender.com/stands";
       const response = await fetch(url);
       if (response.ok) {
         let standsData = await response.json();
@@ -164,7 +171,7 @@ function DisplayStand() {
   const fetchNonReferentBenevoles = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3500/benevole/non-referent"
+        "https://festivaldujeuback.onrender.com/benevole/non-referent"
       );
       if (response.ok) {
         const data = await response.json();
@@ -251,6 +258,7 @@ function DisplayStand() {
     const updatedStands = [...stands];
     updatedStands[currentStandIndex].horaireCota[index].nb_benevole = value;
     setStands(updatedStands);
+    setHasStandDataChanged(true); // Ajoutez cette ligne
   };
 
   function formatDate(date) {
@@ -287,7 +295,7 @@ function DisplayStand() {
         return;
       }
 
-      const url = `http://localhost:3500/stands/removeReferent/${currentStand._id}/${referentId}`;
+      const url = `https://festivaldujeuback.onrender.com/stands/removeReferent/${currentStand._id}/${referentId}`;
       console.log("Sending DELETE request to:", url);
 
       const response = await fetch(url, {
@@ -341,72 +349,57 @@ function DisplayStand() {
     }
 
     try {
-      // Vérifiez si seul le champ "referent" a été modifié
+      // Si seul le champ "referent" a été modifié ou si aucune autre donnée du stand n'a changé
       if (
-        JSON.stringify(currentStand) ===
-        JSON.stringify(stands[currentStandIndex])
+        !hasStandDataChanged &&
+        JSON.stringify(currentStand.referents) ===
+          JSON.stringify(stands[currentStandIndex].referents)
       ) {
-        // Seul le champ "referent" a été modifié, fermez le mode édition
+        // Fermez le mode édition et affichez le message de succès
         setEditMode(false);
-        setSuccessMessage("Changements enregistrés avec succès");
+        setSuccessMessage("Référents mis à jour avec succès");
         setErrorMessage(null);
         setPopupVisible(true);
         return;
       }
 
+      // Si d'autres données du stand ont été modifiées ou si hasStandDataChanged est true
       // Mettez à jour l'état avec les modifications
       const updatedStands = [...stands];
-      updatedStands[currentStandIndex] = currentStand;
+      updatedStands[currentStandIndex] = { ...currentStand };
       setStands(updatedStands);
 
       // Mettez à jour l'état des détails du stand
-      setCurrentStandDetails(currentStand);
+      setCurrentStandDetails(updatedStands[currentStandIndex]);
 
-      if (currentStand._id) {
-        // Si le stand a un ID, il s'agit d'une mise à jour
-        // Effectuez la mise à jour sur le serveur avec les données mises à jour
-        const response = await fetch(
-          `http://localhost:3500/stands/${currentStand._id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(currentStand),
-          }
-        );
+      // Construire l'objet de demande
+      const standToUpdate = {
+        ...updatedStands[currentStandIndex],
+        horaireCota: [...updatedStands[currentStandIndex].horaireCota],
+      };
 
-        if (response.ok) {
-          // Mise à jour réussie, afficher la pop-up de succès
-          setEditMode(false); // Désactiver le mode édition
-          setSuccessMessage("Modifications enregistrées avec succès");
-          setErrorMessage(null); // Réinitialiser le message d'erreur
-          setPopupVisible(true); // Afficher la pop-up de succès
-        } else {
-          // La requête a échoué, afficher une erreur
-          throw new Error("Échec de l'enregistrement des modifications");
-        }
-      } else {
-        // Si le stand n'a pas d'ID, il s'agit d'une création
-        // Effectuez l'ajout du stand sur le serveur avec les données actuelles
-        const response = await fetch(`http://localhost:3500/stands`, {
-          method: "POST",
+      // Effectuez la mise à jour sur le serveur avec les données mises à jour
+      const response = await fetch(
+        `https://festivaldujeuback.onrender.com/stands/${currentStand._id}`,
+        {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(currentStand),
-        });
-
-        if (response.ok) {
-          // Ajout réussi, afficher la pop-up de succès
-          setEditMode(false); // Désactiver le mode édition
-          setSuccessMessage("Stand ajouté avec succès");
-          setErrorMessage(null); // Réinitialiser le message d'erreur
-          setPopupVisible(true); // Afficher la pop-up de succès
-        } else {
-          // La requête a échoué, afficher une erreur
-          throw new Error("Échec de l'ajout du stand");
+          body: JSON.stringify(standToUpdate),
         }
+      );
+
+      if (response.ok) {
+        // Mise à jour réussie, afficher la pop-up de succès
+        setEditMode(false); // Désactiver le mode édition
+        setSuccessMessage("Modifications enregistrées avec succès");
+        setErrorMessage(null); // Réinitialiser le message d'erreur
+        setPopupVisible(true); // Afficher la pop-up de succès
+        setHasStandDataChanged(false); // Réinitialiser le drapeau de suivi des modifications
+      } else {
+        // La requête a échoué, afficher une erreur
+        throw new Error("Échec de l'enregistrement des modifications");
       }
     } catch (error) {
       // Gérer les erreurs de la requête ou les erreurs lancées manuellement
@@ -421,7 +414,7 @@ function DisplayStand() {
   const handleDeleteStand = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3500/stands/${currentStand._id}`,
+        `https://festivaldujeuback.onrender.com/stands/${currentStand._id}`,
         {
           method: "DELETE",
         }
@@ -489,7 +482,7 @@ function DisplayStand() {
     );
     try {
       const response = await fetch(
-        `http://localhost:3500/stands/referent/${currentStand._id}/${selectedBenevole.value}`,
+        `https://festivaldujeuback.onrender.com/stands/referent/${currentStand._id}/${selectedBenevole.value}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -647,6 +640,15 @@ function DisplayStand() {
                                   value={referent.pseudo || ""}
                                   readOnly
                                 />
+                                {/* Bouton 'X' pour supprimer le référent */}
+                                <button
+                                  className="supp-button"
+                                  onClick={(event) => {
+                                    handleRemoveReferent(referent._id, event);
+                                  }}
+                                >
+                                  X
+                                </button>
                               </div>
                             )
                           )}

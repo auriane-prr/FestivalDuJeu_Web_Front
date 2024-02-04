@@ -47,7 +47,7 @@ function AdminParametre() {
 
   const fetchFestivalData = async () => {
     try {
-      const response = await fetch("http://localhost:3500/festival/latest");
+      const response = await fetch("https://festivaldujeuback.onrender.com/festival/latest");
       if (response.ok) {
         const data = await response.json();
         setLatestFestivalName(data.nom); // Supposons que la propriété s'appelle 'nom'
@@ -67,7 +67,7 @@ function AdminParametre() {
   const fetchNonReferentBenevoles = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3500/benevole/non-referent"
+        "https://festivaldujeuback.onrender.com/benevole/non-referent"
       );
       if (response.ok) {
         const data = await response.json();
@@ -89,10 +89,10 @@ function AdminParametre() {
     if (festivalData) {
       const { date_debut, date_fin } = festivalData;
       try {
-        const responseDebut = await fetch(`http://localhost:3500/stands/date/${date_debut}`);
+        const responseDebut = await fetch(`https://festivaldujeuback.onrender.com/stands/date/${date_debut}`);
         const dataDebut = await responseDebut.ok ? await responseDebut.json() : [];
   
-        const responseFin = await fetch(`http://localhost:3500/stands/date/${date_fin}`);
+        const responseFin = await fetch(`https://festivaldujeuback.onrender.com/stands/date/${date_fin}`);
         const dataFin = await responseFin.ok ? await responseFin.json() : [];
   
         const mergedData = [...dataDebut, ...dataFin];
@@ -103,7 +103,7 @@ function AdminParametre() {
   
         // Récupérer les informations des référents en parallèle
         const referentsPromises = referentsIds.map(id =>
-          fetch(`http://localhost:3500/benevole/id/${id}`).then(response => response.json())
+          fetch(`https://festivaldujeuback.onrender.com/benevole/id/${id}`).then(response => response.json())
         );
   
         const referents = await Promise.all(referentsPromises);
@@ -116,7 +116,7 @@ function AdminParametre() {
 
   const fetchZones = async () => {
     try {
-      const response = await fetch("http://localhost:3500/zoneBenevole/");
+      const response = await fetch("https://festivaldujeuback.onrender.com/zoneBenevole/");
       if (response.ok) {
         const data = await response.json();
         setZones(data);

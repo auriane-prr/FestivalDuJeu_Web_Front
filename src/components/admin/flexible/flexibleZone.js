@@ -22,7 +22,7 @@ function FlexibleZone() {
   useEffect(() => {
     // Exemple d'appel API pour récupérer les données du festival
     const fetchData = async () => {
-      const result = await fetch("http://localhost:3500/festival/latest");
+      const result = await fetch("https://festivaldujeuback.onrender.com/festival/latest");
       const body = await result.json();
       setDateDebut(body.date_debut);
       setDateFin(body.date_fin);
@@ -64,7 +64,7 @@ function FlexibleZone() {
 
   // Récupérez la liste des bénévoles flexibleZones au chargement du composant
   useEffect(() => {
-    fetch("http://localhost:3500/flexibleZone")
+    fetch("https://festivaldujeuback.onrender.com/flexibleZone")
       .then((response) => response.json())
       .then((data) => {
         setFlexibleZones(data);
@@ -96,7 +96,7 @@ function FlexibleZone() {
     setSelectedZones({});
 
     // Récupérez les informations du bénévole flexibleZone en fonction de son ID
-    fetch(`http://localhost:3500/flexibleZone/benevole/${flexibleZoneId}`)
+    fetch(`https://festivaldujeuback.onrender.com/flexibleZone/benevole/${flexibleZoneId}`)
       .then((response) => response.json())
       .then((data) => {
         setSelectedFlexibleZone(data);
@@ -113,7 +113,7 @@ function FlexibleZone() {
   const fetchZoneDetails = async (zoneBenevoleId, horaire) => {
     try {
       const response = await fetch(
-        `http://localhost:3500/zoneBenevole/${zoneBenevoleId}`
+        `https://festivaldujeuback.onrender.com/zoneBenevole/${zoneBenevoleId}`
       );
       const zoneBenevoleData = await response.json();
       if (!response.ok)
@@ -193,7 +193,7 @@ function FlexibleZone() {
     try {
       for (const zoneBenevoleInfo of selectedZoneArray) {
         const response = await fetch(
-          `http://localhost:3500/zoneBenevole/inscrire/${zoneBenevoleInfo.zoneBenevoleId}/${zoneBenevoleInfo.horaire}/${zoneBenevoleInfo.idBenevole}`,
+          `https://festivaldujeuback.onrender.com/zoneBenevole/inscrire/${zoneBenevoleInfo.zoneBenevoleId}/${zoneBenevoleInfo.horaire}/${zoneBenevoleInfo.idBenevole}`,
           {
             method: "PUT",
             headers: {
@@ -226,7 +226,7 @@ function FlexibleZone() {
         "Tous les horaires ont été attribués, suppression du flexibleZone..."
       );
       const reponse = await fetch(
-        `http://localhost:3500/flexibleZone/${selectedFlexibleZone._id}/${selectedDate}`,
+        `https://festivaldujeuback.onrender.com/flexibleZone/${selectedFlexibleZone._id}/${selectedDate}`,
         {
           method: "DELETE",
         }
