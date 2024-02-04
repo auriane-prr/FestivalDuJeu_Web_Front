@@ -611,6 +611,25 @@ function DisplayStand() {
                 <Champ label="Référents :">
                   {editMode && (
                     <div className="edit-mode-container">
+                      {/* Condition pour afficher le sélecteur de bénévoles non-référents au-dessus des référents existants si showSelector est vrai et s'il y a des référents */}
+                      {showSelector &&
+                        currentStandDetails?.referents.length > 0 && (
+                          <select
+                            className="input"
+                            onChange={handleSelectBenevole}
+                            value={
+                              selectedBenevole ? selectedBenevole.value : ""
+                            }
+                          >
+                            <option value="">Sélectionner un bénévole</option>
+                            {nonReferentBenevoles.map((benevole, index) => (
+                              <option key={index} value={benevole._id}>
+                                {benevole.pseudo}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+
                       {/* Condition pour afficher le sélecteur à la place de "Pas de référents" si aucun référent n'est présent et que showSelector est vrai */}
                       {showSelector &&
                       currentStandDetails?.referents.length === 0 ? (
@@ -640,12 +659,11 @@ function DisplayStand() {
                                   value={referent.pseudo || ""}
                                   readOnly
                                 />
-                                {/* Bouton 'X' pour supprimer le référent */}
                                 <button
                                   className="supp-button"
-                                  onClick={(event) => {
-                                    handleRemoveReferent(referent._id, event);
-                                  }}
+                                  onClick={(event) =>
+                                    handleRemoveReferent(referent._id, event)
+                                  }
                                 >
                                   X
                                 </button>
@@ -663,12 +681,10 @@ function DisplayStand() {
                         </>
                       )}
 
-                      {/* Bouton pour afficher le sélecteur ou confirmer l'ajout */}
                       <div className="add-btn-container">
                         <button
                           onClick={() => {
                             if (showSelector) {
-                              // Appeler la fonction handleAddReferent() ici
                               handleAddReferent();
                             }
                             setShowSelector(!showSelector);

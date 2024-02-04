@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/planning.css';
+import Titre from './titre';
 
 function Planning({ date }) {
   const [planningBenevole, setPlanningBenevole] = useState([]);
@@ -46,6 +47,7 @@ function Planning({ date }) {
               return dataStands;
             })
             .catch(() => []);
+
             const zonesPromise = fetch(`https://festivaldujeuback.onrender.com/zoneBenevole/benevole/${userid}`)
             .then(response => {
               if (!response.ok) {
@@ -95,6 +97,8 @@ function Planning({ date }) {
 
   return (
     <div>
+    <Titre texte="Vous n'ête pas référent à cette date" />
+    <h3>Planning</h3>
     <div className="planning-container">
       {horaires.map((horaire, index) => (
         <div key={index} className="planning-row">
