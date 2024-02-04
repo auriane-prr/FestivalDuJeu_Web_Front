@@ -23,7 +23,7 @@ function DisplayJauges() {
         // S'assurer qu'une date est bien sélectionnée
         try {
           const response = await fetch(
-            `http://localhost:3500/stands/date/${selectedDate}`
+            `https://festivaldujeuback.onrender.com/stands/date/${selectedDate}`
           );
           const data = await response.json();
           setStands(data); // Mettre à jour l'état avec les stands récupérés pour cette date
@@ -42,7 +42,7 @@ function DisplayJauges() {
   useEffect(() => {
     // Exemple d'appel API pour récupérer les dates du festival
     const fetchFestivalData = async () => {
-      const result = await fetch(`http://localhost:3500/festival/latest`);
+      const result = await fetch(`https://festivaldujeuback.onrender.com/festival/latest`);
       const body = await result.json();
       setDateDebut(body.date_debut);
       setDateFin(body.date_fin);

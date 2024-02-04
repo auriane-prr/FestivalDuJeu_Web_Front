@@ -22,7 +22,7 @@ const ParticiperZone = ({ zone, creneau, closeModal }) => {
       const token = localStorage.getItem("authToken");
       const pseudo = localStorage.getItem("pseudo");
       const response = await fetch(
-        `http://localhost:3500/benevole/pseudo/${pseudo}`,
+        `https://festivaldujeuback.onrender.com/benevole/pseudo/${pseudo}`,
         {
           method: "GET",
           headers: {
@@ -58,7 +58,7 @@ const ParticiperZone = ({ zone, creneau, closeModal }) => {
       const idHoraire = creneau._id;
       try {
         const token = localStorage.getItem("authToken");
-        const response = await fetch(`http://localhost:3500/zoneBenevole/participer/${idHoraire}/${userId}`, {
+        const response = await fetch(`https://festivaldujeuback.onrender.com/zoneBenevole/participer/${idHoraire}/${userId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

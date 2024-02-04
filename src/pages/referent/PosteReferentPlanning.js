@@ -14,18 +14,18 @@ function ReferentPlanning() {
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            const result = await fetch("http://localhost:3500/festival/latest");
+            const result = await fetch("https://festivaldujeuback.onrender.com/festival/latest");
             const body = await result.json();
             setDateDebutDisplay(body.date_debut);
             setDateFinDisplay(body.date_fin);
 
             const pseudo = localStorage.getItem('pseudo');
-            const response = await fetch(`http://localhost:3500/benevole/pseudo/${pseudo}`);
+            const response = await fetch(`https://festivaldujeuback.onrender.com/benevole/pseudo/${pseudo}`);
             const data = await response.json();
             const referentId = data.benevole._id;
             setIdReferent(referentId);
 
-            const standsResponse = await fetch(`http://localhost:3500/stands/referent/${referentId}`);
+            const standsResponse = await fetch(`https://festivaldujeuback.onrender.com/stands/referent/${referentId}`);
             const standsData = await standsResponse.json();
             const filteredStands = standsData.filter(stand => new Date(stand.date).toDateString() === new Date(dateDebutDisplay).toDateString() || new Date(stand.date).toDateString() === new Date(dateFinDisplay).toDateString());
             setHasAssignedStands(filteredStands.length > 0);

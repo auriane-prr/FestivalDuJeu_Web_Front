@@ -11,7 +11,7 @@ const RechercheJeux = () => {
     const fetchGameSuggestions = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3500/jeux/search?search=${searchTerm}`
+          `https://festivaldujeuback.onrender.com/jeux/search?search=${searchTerm}`
         );
         if (response.ok) {
           const games = await response.json();
@@ -20,7 +20,7 @@ const RechercheJeux = () => {
           const gameSuggestions = await Promise.all(
             games.map(async (game) => {
               const zoneResponse = await fetch(
-                `http://localhost:3500/jeux/nom/${game}`,
+                `https://festivaldujeuback.onrender.com/jeux/nom/${game}`,
                 {
                   method: "GET",
                   headers: { "Content-Type": "application/json" },

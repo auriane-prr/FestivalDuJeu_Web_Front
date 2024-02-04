@@ -81,7 +81,7 @@ const FormInscription = () => {
   const checkPseudoUnique = async (pseudo) => {
     try {
       const response = await fetch(
-        `http://localhost:3500/benevole/check-pseudo/${pseudo}`
+        `https://festivaldujeuback.onrender.com/benevole/check-pseudo/${pseudo}`
       );
       const data = await response.json();
       return data.exists; // 'exists' est un booléen renvoyé par le serveur indiquant si le pseudo existe

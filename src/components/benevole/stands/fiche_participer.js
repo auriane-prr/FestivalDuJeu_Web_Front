@@ -22,7 +22,7 @@ const ModaleParticiper = ({ stand, creneau, closeModal }) => {
       const token = localStorage.getItem("authToken");
       const pseudo = localStorage.getItem("pseudo");
       const response = await fetch(
-        `http://localhost:3500/benevole/pseudo/${pseudo}`,
+        `https://festivaldujeuback.onrender.com/benevole/pseudo/${pseudo}`,
         {
           method: "GET",
           headers: {
@@ -60,7 +60,7 @@ const ModaleParticiper = ({ stand, creneau, closeModal }) => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await fetch(
-          `http://localhost:3500/stands/participer/${idHoraire}/${userId}`,
+          `https://festivaldujeuback.onrender.com/stands/participer/${idHoraire}/${userId}`,
           {
             method: "PUT",
             headers: {

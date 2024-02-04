@@ -17,7 +17,7 @@ function Planning({ date }) {
     if (pseudo && token) {
       setLoading(true);
 
-      fetch(`http://localhost:3500/benevole/pseudo/${pseudo}`, {
+      fetch(`https://festivaldujeuback.onrender.com/benevole/pseudo/${pseudo}`, {
           headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
@@ -35,7 +35,7 @@ function Planning({ date }) {
   useEffect(() => {
     setLoading(true);
     if (userid) {
-        const standsPromise = fetch(`http://localhost:3500/stands/benevole/${userid}`)
+        const standsPromise = fetch(`https://festivaldujeuback.onrender.com/stands/benevole/${userid}`)
             .then(response => {
               if(!response.ok) {
                 throw new Error('Erreur lors de la récupération des stands');
@@ -48,7 +48,7 @@ function Planning({ date }) {
             })
             .catch(() => []);
 
-            const zonesPromise = fetch(`http://localhost:3500/zoneBenevole/benevole/${userid}`)
+            const zonesPromise = fetch(`https://festivaldujeuback.onrender.com/zoneBenevole/benevole/${userid}`)
             .then(response => {
               if (!response.ok) {
                   throw new Error('Failed to fetch zones');

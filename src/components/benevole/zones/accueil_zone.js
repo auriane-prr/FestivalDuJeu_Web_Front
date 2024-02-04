@@ -18,7 +18,7 @@ function AccueilZone() {
   useEffect(() => {
     // Exemple d'appel API pour récupérer les dates du festival
     const fetchFestivalData = async () => {
-      const result = await fetch(`http://localhost:3500/festival/latest`);
+      const result = await fetch(`https://festivaldujeuback.onrender.com/festival/latest`);
       const body = await result.json();
       setDateDebut(body.date_debut);
       setDateFin(body.date_fin);
@@ -33,7 +33,7 @@ function AccueilZone() {
         try {
           // Récupérez toutes les zones bénévoles pour la date sélectionnée
           const response = await fetch(
-            `http://localhost:3500/zoneBenevole/date/${selectedDate}`
+            `https://festivaldujeuback.onrender.com/zoneBenevole/date/${selectedDate}`
           );
           const data = await response.json();
           setZones(data);

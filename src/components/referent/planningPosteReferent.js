@@ -9,12 +9,12 @@ function PlanningPosteReferent({ date }) {
   useEffect(() => {
     setLoading(true);
     const pseudo = localStorage.getItem('pseudo');
-    fetch(`http://localhost:3500/benevole/pseudo/${pseudo}`)
+    fetch(`https://festivaldujeuback.onrender.com/benevole/pseudo/${pseudo}`)
       .then(response => response.json())
       .then(data => {
         const referentId = data.benevole._id;
         setIdReferent(referentId);
-        return fetch(`http://localhost:3500/stands/referent/${referentId}`);
+        return fetch(`https://festivaldujeuback.onrender.com/stands/referent/${referentId}`);
       })
       .then(response => response.json())
       .then(data => {

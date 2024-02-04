@@ -12,10 +12,10 @@ const LigneTemporelle = ({ date, id, type, handleJaugeClick }) => {
       let url;
       switch (type) {
         case "stand":
-          url = `http://localhost:3500/stands/date/${date}`;
+          url = `https://festivaldujeuback.onrender.com/stands/date/${date}`;
           break;
         case "zone":
-          url = `http://localhost:3500/zoneBenevole/date/${date}`;
+          url = `https://festivaldujeuback.onrender.com/zoneBenevole/date/${date}`;
           break;
         default:
           // Gérer les cas d'erreur ou les types inconnus

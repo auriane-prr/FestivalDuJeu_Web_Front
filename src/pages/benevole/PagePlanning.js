@@ -13,7 +13,7 @@ function PagePlanning() {
     useEffect(() => {
         // Exemple d'appel API pour récupérer les données du festival
         const fetchData = async () => {
-            const result = await fetch("http://localhost:3500/festival/latest");
+            const result = await fetch("https://festivaldujeuback.onrender.com/festival/latest");
             const body = await result.json();
             setDateDebutDisplay(body.date_debut);
             setDateFinDisplay(body.date_fin);

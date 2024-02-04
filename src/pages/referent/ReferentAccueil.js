@@ -25,7 +25,7 @@ function PageAccueil() {
       setIsLoading(true); // Commencer le chargement
       try {
         const responseBenevole = await fetch(
-          `http://localhost:3500/benevole/pseudo/${pseudo}`,
+          `https://festivaldujeuback.onrender.com/benevole/pseudo/${pseudo}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -37,7 +37,7 @@ function PageAccueil() {
           setUserData(benevole);
 
           const responseStand = await fetch(
-            `http://localhost:3500/stands/referent/${benevole._id}`,
+            `https://festivaldujeuback.onrender.com/stands/referent/${benevole._id}`,
             {
               method: "GET",
               headers: { "Content-Type": "application/json" },

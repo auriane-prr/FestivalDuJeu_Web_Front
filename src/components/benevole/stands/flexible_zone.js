@@ -34,7 +34,7 @@ function FlexibleAnimation() {
       const token = localStorage.getItem("authToken");
       const pseudo = localStorage.getItem("pseudo");
       const response = await fetch(
-        `http://localhost:3500/benevole/pseudo/${pseudo}`,
+        `https://festivaldujeuback.onrender.com/benevole/pseudo/${pseudo}`,
         {
           method: "GET",
           headers: {
@@ -63,7 +63,7 @@ function FlexibleAnimation() {
   useEffect(() => {
     // Exemple d'appel API pour récupérer les données du festival
     const fetchData = async () => {
-      const result = await fetch("http://localhost:3500/festival/latest");
+      const result = await fetch("https://festivaldujeuback.onrender.com/festival/latest");
       const body = await result.json();
       setDateDebutDisplay(body.date_debut);
       setDateFinDisplay(body.date_fin);
@@ -145,7 +145,7 @@ function FlexibleAnimation() {
       console.log("flexibleZoneData envoyé au serveur : ", flexibleZoneData);
 
       // Envoi de la requête
-      const response = await fetch(`http://localhost:3500/flexibleZone`, {
+      const response = await fetch(`https://festivaldujeuback.onrender.com/flexibleZone`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -183,8 +183,8 @@ function FlexibleAnimation() {
     console.log(selectedDate);
     const url =
       selectedDate === "both"
-        ? `http://localhost:3500/zoneBenevole/date/both`
-        : `http://localhost:3500/zoneBenevole/date/${selectedDate}`;
+        ? `https://festivaldujeuback.onrender.com/zoneBenevole/date/both`
+        : `https://festivaldujeuback.onrender.com/zoneBenevole/date/${selectedDate}`;
 
     try {
       const response = await fetch(url, {
@@ -250,7 +250,7 @@ function FlexibleAnimation() {
   async function fetchFlexibleZoneData() {
     try {
       const response = await fetch(
-        `http://localhost:3500/flexibleZone/benevole/${userId}`,
+        `https://festivaldujeuback.onrender.com/flexibleZone/benevole/${userId}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },

@@ -33,7 +33,7 @@ function ReferentDisplayZone() {
   useEffect(() => {
     const fetchFestivalData = async () => {
       try {
-        const result = await fetch(`http://localhost:3500/festival/latest`);
+        const result = await fetch(`https://festivaldujeuback.onrender.com/festival/latest`);
         const body = await result.json();
         setDateDebut(body.date_debut);
         setDateFin(body.date_fin);
@@ -47,7 +47,7 @@ function ReferentDisplayZone() {
 
   useEffect(() => {
     const fetchZones = async () => {
-      let url = "http://localhost:3500/zoneBenevole"; // Remplace par ton URL de l'API
+      let url = "https://festivaldujeuback.onrender.com/zoneBenevole"; // Remplace par ton URL de l'API
       if (selectedRadio === "debut") {
         url += `/date/${dateDebut}`;
       } else if (selectedRadio === "fin") {
@@ -85,7 +85,7 @@ function ReferentDisplayZone() {
   const fetchJeuxByZone = async (idZone) => {
     try {
       const response = await fetch(
-        `http://localhost:3500/zoneBenevole/${idZone}/jeux`
+        `https://festivaldujeuback.onrender.com/zoneBenevole/${idZone}/jeux`
       );
       const jeuxData = await response.json();
       setJeux(jeuxData);

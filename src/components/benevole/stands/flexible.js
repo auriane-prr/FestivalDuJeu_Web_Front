@@ -40,7 +40,7 @@ function Flexible() {
       const token = localStorage.getItem("authToken");
       const pseudo = localStorage.getItem("pseudo");
       const response = await fetch(
-        `http://localhost:3500/benevole/pseudo/${pseudo}`,
+        `https://festivaldujeuback.onrender.com/benevole/pseudo/${pseudo}`,
         {
           method: "GET",
           headers: {
@@ -69,7 +69,7 @@ function Flexible() {
   useEffect(() => {
     // Exemple d'appel API pour récupérer les données du festival
     const fetchData = async () => {
-      const result = await fetch("http://localhost:3500/festival/latest");
+      const result = await fetch("https://festivaldujeuback.onrender.com/festival/latest");
       const body = await result.json();
       setDateDebutDisplay(body.date_debut);
       setDateFinDisplay(body.date_fin);
@@ -147,7 +147,7 @@ function Flexible() {
     };
   
     try {
-      const response = await fetch(`http://localhost:3500/flexible`, {
+      const response = await fetch(`https://festivaldujeuback.onrender.com/flexible`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -190,8 +190,8 @@ function Flexible() {
     console.log(selectedDate);
     const url =
       selectedDate === "both"
-        ? `http://localhost:3500/stands/date/both`
-        : `http://localhost:3500/stands/date/${selectedDate}`;
+        ? `https://festivaldujeuback.onrender.com/stands/date/both`
+        : `https://festivaldujeuback.onrender.com/stands/date/${selectedDate}`;
 
     try {
       const response = await fetch(url, {
@@ -258,7 +258,7 @@ function Flexible() {
   async function fetchFlexibleData() {
     try {
       const response = await fetch(
-        `http://localhost:3500/flexible/benevole/${userId}`,
+        `https://festivaldujeuback.onrender.com/flexible/benevole/${userId}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },

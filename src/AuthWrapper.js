@@ -30,7 +30,7 @@ const AuthWrapper = ({ children }) => {
 
   const login = async (pseudo, password) => {
     try {
-      const response = await fetch("http://localhost:3500/benevole/login", {
+      const response = await fetch("https://festivaldujeuback.onrender.com/benevole/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +97,7 @@ const AuthWrapper = ({ children }) => {
     } = formData;
 
     try {
-      const response = await fetch("http://localhost:3500/benevole/signup", {
+      const response = await fetch("https://festivaldujeuback.onrender.com/benevole/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
