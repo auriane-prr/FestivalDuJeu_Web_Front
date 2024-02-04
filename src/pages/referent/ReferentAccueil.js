@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
+import "../../styles/Pages/referent/ReferentAccueil.css";
 import BandeauReferent from "../../components/referent/bandeauReferent";
 import Boite from "../../components/general/boite";
 import Champ from "../../components/general/champ";
 import ReferentDisplayZone from "../../components/referent/ReferentDisplayZone";
 import Titre from "../../components/general/titre";
+import Bouton from "../../components/general/bouton";
+
 
 function PageAccueil() {
   const [userData, setUserData] = useState("");
@@ -54,6 +58,7 @@ function PageAccueil() {
 
     fetchUserDataAndStandInfo();
   }, []);
+
 
   function formatDate(date) {
     if (!date) return "";
@@ -176,6 +181,10 @@ function PageAccueil() {
               ))
             )}
           </Champ>
+          <Link to="/referent/poste" style={{ textDecoration: 'none' }}>
+          <Bouton >Voir le planning</Bouton>
+          </Link>
+          
         </div>
       </div>
     );
@@ -191,11 +200,16 @@ function PageAccueil() {
   return (
     <div>
       <BandeauReferent />
+      <div className="inscription">
+      <Link to="/accueil" style={{ textDecoration: 'none' }}>
+          <Bouton >S'inscrire</Bouton>
+          </Link>
+      </div>
       <Boite>
         <Titre
           valeurDuTitre={`Bonjour ${
             userData.pseudo || "Chargement..."
-          }, vous êtes référent(e) du stand ${
+          }, le ${formatDate(currentStand.date)} vous êtes référent(e) du stand ${
             standInfo[0]?.nom_stand || "Chargement..."
           }`}
         />

@@ -10,6 +10,7 @@ import PagePlanning from "./pages/benevole/PagePlanning";
 import ReferentAccueil from "./pages/referent/ReferentAccueil";
 import ReferentProfil from "./pages/referent/ReferentProfil";
 import ReferentPlanning from "./pages/referent/ReferentPlanning";
+import PosteReferentPlanning from "./pages/referent/PosteReferentPlanning";
 
 
 // isMenu : true si on peut voir la page dans le menu sans être connecté
@@ -27,5 +28,6 @@ export const nav = [
     { path : "/referent", name : "ReferentAccueil", element: <ReferentAccueil />, isMenu: false, isPrivate: true},
     { path : "/referent/profil", name : "ReferentProfil", element: <ReferentProfil />, isMenu: false, isPrivate: true},
     { path : "/referent/planning", name : "ReferentPlanning", element: <ReferentPlanning />, isMenu: false, isPrivate: true},
+    { path : "/referent/poste", name : "PosteReferentPlanning", element: <PosteReferentPlanning />, isMenu: false, isPrivate: true},
 ]
 

@@ -3,7 +3,7 @@ import BandeauReferent from "../../components/referent/bandeauReferent";
 import BoiteOnglet from "../../components/general/boiteOnglet";
 import Planning from "../../components/general/planning";
 
-function ReferentPlanning() {
+function PagePlanning() {
     const [dateDebutDisplay, setDateDebutDisplay] = useState("");
     const [dateFinDisplay, setDateFinDisplay] = useState("");
 
@@ -48,4 +48,4 @@ function ReferentPlanning() {
     )
 }
 
-export default ReferentPlanning;
+export default PagePlanning;
