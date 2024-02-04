@@ -17,11 +17,11 @@ function BandeauLogo() {
   };
 
   const redirectToProfil = () => {
-    navigate("/referent/profil");
+    navigate("/profil");
   };
 
   const redirectToPlanning = () => {
-    navigate("/referent/planning");
+    navigate("/planning");
   }
 
   const handleLogout = () => {

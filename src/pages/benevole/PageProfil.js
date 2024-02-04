@@ -1,6 +1,7 @@
 import "../../styles/Pages/pageProfil.css";
 import React, { useState, useEffect } from "react";
-import BandeauLogo from "../../components/benevole/bandeauBenevole";
+import BandeauBenevole from "../../components/benevole/bandeauBenevole";
+import BandeauReferent from "../../components/referent/bandeauReferent";
 import Boite from "../../components/general/boite";
 import Champ from "../../components/general/champ";
 import { useAuth } from "../../AuthWrapper";
@@ -301,7 +302,7 @@ function PageProfil() {
 
   return (
     <div>
-      <BandeauLogo />
+      {user.referent ? <BandeauReferent /> : <BandeauBenevole />}
       <Boite valeurDuTitre={pseudoValue}>
         <div className="Container-profil-info">
           <div className="champ-container">

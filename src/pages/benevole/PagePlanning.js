@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from "react";
-import BandeauLogo from "../../components/benevole/bandeauBenevole";
+import { useAuth } from "../../AuthWrapper.js";
+import BandeauBenevole from "../../components/benevole/bandeauBenevole";
+import BandeauReferent from "../../components/referent/bandeauReferent";
 import BoiteOnglet from "../../components/general/boiteOnglet";
 import Planning from "../../components/general/planning";
 
 function PagePlanning() {
+    const { user } = useAuth();
     const [dateDebutDisplay, setDateDebutDisplay] = useState("");
     const [dateFinDisplay, setDateFinDisplay] = useState("");
 
@@ -34,7 +37,7 @@ function PagePlanning() {
 
     return (
         <div>
-            <BandeauLogo />
+            {user.referent ? <BandeauReferent /> : <BandeauBenevole />}
             <BoiteOnglet nomOnglet1={formatDate(dateDebutDisplay)} nomOnglet2={formatDate(dateFinDisplay)}>
             <div className='nomOnglet1'>
                     <Planning date={dateDebutDisplay}/>
