@@ -20,7 +20,7 @@ function Planning({ date }) {
       fetch(`https://festivaldujeuback.onrender.com/benevole/pseudo/${pseudo}`, {
           headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+              Authorization: `Bearer ${token}`
           }
       })
       .then(response => response.ok ? response.json() : Promise.reject('Erreur lors de la récupération du bénévole'))
