@@ -47,7 +47,6 @@ function Planning({ date }) {
               return dataStands;
             })
             .catch(() => []);
-
             const zonesPromise = fetch(`https://festivaldujeuback.onrender.com/zoneBenevole/benevole/${userid}`)
             .then(response => {
               if (!response.ok) {
