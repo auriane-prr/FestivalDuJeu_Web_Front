@@ -15,7 +15,7 @@ function Ajouter_jeux() {
             formData.append('file', file);
 
             try {
-                const response = await fetch('http://localhost:3500/jeux/upload', {
+                const response = await fetch('https://festivaldujeuback.onrender.com/jeux/upload', {
                     method: 'POST',
                     body: formData, 
                 });

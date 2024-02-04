@@ -22,7 +22,7 @@ function Flexible() {
   useEffect(() => {
     // Exemple d'appel API pour récupérer les données du festival
     const fetchData = async () => {
-      const result = await fetch("http://localhost:3500/festival/latest");
+      const result = await fetch("https://festivaldujeuback.onrender.com/festival/latest");
       const body = await result.json();
       setDateDebut(body.date_debut);
       setDateFin(body.date_fin);
@@ -64,7 +64,7 @@ function Flexible() {
 
   useEffect(() => {
     // Récupérez la liste complète des bénévoles flexibles
-    fetch("http://localhost:3500/flexible")
+    fetch("https://festivaldujeuback.onrender.com/flexible")
       .then((response) => response.json())
       .then((data) => {
         setFlexibles(data);
@@ -97,7 +97,7 @@ function Flexible() {
     setSelectedStands({});
 
     // Récupérez les informations du bénévole flexible en fonction de son ID
-    fetch(`http://localhost:3500/flexible/benevole/${flexibleId}`)
+    fetch(`https://festivaldujeuback.onrender.com/flexible/benevole/${flexibleId}`)
       .then((response) => response.json())
       .then((data) => {
         setSelectedFlexible(data);
@@ -113,7 +113,7 @@ function Flexible() {
 
   const fetchStandDetails = async (standId, horaire) => {
     try {
-      const response = await fetch(`http://localhost:3500/stands/${standId}`);
+      const response = await fetch(`https://festivaldujeuback.onrender.com/stands/${standId}`);
       const standData = await response.json();
       if (!response.ok)
         throw new Error(
@@ -193,7 +193,7 @@ function Flexible() {
     try {
       for (const standInfo of selectedStandArray) {
         const response = await fetch(
-          `http://localhost:3500/stands/inscrire/${standInfo.standId}/${standInfo.horaire}/${standInfo.idBenevole}`,
+          `https://festivaldujeuback.onrender.com/stands/inscrire/${standInfo.standId}/${standInfo.horaire}/${standInfo.idBenevole}`,
           {
             method: "PUT",
             headers: {
@@ -226,7 +226,7 @@ function Flexible() {
         "Tous les horaires ont été attribués, suppression du flexible..."
       );
       const reponse = await fetch(
-        `http://localhost:3500/flexible/${selectedFlexible._id}/${selectedDate}`,
+        `https://festivaldujeuback.onrender.com/flexible/${selectedFlexible._id}/${selectedDate}`,
         {
           method: "DELETE",
         }
@@ -260,7 +260,7 @@ function Flexible() {
 
   const checkAndDeleteFlexible = async () => {
     try {
-      const response = await fetch("http://localhost:3500/flexible/check", {
+      const response = await fetch("https://festivaldujeuback.onrender.com/flexible/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });

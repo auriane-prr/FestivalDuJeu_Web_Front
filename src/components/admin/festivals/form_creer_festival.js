@@ -47,7 +47,7 @@ function FestivalForm({ onClose }) {
           };
   
           try {
-          const response = await fetch("http://localhost:3500/festival", {
+          const response = await fetch("https://festivaldujeuback.onrender.com/festival", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

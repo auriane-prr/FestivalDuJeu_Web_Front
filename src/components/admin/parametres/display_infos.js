@@ -10,7 +10,7 @@ function ModaleInfos({ benevole }) {
     try {
       const token = localStorage.getItem("authToken");
       const response = await fetch(
-        `http://localhost:3500/benevole/promote/${benevole._id}`,
+        `https://festivaldujeuback.onrender.com/benevole/promote/${benevole._id}`,
         {
           method: "PUT",
           headers: {

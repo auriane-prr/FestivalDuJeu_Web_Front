@@ -54,7 +54,7 @@ function StandForm({ onClose }) {
   useEffect(() => {
     // Exemple d'appel API pour récupérer les données du festival
     const fetchData = async () => {
-      const result = await fetch("http://localhost:3500/festival/latest");
+      const result = await fetch("https://festivaldujeuback.onrender.com/festival/latest");
       const body = await result.json();
       setDateDebut(body.date_debut);
       setDateFin(body.date_fin);
@@ -104,7 +104,7 @@ function StandForm({ onClose }) {
           };
   
           // Envoie les deux instances au serveur
-          const response1 = await fetch("http://localhost:3500/stands", {
+          const response1 = await fetch("https://festivaldujeuback.onrender.com/stands", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -112,7 +112,7 @@ function StandForm({ onClose }) {
             body: JSON.stringify(stand1),
           });
   
-          const response2 = await fetch("http://localhost:3500/stands", {
+          const response2 = await fetch("https://festivaldujeuback.onrender.com/stands", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -141,7 +141,7 @@ function StandForm({ onClose }) {
             horaireCota: horairesData,
           };
   
-          const response = await fetch("http://localhost:3500/stands", {
+          const response = await fetch("https://festivaldujeuback.onrender.com/stands", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
