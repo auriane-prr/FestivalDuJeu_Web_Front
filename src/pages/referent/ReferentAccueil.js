@@ -181,11 +181,12 @@ function PageAccueil() {
               ))
             )}
           </Champ>
+        </div>
+        <div className="PlanningPoste">
           <Link to="/referent/poste" style={{ textDecoration: 'none' }}>
           <Bouton >Voir le planning</Bouton>
           </Link>
-          
-        </div>
+          </div>
       </div>
     );
   };
