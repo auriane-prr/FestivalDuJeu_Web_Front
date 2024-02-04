@@ -29,6 +29,7 @@ function DisplayStand() {
   const [dateFin, setDateFin] = useState(null);
   const [loading, setLoading] = useState(true);
   const [referentsLoaded, setReferentsLoaded] = useState(false);
+  const [addingReferent, setAddingReferent] = useState(false);
 
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -267,6 +268,12 @@ function DisplayStand() {
   }
 
   useEffect(() => {
+    if (editMode) {
+      fetchNonReferentBenevoles();
+    }
+  }, [editMode]);
+
+  useEffect(() => {
     if (selectedDate === "both") {
       fetchStandsData();
     }
@@ -280,41 +287,73 @@ function DisplayStand() {
         return;
       }
 
-      const response = await fetch(
-        `http://localhost:3500/stands/removeReferent/${currentStand._id}/${referentId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+      const url = `http://localhost:3500/stands/removeReferent/${currentStand._id}/${referentId}`;
+      console.log("Sending DELETE request to:", url);
+
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          // Assurez-vous d'inclure les en-têtes d'authentification si nécessaire.
+        },
+      });
+
+      if (!response.ok) {
+        // Si la réponse n'est pas ok, afficher l'erreur et arrêter l'exécution
+        const errorText = await response.text();
+        throw new Error(
+          `Erreur lors de la suppression du référent : ${errorText}`
+        );
+      }
+
+      console.log("Référent supprimé avec succès du stand !");
+
+      // Mise à jour de l'état local pour refléter la suppression du référent
+      const updatedCurrentStandDetails = {
+        ...currentStandDetails,
+        referents: currentStandDetails.referents.filter(
+          (ref) => ref._id !== referentId
+        ),
+      };
+
+      setCurrentStandDetails(updatedCurrentStandDetails);
+
+      // Mise à jour de l'état des stands avec les détails mis à jour
+      const updatedStands = stands.map((stand) =>
+        stand._id === currentStand._id ? updatedCurrentStandDetails : stand
       );
 
-      if (response.ok) {
-        console.log("Référent supprimé avec succès !");
-        // Réactualisez uniquement les référents du stand actuel
-        fetchStandDetails(currentStand._id);
-      } else {
-        throw new Error("Erreur lors de la suppression du référent");
-      }
+      setStands(updatedStands);
     } catch (error) {
       console.error("Erreur lors de la suppression du référent :", error);
+      // Afficher une fenêtre popup ou une notification d'erreur à l'utilisateur ici
     }
   };
 
   const handleSaveChanges = async () => {
     // Vérifiez d'abord si le mode de sélection du référent est actif
     if (showSelector) {
-      // Si oui, affichez une erreur et ne continuez pas avec l'enregistrement
       setErrorMessage(
         "Veuillez valider votre sélection de référent avant d'enregistrer."
       );
-      setSuccessMessage(null); // Réinitialisez le message de succès
-      setPopupVisible(true); // Afficher la pop-up d'erreur
-      return; // Interrompre la fonction ici pour éviter d'aller plus loin
+      setPopupVisible(true);
+      return;
     }
 
     try {
+      // Vérifiez si seul le champ "referent" a été modifié
+      if (
+        JSON.stringify(currentStand) ===
+        JSON.stringify(stands[currentStandIndex])
+      ) {
+        // Seul le champ "referent" a été modifié, fermez le mode édition
+        setEditMode(false);
+        setSuccessMessage("Changements enregistrés avec succès");
+        setErrorMessage(null);
+        setPopupVisible(true);
+        return;
+      }
+
       // Mettez à jour l'état avec les modifications
       const updatedStands = [...stands];
       updatedStands[currentStandIndex] = currentStand;
@@ -439,42 +478,30 @@ function DisplayStand() {
     setShowModal(false);
   };
 
-  const handleAddReferentDisplay = async () => {
-    await fetchNonReferentBenevoles();
-    setShowSelector(true);
-  };
-
   const handleSelectBenevole = (benevole) => {
     // Mettre à jour le bénévole sélectionné
     setSelectedBenevole({ value: benevole.target.value });
   };
 
   const handleAddReferent = async () => {
-    // Vérifier si un bénévole est sélectionné
-    if (!selectedBenevole || !selectedBenevole.value) {
-      console.error("Aucun bénévole sélectionné.");
-      return;
-    }
-    console.log("benevoleref", selectedBenevole.value);
-
+    console.log(
+      "stand : " + currentStand._id + " benevole : " + selectedBenevole.value
+    );
     try {
       const response = await fetch(
         `http://localhost:3500/stands/referent/${currentStand._id}/${selectedBenevole.value}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          // Pas besoin de body car l'ID du bénévole est dans l'URL
         }
       );
 
       if (response.ok) {
         console.log("Référent ajouté avec succès !");
-        // Réactualisez uniquement les référents du stand actuel
         fetchStandDetails(currentStand._id);
-
-        // Réinitialiser le sélecteur de bénévoles et l'état de sélection
+        setSelectedBenevole(null); // Réinitialiser le bénévole sélectionné
+        setAddingReferent(false);
         setShowSelector(false);
-        setSelectedBenevole(null);
       } else {
         // Gérer les réponses non-OK
         console.error(
@@ -483,7 +510,6 @@ function DisplayStand() {
         );
       }
     } catch (error) {
-      // Gérer les erreurs de la requête ou les erreurs lancées manuellement
       console.error("Erreur lors de l'ajout d'un référent :", error);
     }
   };
@@ -591,84 +617,90 @@ function DisplayStand() {
               <div className="referent-container">
                 <Champ label="Référents :">
                   {editMode && (
-                    <div className="add-btn-container">
-                      {currentStandDetails?.referents?.length > 0 && (
+                    <div className="edit-mode-container">
+                      {/* Condition pour afficher le sélecteur à la place de "Pas de référents" si aucun référent n'est présent et que showSelector est vrai */}
+                      {showSelector &&
+                      currentStandDetails?.referents.length === 0 ? (
+                        <select
+                          className="input"
+                          onChange={handleSelectBenevole}
+                          value={selectedBenevole ? selectedBenevole.value : ""}
+                        >
+                          <option value="">Sélectionner un bénévole</option>
+                          {nonReferentBenevoles.map((benevole, index) => (
+                            <option key={index} value={benevole._id}>
+                              {benevole.pseudo}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <>
+                          {currentStandDetails?.referents.map(
+                            (referent, index) => (
+                              <div
+                                key={referent._id}
+                                className="referent-display"
+                              >
+                                <input
+                                  type="text"
+                                  className="input"
+                                  value={referent.pseudo || ""}
+                                  readOnly
+                                />
+                              </div>
+                            )
+                          )}
+                          {currentStandDetails?.referents.length === 0 && (
+                            <input
+                              type="text"
+                              className="input"
+                              value="Pas de référents"
+                              readOnly
+                            />
+                          )}
+                        </>
+                      )}
+
+                      {/* Bouton pour afficher le sélecteur ou confirmer l'ajout */}
+                      <div className="add-btn-container">
                         <button
-                          onClick={() => setShowSelector(!showSelector)}
+                          onClick={() => {
+                            if (showSelector) {
+                              // Appeler la fonction handleAddReferent() ici
+                              handleAddReferent();
+                            }
+                            setShowSelector(!showSelector);
+                          }}
                           className="add-button"
                         >
-                          {showSelector ? "-" : "+"}
+                          {showSelector ? "OK" : "+"}
                         </button>
-                      )}
-                      {currentStandDetails?.referents?.length === 0 && (
-                        <button
-                          onClick={() => setShowSelector(true)}
-                          className="add-button"
-                        >
-                          +
-                        </button>
-                      )}
+                      </div>
                     </div>
                   )}
 
-                  {editMode && showSelector && (
-                    <select
-                      className="input"
-                      onChange={handleSelectBenevole}
-                      style={{ marginBottom: "3%" }}
-                    >
-                      <option value="">Sélectionner un bénévole</option>
-                      {nonReferentBenevoles.map((benevole, index) => (
-                        <option key={index} value={benevole._id}>
-                          {benevole.pseudo}
-                        </option>
+                  {!editMode && (
+                    <>
+                      {currentStandDetails?.referents.map((referent, index) => (
+                        <div key={referent._id} className="referent-display">
+                          <input
+                            type="text"
+                            className="input"
+                            value={referent.pseudo || ""}
+                            readOnly
+                          />
+                        </div>
                       ))}
-                    </select>
-                  )}
-
-                  {currentStandDetails?.referents?.map((referent, index) => (
-                    <div key={referent._id} className="referent-input">
-                      <input
-                        type="text"
-                        className="input"
-                        value={referent.pseudo || ""}
-                        readOnly
-                      />
-                      {editMode && (
-                        <button
-                          onClick={(event) =>
-                            handleRemoveReferent(referent._id, event)
-                          }
-                          className="supp-button"
-                        >
-                          X
-                        </button>
+                      {currentStandDetails?.referents.length === 0 && (
+                        <input
+                          type="text"
+                          className="input"
+                          value="Pas de référents"
+                          readOnly
+                        />
                       )}
-                    </div>
-                  ))}
-
-                  {editMode &&
-                    currentStandDetails?.referents?.length === 0 &&
-                    !showSelector && (
-                      <select className="input" onChange={handleSelectBenevole}>
-                        <option value="">Sélectionner un bénévole</option>
-                        {nonReferentBenevoles.map((benevole, index) => (
-                          <option key={index} value={benevole._id}>
-                            {benevole.pseudo}
-                          </option>
-                        ))}
-                      </select>
-                    )}
-
-                  {!editMode &&
-                    currentStandDetails?.referents?.length === 0 && (
-                      <input
-                        type="text"
-                        className="input"
-                        value="Pas de référents"
-                        readOnly
-                      />
-                    )}
+                    </>
+                  )}
                 </Champ>
               </div>
 
