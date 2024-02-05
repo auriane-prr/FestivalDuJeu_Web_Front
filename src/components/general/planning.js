@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/planning.css';
+import FicheDisplayStand from '../benevole/stands/fiche_display_stand';
+import FicheDisplayZone from '../benevole/zones/fiche_display_zone';
+import Modale from './fenetre_modale';
 
 function Planning({ date }) {
   const [planningBenevole, setPlanningBenevole] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userid, setUserid] = useState('');
   const [mergedData, setMergedData] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [showModal, setShowModal] = useState(false);
  
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   const horaires = ["9-11", "11-14", "14-17", "17-20", "20-22"];
   const planningData = horaires.map(horaire => ({ heure: horaire, nom: "" }));
@@ -57,7 +66,11 @@ function Planning({ date }) {
               .map(cota => ({
                 horaireId: cota._id,
                 heure: cota.heure,
+                nb_benevole: cota.nb_benevole,
+                liste_benevole: cota.liste_benevole,
                 nom: event.nom_stand,
+                referents: event.referents,
+                description: event.description,
                 type: "stand"
               })));
   
@@ -68,7 +81,12 @@ function Planning({ date }) {
               .map(cota => ({
                 horaireId: cota._id,
                 heure: cota.heure,
+                liste_benevole: cota.liste_benevole,
+                nb_benevole: cota.nb_benevole,
                 nom: event.nom_zone_benevole,
+                description: event.description,
+                referents: event.referents,
+                liste_jeux: event.liste_jeux,
                 type: "zone"
               })));
   
@@ -83,6 +101,14 @@ function Planning({ date }) {
               planningData[index].nom = data.nom;
               planningData[index].horaireId = data.horaireId;
               planningData[index].type = data.type;
+              planningData[index].description = data.description;
+              planningData[index].liste_benevole = data.liste_benevole;
+              planningData[index].referents = data.referents;
+              planningData[index].liste_jeux = data.liste_jeux;
+              planningData[index].nb_benevole = data.nb_benevole;
+
+
+
             }
           });
           setPlanningBenevole(planningData);
@@ -130,40 +156,75 @@ function Planning({ date }) {
   };
   
   
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+    setShowDetails(true);
+    setShowModal(true);
+  };
 
-
-
+  const handleCloseDetails = () => {
+    setShowDetails(false);
+    setSelectedItem(null);
+    setShowModal(false);
+  };
   return (
     <div>
       {loading ? (
-          <div className="loading">Chargement...</div>
-        ) : (
-      <div className="planning-container">
+        <div className="loading">Chargement...</div>
+      ) : (
+        <div className="planning-container">
           {horaires.map((horaire, index) => (
             <div key={index} className="planning-row">
               <div className="planning-time">{horaire}</div>
               <div className="planning-stand">
-                {planningBenevole.find(event => event.heure.includes(horaire))?.nom || ""}
                 {planningBenevole.find(event => event.heure.includes(horaire))?.nom && (
-            <button
-              className="remove-button"
-              onClick={(event) => {
-                const selectedHoraire = planningBenevole.find(event => event.heure.includes(horaire));
-                    if (selectedHoraire) {
-                      handleRemoveBenevole(selectedHoraire.horaireId, selectedHoraire.type, event);
-                    }
-                  }}
-            >
-              X
-            </button>
+                  <>
+                    <div onClick={() => handleItemClick(planningBenevole.find(event => event.heure.includes(horaire)))}>
+                      {planningBenevole.find(event => event.heure.includes(horaire)).nom}
+                    </div>
+                    <button
+                      className="remove-button"
+                      onClick={(event) => {
+                        const selectedHoraire = planningBenevole.find(event => event.heure.includes(horaire));
+                        if (selectedHoraire) {
+                          handleRemoveBenevole(selectedHoraire.horaireId, selectedHoraire.type, event);
+                        }
+                      }}
+                    >
+                      X
+                    </button>
+                  </>
                 )}
+              </div>
+            </div>
+          ))}
+          {showModal &&  (
+          <Modale onClose={handleCloseDetails} valeurDuTitre={"Information"}>
+          {showDetails && selectedItem && (
+            selectedItem.type === 'stand' ? (
+              console.log("selectedItem", selectedItem),
+              <FicheDisplayStand
+                stand={selectedItem}
+                
+                
+              />
+            ) : (
+              console.log("selectedItem", selectedItem),
+              <FicheDisplayZone
+                zone={selectedItem}
+                creneau={selectedItem}
+                
+              />
+            )
+          )}
+          </Modale>
+        )}
         </div>
-      </div>
-        ))}
-      </div>
       )}
     </div>
   );
+
+
 }
 
 export default Planning;

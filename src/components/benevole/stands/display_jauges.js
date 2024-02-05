@@ -114,6 +114,7 @@ function DisplayJauges() {
           </div>
         ))}
       {showModal && selectedStand && (
+        console.log("selectedStand :",selectedStand, "selectedStand.nom_stand :",selectedStand.nom_stand, "selectedStand.selectedCreneau :",selectedStand.selectedCreneau),
         <Modale onClose={closeModal} valeurDuTitre={selectedStand.nom_stand}>
           <Participer
             stand={selectedStand}
