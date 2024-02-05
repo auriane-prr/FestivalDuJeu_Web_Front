@@ -71,6 +71,7 @@ function Planning({ date }) {
                 nom: event.nom_stand,
                 referents: event.referents,
                 description: event.description,
+                id: event._id,
                 type: "stand"
               })));
   
@@ -84,9 +85,11 @@ function Planning({ date }) {
                 liste_benevole: cota.liste_benevole,
                 nb_benevole: cota.nb_benevole,
                 nom: event.nom_zone_benevole,
+                id_zone_benevole: event.id_zone_benevole,
                 description: event.description,
                 referents: event.referents,
                 liste_jeux: event.liste_jeux,
+                id: event._id,
                 type: "zone"
               })));
   
@@ -106,8 +109,8 @@ function Planning({ date }) {
               planningData[index].referents = data.referents;
               planningData[index].liste_jeux = data.liste_jeux;
               planningData[index].nb_benevole = data.nb_benevole;
-
-
+              planningData[index].id_zone_benevole = data.id_zone_benevole;
+              planningData[index].id = data.id;
 
             }
           });

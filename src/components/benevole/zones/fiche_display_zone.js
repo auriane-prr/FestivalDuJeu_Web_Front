@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import FenetrePopup from "../../general/fenetre_popup";
 import Champ from "../../general/champ";
-import Bouton from "../../general/bouton";
+import Modal from "../../general/fenetre_modale";
+import DisplayJeu from "../../admin/jeux/display_jeux";
 
 const FicheDisplayZone = ({ zone, creneau }) => {
     const [benevoles, setBenevoles] = useState([]);
@@ -10,15 +11,22 @@ const FicheDisplayZone = ({ zone, creneau }) => {
     const [jeuDetails, setJeuDetails] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
   const hidePopup = () => {
     setPopupVisible(false);
+  };
+  const openModal = () => {
+    setShowModal(true);
+  };
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   useEffect(() => {
     // Appel de fetchJeuxByZone lorsque le composant est monté
     if (zone) {
-      fetchJeuxByZone(zone._id);
+      fetchJeuxByZone(zone.id);
     }
   }, [zone]);
 
@@ -39,7 +47,7 @@ const FicheDisplayZone = ({ zone, creneau }) => {
     const jeuId = event.target.value;
     const jeu = jeux.find((j) => j._id === jeuId);
     setJeuDetails(jeu);
-    
+    openModal();
   };
 
   useEffect(() => {
@@ -77,6 +85,7 @@ const FicheDisplayZone = ({ zone, creneau }) => {
 }, [zone.liste_benevole]);
 
   return (
+    console.log("zone", zone, "idZoneBenevole", zone.id_zone_benevole, "_id",zone.id ),
     <>
       <Champ label="Horaire">
         <input
@@ -117,19 +126,25 @@ const FicheDisplayZone = ({ zone, creneau }) => {
         )}
       </Champ>
       <Champ label="Jeux :" customStyle={{ width: "80%" }}>
-        <select
-          className="input"
-          onChange={handleJeuChange}
-          value={jeuDetails?._id || ""}
-        >
-          <option value="">Sélectionner un jeu</option>
-          {jeux.map((jeu) => (
+    <select
+        className="input"
+        onChange={handleJeuChange}
+        value={jeuDetails ? jeuDetails._id : ""}
+    >
+        <option value="">Sélectionner un jeu</option>
+        {Array.isArray(jeux) && jeux.map((jeu) => (  // Assurez-vous que 'jeux' est un tableau
             <option key={jeu._id} value={jeu._id}>
-              {jeu.nom_jeu}
+                {jeu.nom_jeu}
             </option>
-          ))}
-        </select>
-      </Champ>
+        ))}
+    </select>
+</Champ>
+    {showModal && jeuDetails && (
+        <Modal onClose={closeModal} titre={jeuDetails.nom_jeu || "Jeu"}>
+          <DisplayJeu jeu={jeuDetails} />
+        </Modal>
+      )}
+
       {errorMessage && isPopupVisible && (
         <FenetrePopup message={errorMessage} type="error" onClose={hidePopup} />
       )}
