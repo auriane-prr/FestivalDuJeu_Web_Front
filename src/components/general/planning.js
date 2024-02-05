@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/planning.css';
 import Titre from './titre';
-import Titre from './titre';
 import FenetrePopup from './fenetre_popup';
 
 function Planning({ date }) {
