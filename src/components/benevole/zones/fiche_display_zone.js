@@ -6,11 +6,40 @@ import Bouton from "../../general/bouton";
 const FicheDisplayZone = ({ zone, creneau }) => {
     const [benevoles, setBenevoles] = useState([]);
     const [isPopupVisible, setPopupVisible] = useState(false);
+    const [jeux, setJeux] = useState([]);
+    const [jeuDetails, setJeuDetails] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
 
   const hidePopup = () => {
     setPopupVisible(false);
+  };
+
+  useEffect(() => {
+    // Appel de fetchJeuxByZone lorsque le composant est monté
+    if (zone) {
+      fetchJeuxByZone(zone._id);
+    }
+  }, [zone]);
+
+  const fetchJeuxByZone = async (idZone) => {
+    try {
+      const response = await fetch(
+        `https://festivaldujeuback.onrender.com/zoneBenevole/${idZone}/jeux`
+      );
+      const jeuxData = await response.json();
+      setJeux(jeuxData);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des jeux :", error);
+      setJeux([]);
+    }
+  };
+
+  const handleJeuChange = (event) => {
+    const jeuId = event.target.value;
+    const jeu = jeux.find((j) => j._id === jeuId);
+    setJeuDetails(jeu);
+    
   };
 
   useEffect(() => {
@@ -86,6 +115,20 @@ const FicheDisplayZone = ({ zone, creneau }) => {
             />
           ))
         )}
+      </Champ>
+      <Champ label="Jeux :" customStyle={{ width: "80%" }}>
+        <select
+          className="input"
+          onChange={handleJeuChange}
+          value={jeuDetails?._id || ""}
+        >
+          <option value="">Sélectionner un jeu</option>
+          {jeux.map((jeu) => (
+            <option key={jeu._id} value={jeu._id}>
+              {jeu.nom_jeu}
+            </option>
+          ))}
+        </select>
       </Champ>
       {errorMessage && isPopupVisible && (
         <FenetrePopup message={errorMessage} type="error" onClose={hidePopup} />
