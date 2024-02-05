@@ -57,7 +57,8 @@ function Planning({ date }) {
               .map(cota => ({
                 horaireId: cota._id,
                 heure: cota.heure,
-                nom: event.nom_stand
+                nom: event.nom_stand,
+                type: "stand"
               })));
   
           const filteredZones = zones
@@ -67,7 +68,8 @@ function Planning({ date }) {
               .map(cota => ({
                 horaireId: cota._id,
                 heure: cota.heure,
-                nom: event.nom_zone_benevole
+                nom: event.nom_zone_benevole,
+                type: "zone"
               })));
   
           // Fusionner les listes filtrées et mappées
@@ -79,6 +81,8 @@ function Planning({ date }) {
             const index = planningData.findIndex(item => item.heure === data.heure);
             if (index !== -1) {
               planningData[index].nom = data.nom;
+              planningData[index].horaireId = data.horaireId;
+              planningData[index].type = data.type;
             }
           });
           setPlanningBenevole(planningData);
@@ -94,42 +98,37 @@ function Planning({ date }) {
   }, [date, userid]);
   
 
-  const handleRemoveBenevoleFromStand = async (horaireId, event) => {
-    console.log("userID:", userid, "horaire:", horaireId);
+  const handleRemoveBenevole = async (horaireId, type, event) => {
+    console.log("horaireID", horaireId, "type", type);
     event.stopPropagation();
+    if (!userid || !horaireId) {
+      console.error("ID ou horaire manquant.");
+      return;
+    }
+  
+    const baseUrl = 'https://festivaldujeuback.onrender.com';
+    const url = `${baseUrl}/${type === 'stand' ? 'stands' : 'zoneBenevole'}/removeBenevole/${horaireId}/${userid}`;
+    console.log("Sending DELETE request to:", url);
+  
     try {
-      if (!userid || !horaireId) {
-        console.error("ID ou horaire manquant.");
-        return;
-      }
-  
-      const url = `https://festivaldujeuback.onrender.com/stands/removeBenevole/${horaireId}/${userid}`;
-      console.log("Sending DELETE request to:", url);
-  
       const response = await fetch(url, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          
-        },
+        headers: { "Content-Type": "application/json" },
       });
   
       if (!response.ok) {
-        // Si la réponse n'est pas ok, afficher l'erreur et arrêter l'exécution
         const errorText = await response.text();
-        throw new Error(
-          `Erreur lors de la suppression du bénévole du stand : ${errorText}`
-        );
+        throw new Error(`Erreur lors de la suppression du bénévole : ${errorText}`);
       }
   
-      console.log("Bénévole supprimé avec succès du stand !");
+      console.log("Bénévole supprimé avec succès du " + (type === 'stand' ? 'stand' : 'zone') + " !");
       window.location.reload();
   
     } catch (error) {
-      console.error("Erreur lors de la suppression du bénévole du stand :", error);
-      // Afficher une fenêtre popup ou une notification d'erreur à l'utilisateur ici
+      console.error("Erreur lors de la suppression du bénévole :", error);
     }
   };
+  
   
 
 
@@ -145,19 +144,19 @@ function Planning({ date }) {
               <div className="planning-time">{horaire}</div>
               <div className="planning-stand">
                 {planningBenevole.find(event => event.heure.includes(horaire))?.nom || ""}
-                {/*{planningBenevole.find(event => event.heure.includes(horaire))?.nom && (
+                {planningBenevole.find(event => event.heure.includes(horaire))?.nom && (
             <button
               className="remove-button"
               onClick={(event) => {
                 const selectedHoraire = planningBenevole.find(event => event.heure.includes(horaire));
                     if (selectedHoraire) {
-                      handleRemoveBenevoleFromStand(selectedHoraire.horaireId, event);
+                      handleRemoveBenevole(selectedHoraire.horaireId, selectedHoraire.type, event);
                     }
                   }}
             >
               X
             </button>
-                )}*/}
+                )}
         </div>
       </div>
         ))}
