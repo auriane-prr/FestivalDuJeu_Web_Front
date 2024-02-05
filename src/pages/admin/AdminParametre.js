@@ -16,6 +16,27 @@ function AdminParametre() {
   const [selectedBenevole, setSelectedBenevole] = useState(null);
   const [latestFestivalName, setLatestFestivalName] = useState("");
 
+  const fetchFestivalData = async () => {
+    try {
+      const response = await fetch(
+        "https://festivaldujeuback.onrender.com/festival/latest"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setLatestFestivalName(data.nom); // Supposons que la propriété s'appelle 'nom'
+        return data;
+      } else {
+        throw new Error("Non-OK response from server");
+      }
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des données du festival",
+        error
+      );
+      return null;
+    }
+  };
+
   function formatDate(date) {
     if (!date) return "";
     const dateObj = date instanceof Date ? date : new Date(date);
@@ -36,32 +57,12 @@ function AdminParametre() {
     setSelectedBenevole(selected);
     setShowModal(true); // Ouvrir la modale
   };
-  
+
   const handleReferentChange = (e) => {
     const selectedId = e.target.value;
     const selected = referentBenevoles.find((b) => b._id === selectedId);
     setSelectedBenevole(selected);
     setShowModal(true); // Ouvrir la modale
-  };
-  
-
-  const fetchFestivalData = async () => {
-    try {
-      const response = await fetch("https://festivaldujeuback.onrender.com/festival/latest");
-      if (response.ok) {
-        const data = await response.json();
-        setLatestFestivalName(data.nom); // Supposons que la propriété s'appelle 'nom'
-        return data;
-      } else {
-        throw new Error("Non-OK response from server");
-      }
-    } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des données du festival",
-        error
-      );
-      return null;
-    }
   };
 
   const fetchNonReferentBenevoles = async () => {
@@ -84,39 +85,49 @@ function AdminParametre() {
     }
   };
 
-  const fetchStandsAndReferents = async () => {
-    const festivalData = await fetchFestivalData();
-    if (festivalData) {
-      const { date_debut, date_fin } = festivalData;
-      try {
-        const responseDebut = await fetch(`https://festivaldujeuback.onrender.com/stands/date/${date_debut}`);
-        const dataDebut = await responseDebut.ok ? await responseDebut.json() : [];
-  
-        const responseFin = await fetch(`https://festivaldujeuback.onrender.com/stands/date/${date_fin}`);
-        const dataFin = await responseFin.ok ? await responseFin.json() : [];
-  
-        const mergedData = [...dataDebut, ...dataFin];
-        setStands(mergedData);
-  
-        // Extraire les ID uniques des référents des stands
-        const referentsIds = [...new Set(mergedData.flatMap(stand => stand.referents.map(ref => ref._id)))];
-  
-        // Récupérer les informations des référents en parallèle
-        const referentsPromises = referentsIds.map(id =>
-          fetch(`https://festivaldujeuback.onrender.com/benevole/id/${id}`).then(response => response.json())
-        );
-  
-        const referents = await Promise.all(referentsPromises);
-        setReferentBenevoles(referents.filter(benevole => benevole)); // Filtrer les valeurs non valides
-      } catch (error) {
-        console.error("Erreur lors de la récupération des stands et des référents", error);
+  const fetchReferentBenevoles = async () => {
+    try {
+      const response = await fetch(
+        "https://festivaldujeuback.onrender.com/benevole/referent"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setReferentBenevoles(data);
+        console.log(data);
+      } else {
+        throw new Error("Non-OK response from server");
       }
+    } catch (error) {
+      console.error("Erreur lors de la récupération des référents:", error);
+    }
+  };
+
+  const fetchStandsByDate = async (date) => {
+    try {
+      const response = await fetch(
+        `https://festivaldujeuback.onrender.com/stands/date/${date}`
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        throw new Error("Non-OK response from server");
+      }
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des stands par date",
+        error
+      );
+      return [];
     }
   };
 
   const fetchZones = async () => {
     try {
-      const response = await fetch("https://festivaldujeuback.onrender.com/zoneBenevole/");
+      const response = await fetch(
+        "https://festivaldujeuback.onrender.com/zoneBenevole/"
+      );
       if (response.ok) {
         const data = await response.json();
         setZones(data);
@@ -129,11 +140,33 @@ function AdminParametre() {
   };
 
   useEffect(() => {
+    fetchFestivalData().then((latestFestivalData) => {
+      if (latestFestivalData) {
+        const { date_debut, date_fin } = latestFestivalData;
+
+        // Utilisez la date de début et la date de fin pour obtenir les stands correspondants
+        const standsByStartDate = fetchStandsByDate(date_debut);
+        const standsByEndDate = fetchStandsByDate(date_fin);
+
+        // Vous pouvez maintenant utiliser les données des stands par date de début et de fin
+        Promise.all([standsByStartDate, standsByEndDate]).then(
+          ([standsStartDate, standsEndDate]) => {
+            // Fusionnez les résultats des deux appels pour obtenir la liste complète de stands
+            const allStands = [...standsStartDate, ...standsEndDate];
+
+            // Traitez les données des stands comme vous le souhaitez
+            console.log("Liste complète de stands :", allStands);
+
+            // Mettez à jour l'état des stands avec les données obtenues
+            setStands(allStands);
+          }
+        );
+      }
+    });
     fetchNonReferentBenevoles();
-    fetchStandsAndReferents();
+    fetchReferentBenevoles();
     fetchZones();
   }, []);
-  
 
   return (
     <div>
@@ -150,6 +183,7 @@ function AdminParametre() {
             ))}
           </select>
         </Champ>
+
         <Champ label={"Voir les référents :"}>
           <select className="input" onChange={handleReferentChange}>
             <option value="">Sélectionner un référent</option>
@@ -160,6 +194,7 @@ function AdminParametre() {
             ))}
           </select>
         </Champ>
+
         <Champ label={"Liste des stands :"}>
           <select className="input">
             <option value="">Voir les stands</option>
@@ -170,6 +205,7 @@ function AdminParametre() {
             ))}
           </select>
         </Champ>
+
         <Champ label={"Liste des zones :"}>
           <select className="input">
             <option value="">Voir les zones</option>
@@ -181,7 +217,7 @@ function AdminParametre() {
           </select>
         </Champ>
       </Boite>
-      {showModal && selectedBenevole  && (
+      {showModal && selectedBenevole && (
         <Modal onClose={closeModal}>
           <Titre valeurDuTitre={selectedBenevole.pseudo} />
           <ModaleInfos benevole={selectedBenevole} />
