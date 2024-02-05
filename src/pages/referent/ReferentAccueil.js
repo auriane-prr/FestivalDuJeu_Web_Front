@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import "../../styles/Pages/referent/ReferentAccueil.css";
 import BandeauReferent from "../../components/referent/bandeauReferent";
 import Boite from "../../components/general/boite";
@@ -8,14 +8,10 @@ import ReferentDisplayZone from "../../components/referent/ReferentDisplayZone";
 import Titre from "../../components/general/titre";
 import Bouton from "../../components/general/bouton";
 
-
 function PageAccueil() {
   const [userData, setUserData] = useState("");
   const [standInfo, setStandInfo] = useState([{}]);
-  const [referentPseudo, setReferentPseudo] = useState({});
-  const [selectedHoraireIndex, setSelectedHoraireIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [benevolePseudo, setBenevolePseudo] = useState({});
 
   useEffect(() => {
     const pseudo = localStorage.getItem("pseudo");
@@ -59,7 +55,6 @@ function PageAccueil() {
     fetchUserDataAndStandInfo();
   }, []);
 
-
   function formatDate(date) {
     if (!date) return "";
     const dateObj = new Date(date);
@@ -78,14 +73,6 @@ function PageAccueil() {
   const renderGeneralStandContent = () => {
     return (
       <div>
-        <Champ label="Nom du stand">
-          <input
-            type="text"
-            className="input"
-            value={currentStand.nom_stand || "Chargement..."}
-            readOnly
-          />
-        </Champ>
         <Champ label="description">
           <input
             type="text"
@@ -123,73 +110,16 @@ function PageAccueil() {
             />
           )}
         </Champ>
-        <div className="horaire-container">
-          <Champ label="Horaire :">
-            <select
-              className="input"
-              value={selectedHoraireIndex}
-              onChange={(e) => setSelectedHoraireIndex(e.target.value)}
-            >
-              {currentStand?.horaireCota &&
-              currentStand.horaireCota.length > 0 ? (
-                currentStand.horaireCota.map((horaire, index) => (
-                  <option key={index} value={index}>
-                    {horaire.heure}
-                  </option>
-                ))
-              ) : (
-                <option>Aucun horaire disponible</option> // Cette option s'affiche s'il n'y a pas d'horaires
-              )}
-            </select>
-          </Champ>
-          <Champ label="Capacité :">
-            <input
-              type="number"
-              min="1"
-              value={
-                currentStand &&
-                currentStand.horaireCota &&
-                currentStand.horaireCota[selectedHoraireIndex]
-                  ? currentStand.horaireCota[selectedHoraireIndex]
-                      .nb_benevole || ""
-                  : ""
-              }
-              className="input"
-              readOnly
-            />
-          </Champ>
-          <Champ label="Liste de bénévoles :">
-            {currentStand?.horaireCota[selectedHoraireIndex]?.liste_benevole
-              .length === 0 ? (
-              <input
-                type="text"
-                className="input"
-                value="0 bénévole inscrits"
-                readOnly
-              />
-            ) : (
-              currentStand?.horaireCota[
-                selectedHoraireIndex
-              ]?.liste_benevole.map((benevole, index) => (
-                <input
-                  key={`${selectedHoraireIndex}-${benevole._id}-${index}`}
-                  type="text"
-                  className="input"
-                  value={benevole.pseudo || ""}
-                  readOnly
-                />
-              ))
-            )}
-          </Champ>
-        </div>
+
         <div className="PlanningPoste">
-          <Link to="/referent/poste" style={{ textDecoration: 'none' }}>
-          <Bouton >Voir le planning</Bouton>
+          <Link to="/referent/poste" style={{ textDecoration: "none" }}>
+            <Bouton>Voir le planning</Bouton>
           </Link>
-          </div>
+        </div>
       </div>
     );
   };
+
   const renderAnimationJeuContent = () => {
     return (
       <div>
@@ -201,16 +131,14 @@ function PageAccueil() {
   return (
     <div>
       <BandeauReferent />
-      <div className="inscription">
-      <Link to="/accueil" style={{ textDecoration: 'none' }}>
-          <Bouton >S'inscrire</Bouton>
-          </Link>
-      </div>
+
       <Boite>
         <Titre
           valeurDuTitre={`Bonjour ${
             userData.pseudo || "Chargement..."
-          }, le ${formatDate(currentStand.date)} vous êtes référent(e) du stand ${
+          }, le ${formatDate(
+            currentStand.date
+          )} vous êtes référent(e) du stand ${
             standInfo[0]?.nom_stand || "Chargement..."
           }`}
         />

@@ -193,59 +193,7 @@ function ReferentDisplayZone() {
               readOnly
             />
           </Champ>
-
-          <div className="horaire-container">
-            <Champ label="Horaire :">
-              <select
-                className="input"
-                value={selectedHoraireIndex}
-                onChange={(e) => setSelectedHoraireIndex(e.target.value)}
-              >
-                {selectedZone?.horaireCota &&
-                selectedZone.horaireCota.length > 0 ? (
-                  selectedZone.horaireCota.map((horaire, index) => (
-                    <option key={index} value={index}>
-                      {horaire.heure}
-                    </option>
-                  ))
-                ) : (
-                  <option>Aucun horaire disponible</option>
-                )}
-              </select>
-            </Champ>
-            <Champ label="Capacité :">
-              <input
-                type="number"
-                min="1"
-                value={zoneCapacity}
-                className="input"
-                readOnly
-              />
-            </Champ>
-            <Champ label="Liste de bénévoles :">
-              {selectedZone?.horaireCota[selectedHoraireIndex].liste_benevole
-                .length === 0 ? (
-                <input
-                  type="text"
-                  className="input"
-                  value="0 bénévole inscrits"
-                  readOnly
-                />
-              ) : (
-                selectedZone?.horaireCota[
-                  selectedHoraireIndex
-                ].liste_benevole.map((benevole, index) => (
-                  <input
-                    key={benevole._id}
-                    type="text"
-                    className="input"
-                    value={benevole.pseudo || ""}
-                    readOnly
-                  />
-                ))
-              )}
-            </Champ>
-          </div>
+          
           <Champ label="Jeux :" customStyle={{ width: "80%" }}>
             <select
               className="input"
