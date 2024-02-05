@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from "react";
-import "../../styles/planning.css";
+import React, { useState, useEffect } from 'react';
+import '../../styles/planning.css';
+import FicheDisplayStand from '../benevole/stands/fiche_display_stand';
+import FicheDisplayZone from '../benevole/zones/fiche_display_zone';
+import Modale from './fenetre_modale';
 import FenetrePopup from "../general/fenetre_popup";
 
 function Planning({ date }) {
@@ -7,9 +10,18 @@ function Planning({ date }) {
   const [loading, setLoading] = useState(true);
   const [userid, setUserid] = useState("");
   const [mergedData, setMergedData] = useState([]);
+
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+ 
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   const horaires = ["9-11", "11-14", "14-17", "17-20", "20-22"];
   const planningData = horaires.map((horaire) => ({ heure: horaire, nom: "" }));
@@ -82,38 +94,35 @@ function Planning({ date }) {
 
           // Filtrer et mapper les données des stands et des zones
           const filteredStands = stands
-            .filter(
-              (event) =>
-                new Date(event.date).toDateString() ===
-                new Date(date).toDateString()
-            )
-            .flatMap((event) =>
-              event.horaireCota
-                .filter((cota) => cota.liste_benevole.includes(userid))
-                .map((cota) => ({
-                  horaireId: cota._id,
-                  heure: cota.heure,
-                  nom: event.nom_stand,
-                  type: "stand",
-                }))
-            );
-
+            .filter(event => new Date(event.date).toDateString() === new Date(date).toDateString())
+            .flatMap(event => event.horaireCota
+              .filter(cota => cota.liste_benevole.includes(userid))
+              .map(cota => ({
+                horaireId: cota._id,
+                heure: cota.heure,
+                nb_benevole: cota.nb_benevole,
+                liste_benevole: cota.liste_benevole,
+                nom: event.nom_stand,
+                referents: event.referents,
+                description: event.description,
+                type: "stand"
+              })));
+  
           const filteredZones = zones
-            .filter(
-              (event) =>
-                new Date(event.date).toDateString() ===
-                new Date(date).toDateString()
-            )
-            .flatMap((event) =>
-              event.horaireCota
-                .filter((cota) => cota.liste_benevole.includes(userid))
-                .map((cota) => ({
-                  horaireId: cota._id,
-                  heure: cota.heure,
-                  nom: event.nom_zone_benevole,
-                  type: "zone",
-                }))
-            );
+            .filter(event => new Date(event.date).toDateString() === new Date(date).toDateString())
+            .flatMap(event => event.horaireCota
+              .filter(cota => cota.liste_benevole.includes(userid))
+              .map(cota => ({
+                horaireId: cota._id,
+                heure: cota.heure,
+                liste_benevole: cota.liste_benevole,
+                nb_benevole: cota.nb_benevole,
+                nom: event.nom_zone_benevole,
+                description: event.description,
+                referents: event.referents,
+                liste_jeux: event.liste_jeux,
+                type: "zone"
+              })));
 
           // Fusionner les listes filtrées et mappées
           const merged = [...filteredStands, ...filteredZones];
@@ -128,6 +137,14 @@ function Planning({ date }) {
               planningData[index].nom = data.nom;
               planningData[index].horaireId = data.horaireId;
               planningData[index].type = data.type;
+              planningData[index].description = data.description;
+              planningData[index].liste_benevole = data.liste_benevole;
+              planningData[index].referents = data.referents;
+              planningData[index].liste_jeux = data.liste_jeux;
+              planningData[index].nb_benevole = data.nb_benevole;
+
+
+
             }
           });
           setPlanningBenevole(planningData);
@@ -187,6 +204,18 @@ function Planning({ date }) {
     }
   };
 
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+    setShowDetails(true);
+    setShowModal(true);
+  };
+
+  const handleCloseDetails = () => {
+    setShowDetails(false);
+    setSelectedItem(null);
+    setShowModal(false);
+  };
+
   return (
     <div>
       {loading ? (
@@ -219,6 +248,24 @@ function Planning({ date }) {
                     X
                   </button>
                 )}
+                {planningBenevole.find(event => event.heure.includes(horaire))?.nom && (
+                  <>
+                    <div onClick={() => handleItemClick(planningBenevole.find(event => event.heure.includes(horaire)))}>
+                      {planningBenevole.find(event => event.heure.includes(horaire)).nom}
+                    </div>
+                    <button
+                      className="remove-button"
+                      onClick={(event) => {
+                        const selectedHoraire = planningBenevole.find(event => event.heure.includes(horaire));
+                        if (selectedHoraire) {
+                          handleRemoveBenevole(selectedHoraire.horaireId, selectedHoraire.type, event);
+                        }
+                      }}
+                    >
+                      X
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ))}
@@ -234,8 +281,24 @@ function Planning({ date }) {
           onClose={hidePopup}
         />
       )}
+      {showModal && (
+        <Modale onClose={handleCloseDetails} valeurDuTitre={"Information"}>
+          {showDetails && selectedItem && (
+            selectedItem.type === 'stand' ? (
+              <FicheDisplayStand
+                stand={selectedItem}
+              />
+            ) : (
+              <FicheDisplayZone
+                zone={selectedItem}
+                creneau={selectedItem}
+              />
+            ))}
+        </Modale>
+      )}
     </div>
   );
+  
 }
 
 export default Planning;
