@@ -5,60 +5,47 @@ import PlanningReferent from "../../components/referent/planningPosteReferent";
 import Titre from "../../components/general/titre";
 
 function ReferentPlanning() {
-  const [dateDebutDisplay, setDateDebutDisplay] = useState("");
-  const [dateFinDisplay, setDateFinDisplay] = useState("");
   const [idReferent, setIdReferent] = useState("");
-  const [hasAssignedStands, setHasAssignedStands] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [standDate, setStandDate] = useState("");
+  const [standName, setStandName] = useState(""); // Nouvel état pour le nom du stand
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      const result = await fetch(
-        "https://festivaldujeuback.onrender.com/festival/latest"
-      );
-      const body = await result.json();
-      setDateDebutDisplay(body.date_debut);
-      setDateFinDisplay(body.date_fin);
+      if (!loading) return; // Empêcher l'exécution répétée
 
+      // Récupération de l'ID du référent
       const pseudo = localStorage.getItem("pseudo");
-      const response = await fetch(
+      const benevoleResponse = await fetch(
         `https://festivaldujeuback.onrender.com/benevole/pseudo/${pseudo}`
       );
-      const data = await response.json();
-      const referentId = data.benevole._id;
-      setIdReferent(referentId);
+      const benevoleData = await benevoleResponse.json();
+      setIdReferent(benevoleData.benevole._id);
 
+      // Assurez-vous que l'ID du référent est défini avant de continuer
+      if (!benevoleData.benevole._id) return;
+
+      // Récupération des stands du référent
       const standsResponse = await fetch(
-        `https://festivaldujeuback.onrender.com/stands/referent/${referentId}`
+        `https://festivaldujeuback.onrender.com/stands/referent/${benevoleData.benevole._id}`
       );
       const standsData = await standsResponse.json();
-      const filteredStands = standsData.filter(
-        (stand) =>
-          new Date(stand.date).toDateString() ===
-            new Date(dateDebutDisplay).toDateString() ||
-          new Date(stand.date).toDateString() ===
-            new Date(dateFinDisplay).toDateString()
-      );
-      if (filteredStands.length > 0) {
-        setHasAssignedStands(true);
-        // Mettez à jour l'état avec la date du premier stand filtré
-        setStandDate(filteredStands[0].date);
-      } else {
-        setHasAssignedStands(false);
+
+      // Mise à jour de l'état avec la date et le nom du premier stand, si disponible
+      if (standsData.length > 0) {
+        setStandDate(standsData[0].date);
+        setStandName(standsData[0].nom_stand); // Mise à jour du nom du stand
       }
+
+      setLoading(false); // Marquer la fin du chargement
     };
+
     fetchData();
-  }, [dateDebutDisplay, dateFinDisplay]);
+  }, [loading]); // Dépend uniquement de loading
 
   function formatDate(date) {
     if (!date) return "";
-
-    // Crée un nouvel objet Date si date n'est pas déjà une instance de Date
-    const dateObj = date instanceof Date ? date : new Date(date);
-
-    // Formate la date en 'jj/mm/aaaa'
+    const dateObj = new Date(date);
     return dateObj.toLocaleDateString("fr-FR", {
       day: "2-digit",
       month: "2-digit",
@@ -74,7 +61,14 @@ function ReferentPlanning() {
     <div>
       <BandeauReferent />
       <Boite>
-        <Titre valeurDuTitre={"Planning du {formatDate(standDate)}"} />
+        {/* Affichage conditionnel du titre si la date et le nom du stand sont disponibles */}
+        {standDate && standName && (
+          <Titre
+            valeurDuTitre={`Planning du ${formatDate(
+              standDate
+            )} - ${standName}`}
+          />
+        )}
         <PlanningReferent date={standDate} />
       </Boite>
     </div>

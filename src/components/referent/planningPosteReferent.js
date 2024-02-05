@@ -36,7 +36,6 @@ function PlanningPosteReferent({ date }) {
       ) : (
         stands.map((stand, index) => (
           <React.Fragment key={index}>
-            <h2>{stand.nom_stand}</h2>
             {horaires.map((horaire, indexHoraire) => {
               const cota = stand.horaireCota.find(c => c.heure === horaire);
               return (
