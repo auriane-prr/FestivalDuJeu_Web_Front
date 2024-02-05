@@ -53,17 +53,15 @@ const FormInscription = () => {
 
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
-    dispatchFormData({ type: "UPDATE_FIELD", field: name, value });
-
-    // Si le champ végétarien est sélectionné, convertir la valeur en booléen
+  
+    // Déterminez la valeur à utiliser en fonction du champ et de la valeur reçue
+    let finalValue = value;
     if (name === "vegetarien") {
-      const vegetarienValue = name === "vegetarien" ? value === "oui" : value;
-      dispatchFormData({
-        type: "UPDATE_FIELD",
-        field: name,
-        value: vegetarienValue,
-      });
+      finalValue = value === "true"; // Convertit la chaîne "true" ou "false" en booléen
     }
+  
+    // Dispatch l'action avec la valeur finale
+    dispatchFormData({ type: "UPDATE_FIELD", field: name, value: finalValue });
 
     // Si "proposition" est sélectionné, afficher le champ d'adresse
     if (name === "hebergement") {
