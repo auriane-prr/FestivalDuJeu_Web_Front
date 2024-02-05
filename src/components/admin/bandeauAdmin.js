@@ -32,10 +32,10 @@ function BandeauAdmin() {
 
   return (
     <div className="Bandeau-admin">
-        <img className="LogoApp" src={Logo} alt="Logo" onClick={redirectToAccueil} />
-        <img className="Flexible Logo-AD" src={LogoFlexible} alt="Logo" onClick={redirectToFlexible} />
-        <img className="Parametre Logo-AD" src={LogoAdmin} alt="Logo" onClick={redirectToParametre} />
-        <img className='Deconnexion Logo-AD' src={DeconnexionImage} alt='Deconnexion' onClick={handleLogout}/>
+        <img className="LogoApp" src={Logo} alt="Logo" title="Accueil" onClick={redirectToAccueil} />
+        <img className="Flexible Logo-AD" src={LogoFlexible} alt="Logo" title="Flexibles" onClick={redirectToFlexible} />
+        <img className="Parametre Logo-AD" src={LogoAdmin} alt="Logo" title="Paramètres" onClick={redirectToParametre} />
+        <img className='Deconnexion Logo-AD' src={DeconnexionImage} alt='Deconnexion' title="Deconnexion" onClick={handleLogout}/>
     </div>
   );
 }
