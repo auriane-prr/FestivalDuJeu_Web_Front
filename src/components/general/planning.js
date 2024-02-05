@@ -229,28 +229,6 @@ function Planning({ date }) {
             <div key={index} className="planning-row">
               <div className="planning-time">{horaire}</div>
               <div className="planning-stand">
-                {planningBenevole.find((event) => event.heure.includes(horaire))
-                  ?.nom || ""}
-                {planningBenevole.find((event) => event.heure.includes(horaire))
-                  ?.nom && (
-                  <button
-                    className="remove-button"
-                    onClick={(event) => {
-                      const selectedHoraire = planningBenevole.find((event) =>
-                        event.heure.includes(horaire)
-                      );
-                      if (selectedHoraire) {
-                        handleRemoveBenevole(
-                          selectedHoraire.horaireId,
-                          selectedHoraire.type,
-                          event
-                        );
-                      }
-                    }}
-                  >
-                    X
-                  </button>
-                )}
                 {planningBenevole.find(event => event.heure.includes(horaire))?.nom && (
                   <>
                     <div onClick={() => handleItemClick(planningBenevole.find(event => event.heure.includes(horaire)))}>
