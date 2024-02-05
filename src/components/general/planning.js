@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/planning.css';
-import Titre from './titre';
-import FenetrePopup from './fenetre_popup';
 
 function Planning({ date }) {
   const [planningBenevole, setPlanningBenevole] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userid, setUserid] = useState('');
   const [mergedData, setMergedData] = useState([]);
-  const [mergedDataReady, setMergedDataReady] = useState(false);
+ 
 
   const horaires = ["9-11", "11-14", "14-17", "17-20", "20-22"];
   const planningData = horaires.map(horaire => ({ heure: horaire, nom: "" }));
@@ -38,82 +36,63 @@ function Planning({ date }) {
   useEffect(() => {
     setLoading(true);
     if (userid) {
-        const standsPromise = fetch(`https://festivaldujeuback.onrender.com/stands/benevole/${userid}`)
-            .then(response => {
-              if(!response.ok) {
-                throw new Error('Erreur lors de la récupération des stands');
-              }
-              return response.json();
-            })
-            .then(dataStands => {
-              console.log("Data pour les stands:", dataStands);
-              return dataStands;
-            })
-            .catch(() => []);
-
-            const zonesPromise = fetch(`https://festivaldujeuback.onrender.com/zoneBenevole/benevole/${userid}`)
-            .then(response => {
-              if (!response.ok) {
-                  throw new Error('Failed to fetch zones');
-              }
-              return response.json();
-          })
-          .then(dataZones => {
-              console.log("Data pour les zones:", dataZones);
-              return dataZones; // Ceci est déjà résolu et sera un tableau
-          })
-          .catch(() => []);
-
-        Promise.allSettled([standsPromise, zonesPromise])
+      const standsPromise = fetch(`https://festivaldujeuback.onrender.com/stands/benevole/${userid}`)
+        .then(response => response.ok ? response.json() : Promise.reject('Erreur lors de la récupération des stands'))
+        .catch(() => []); // Retourne un tableau vide en cas d'erreur
+  
+      const zonesPromise = fetch(`https://festivaldujeuback.onrender.com/zoneBenevole/benevole/${userid}`)
+        .then(response => response.ok ? response.json() : Promise.reject('Failed to fetch zones'))
+        .catch(() => []); // Retourne un tableau vide en cas d'erreur
+  
+      Promise.allSettled([standsPromise, zonesPromise])
         .then(results => {
           const stands = results[0].status === 'fulfilled' ? results[0].value : [];
           const zones = results[1].status === 'fulfilled' ? results[1].value : [];
-          if(stands.length === 0) {
-            console.log("Aucun stand trouvé pour cet utilisateur");
-            setMergedData(zones.filter(event => new Date(event.date).toDateString() === new Date(date).toDateString())
-                .flatMap(event => event.horaireCota
-                    .filter(cota => cota.liste_benevole.includes(userid))
-                    .map(cota => ({ horaireId: cota._id, heure: cota.heure, nom: event.nom_stand || event.nom_zone_benevole }))
-                ));
-                setMergedDataReady(true);
-          } else if(zones.length === 0) {
-            console.log("Aucune zone trouvée pour cet utilisateur");
-            setMergedData(stands.filter(event => new Date(event.date).toDateString() === new Date(date).toDateString())
-                .flatMap(event => event.horaireCota
-                    .filter(cota => cota.liste_benevole.includes(userid))
-                    .map(cota => ({ horaireId: cota._id, heure: cota.heure, nom: event.nom_stand || event.nom_zone_benevole }))
-                ));
-                setMergedDataReady(true);
-          } else if (stands.length > 0 && zones.length > 0){
-          setMergedData([...stands, ...zones].filter(event => new Date(event.date).toDateString() === new Date(date).toDateString())
-              .flatMap(event => event.horaireCota
-                  .filter(cota => cota.liste_benevole.includes(userid))
-                  .map(cota => ({
-                      horaireId: cota._id,
-                      heure: cota.heure,
-                      nom: event.nom_stand || event.nom_zone_benevole
-                  }))
-              ));
-              setMergedDataReady(true);
-          }
-          console.log("Données fusionnées:", mergedData);
-              mergedData.forEach(data => {
-                const index = planningData.findIndex(item => item.heure === data.heure);
-                if (index !== -1) {
-                  planningData[index].nom = data.nom;
-                }
-              });
-              setPlanningBenevole(planningData);
-              setLoading(false);
-      })
-      .catch(error => {
+  
+          // Filtrer et mapper les données des stands et des zones
+          const filteredStands = stands
+            .filter(event => new Date(event.date).toDateString() === new Date(date).toDateString())
+            .flatMap(event => event.horaireCota
+              .filter(cota => cota.liste_benevole.includes(userid))
+              .map(cota => ({
+                horaireId: cota._id,
+                heure: cota.heure,
+                nom: event.nom_stand
+              })));
+  
+          const filteredZones = zones
+            .filter(event => new Date(event.date).toDateString() === new Date(date).toDateString())
+            .flatMap(event => event.horaireCota
+              .filter(cota => cota.liste_benevole.includes(userid))
+              .map(cota => ({
+                horaireId: cota._id,
+                heure: cota.heure,
+                nom: event.nom_zone_benevole
+              })));
+  
+          // Fusionner les listes filtrées et mappées
+          const merged = [...filteredStands, ...filteredZones];
+  
+          // Mettre à jour l'état avec les données fusionnées
+          setMergedData(merged);
+          merged.forEach(data => {
+            const index = planningData.findIndex(item => item.heure === data.heure);
+            if (index !== -1) {
+              planningData[index].nom = data.nom;
+            }
+          });
+          setPlanningBenevole(planningData);
+          setLoading(false);
+        })
+        .catch(error => {
           console.error("Erreur lors de la récupération des données: ", error);
           setLoading(false);
-      })
+        });
     } else {
       setLoading(false);
     }
   }, [date, userid]);
+  
 
   const handleRemoveBenevoleFromStand = async (horaireId, event) => {
     console.log("userID:", userid, "horaire:", horaireId);
